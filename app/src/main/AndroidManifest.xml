@@ -9,8 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/GetTalents">
+        <activity android:name=".ui.profile.ProfileActivity"></activity>
+        <activity android:name=".ui.favorite.FavoriteActivity" />
+        <activity android:name=".ui.authentication.AuthenticationActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
