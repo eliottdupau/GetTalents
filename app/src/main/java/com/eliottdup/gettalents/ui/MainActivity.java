@@ -1,7 +1,8 @@
-package com.eliottdup.gettalents;
+package com.eliottdup.gettalents.ui;
 
 import android.os.Bundle;
 
+import com.eliottdup.gettalents.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
