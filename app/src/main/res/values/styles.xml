@@ -25,4 +25,22 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <!-- Profile Widgets -->
+
+    <style name="GetTalents.Profile.PictureContainer" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">160dp</item>
+        <item name="cardCornerRadius">80dp</item>
+    </style>
+
+    <style name="GetTalents.Profile.Title" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="GetTalents.Profile.TextContent" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:alpha">0.75</item>
+    </style>
+
 </resources>
