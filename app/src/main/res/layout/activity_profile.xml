@@ -7,15 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.ProfileActivity">
 
-    <include
-        layout="@layout/custom_toolbar"/>
-
     <LinearLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/appBar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

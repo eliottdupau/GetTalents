@@ -6,16 +6,19 @@
     <string name="title_map">Map</string>
     <string name="title_chat">Chat</string>
     <string name="title_menu">Menu</string>
-
     <string name="title_profile">My Profile</string>
     <string name="title_favorite">My Favorites</string>
     <string name="title_logout">Log Out</string>
-
     <string name="title_addresses">My Addresses</string>
+    <string name="title_edit_profile">Edit Profile</string>
+
+    <string name="label_save_changes">Save changes</string>
+    <string name="label_add_address">Add Address</string>
 
     <!-- Image Content Description -->
 
     <string name="profile_picture">This image is the profile picture of the user</string>
+    <string name="icon_clickable">That icon is clickable</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

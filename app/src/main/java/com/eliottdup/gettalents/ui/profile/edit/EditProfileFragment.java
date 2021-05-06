@@ -1,4 +1,4 @@
-package com.eliottdup.gettalents.ui.profile.consult;
+package com.eliottdup.gettalents.ui.profile.edit;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,11 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.ui.profile.consult.AddressAdapter;
+import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.text.SimpleDateFormat;
@@ -28,7 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class ConsultProfileFragment extends Fragment {
+public class EditProfileFragment extends Fragment {
     private MaterialToolbar toolbar;
     private ImageView profilePicture;
     private TextView pseudoView, birthdayView, mailView;
@@ -43,13 +46,13 @@ public class ConsultProfileFragment extends Fragment {
 
     public interface OnButtonClickedListener {
         void onBackButtonClicked();
-        void onEditProfileButtonClicked();
+        void onSaveChangesButtonClicked();
     }
 
-    public ConsultProfileFragment() { }
+    public EditProfileFragment() { }
 
-    public static ConsultProfileFragment newInstance() {
-        return new ConsultProfileFragment();
+    public static EditProfileFragment newInstance() {
+        return new EditProfileFragment();
     }
 
     @Override
@@ -60,7 +63,7 @@ public class ConsultProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_consult_profile, container, false);
+        View root = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
         toolbar = root.findViewById(R.id.topAppBar);
         profilePicture = root.findViewById(R.id.icon_profilePicture);
@@ -95,12 +98,12 @@ public class ConsultProfileFragment extends Fragment {
     }
 
     private void configureToolbar() {
-        toolbar.setTitle(getString(R.string.title_profile));
-        toolbar.inflateMenu(R.menu.app_bar_consult_profile_menu);
+        toolbar.setTitle(getString(R.string.title_edit_profile));
+        toolbar.inflateMenu(R.menu.app_bar_edit_profile_menu);
         toolbar.setNavigationOnClickListener(view -> callback.onBackButtonClicked());
 
         toolbar.setOnMenuItemClickListener(item -> {
-            callback.onEditProfileButtonClicked();
+            callback.onSaveChangesButtonClicked();
 
             return false;
         });
@@ -108,9 +111,11 @@ public class ConsultProfileFragment extends Fragment {
 
     private void configureRecyclerView() {
         addresses = new ArrayList<>();
-        adapter = new AddressAdapter(addresses, R.layout.item_address);
+        adapter = new AddressAdapter(addresses, R.layout.item_edit_address);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        ItemClickSupport.addTo(recyclerView, R.layout.item_edit_address).setOnItemClickListener((recyclerView, position, v) -> Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT).show());
     }
 
     private void getUser() {
