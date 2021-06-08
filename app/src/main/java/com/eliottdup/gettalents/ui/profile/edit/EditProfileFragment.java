@@ -1,11 +1,13 @@
 package com.eliottdup.gettalents.ui.profile.edit;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
@@ -23,6 +24,8 @@ import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.profile.consult.AddressAdapter;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,8 +37,12 @@ import java.util.UUID;
 public class EditProfileFragment extends Fragment {
     private MaterialToolbar toolbar;
     private ImageView profilePicture;
+    private MaterialCardView profilePictureCard, pseudoCard, birthdayCard;
     private TextView pseudoView, birthdayView, mailView;
+    private MaterialButton addressButton;
     private RecyclerView recyclerView;
+
+    private FragmentManager fragmentManager;
 
     private User user;
 
@@ -66,10 +73,14 @@ public class EditProfileFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
         toolbar = root.findViewById(R.id.topAppBar);
+        profilePictureCard = root.findViewById(R.id.container_profilePicture);
         profilePicture = root.findViewById(R.id.icon_profilePicture);
+        pseudoCard = root.findViewById(R.id.container_pseudo);
+        birthdayCard = root.findViewById(R.id.container_birthday);
         pseudoView = root.findViewById(R.id.textView_pseudo);
         birthdayView = root.findViewById(R.id.textView_birthday);
         mailView = root.findViewById(R.id.textView_mail);
+        addressButton = root.findViewById(R.id.button_addAddress);
         recyclerView = root.findViewById(R.id.recyclerView_address);
 
         return root;
@@ -81,9 +92,10 @@ public class EditProfileFragment extends Fragment {
 
         configureToolbar();
         configureRecyclerView();
-
         getUser();
-        setupView();
+        initView();
+
+        fragmentManager = getParentFragmentManager();
     }
 
     @Override
@@ -115,7 +127,13 @@ public class EditProfileFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        ItemClickSupport.addTo(recyclerView, R.layout.item_edit_address).setOnItemClickListener((recyclerView, position, v) -> Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT).show());
+        ItemClickSupport.addTo(recyclerView, R.layout.item_edit_address)
+                .setOnItemClickListener((recyclerView, position, v) -> {
+                    Address address = adapter.getAddress(position);
+
+                    AddressDialogFragment addressDialogFragment = AddressDialogFragment.newInstance(address);
+                    addressDialogFragment.show(fragmentManager, "addressFragment");
+                });
     }
 
     private void getUser() {
@@ -153,7 +171,7 @@ public class EditProfileFragment extends Fragment {
         addresses.add(address3);
     }
 
-    private void setupView() {
+    private void initView() {
         Glide.with(this)
                 .load(user.getUrlProfilePicture())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
@@ -166,5 +184,24 @@ public class EditProfileFragment extends Fragment {
         birthdayView.setText(dateFormat.format(user.getBirthday()));
 
         adapter.notifyDataSetChanged();
+
+        profilePictureCard.setOnClickListener(view -> {
+            PhotoDialogFragment photoDialogFragment = PhotoDialogFragment.newInstance();
+            photoDialogFragment.show(fragmentManager, "photoFragment");
+        });
+
+        pseudoCard.setOnClickListener(view -> {
+            PseudoDialogFragment pseudoDialogFragment = PseudoDialogFragment.newInstance();
+            pseudoDialogFragment.show(fragmentManager, "pseudoFragment");
+        });
+
+        birthdayCard.setOnClickListener(view -> {
+            BirthdayDialogFragment birthdayDialogFragment = BirthdayDialogFragment.newInstance();
+            birthdayDialogFragment.show(fragmentManager, "birthdayFragment");
+        });
+        addressButton.setOnClickListener(view -> {
+            AddressDialogFragment addressDialogFragment = AddressDialogFragment.newInstance();
+            addressDialogFragment.show(fragmentManager, "addressFragment");
+        });
     }
 }

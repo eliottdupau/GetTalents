@@ -10,10 +10,29 @@
     <string name="title_favorite">My Favorites</string>
     <string name="title_logout">Log Out</string>
     <string name="title_addresses">My Addresses</string>
+    <string name="title_address">Address</string>
     <string name="title_edit_profile">Edit Profile</string>
+    <string name="title_pseudo">Pseudo</string>
+    <string name="title_birthday">Birthday</string>
+    <string name="title_picture">Take a picture from</string>
+    <string name="title_camera">Camera</string>
+    <string name="title_media">Media</string>
 
+    <!-- Button Label -->
     <string name="label_save_changes">Save changes</string>
     <string name="label_add_address">Add Address</string>
+    <string name="label_save">Save</string>
+    <string name="label_add">Add</string>
+    <string name="label_cancel">Cancel</string>
+
+    <!-- Edit Text Hint -->
+    <string name="hint_address">Address</string>
+    <string name="hint_zip_code">Zip Code</string>
+    <string name="hint_city">City</string>
+    <string name="hint_country">Country</string>
+
+    <!-- Edit Text Error Message -->
+    <string name="error_empty">Must contain at least one character</string>
 
     <!-- Image Content Description -->
 
