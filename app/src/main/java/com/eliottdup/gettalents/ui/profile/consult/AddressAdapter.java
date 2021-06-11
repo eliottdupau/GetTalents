@@ -15,10 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressViewHolder> {
-    List<Address> addresses;
+    private List<Address> addresses;
+    private final int layoutId;
 
-    public AddressAdapter(List<Address> addresses) {
+    public AddressAdapter(List<Address> addresses, int layoutId) {
         this.addresses = addresses;
+        this.layoutId = layoutId;
     }
 
     @NonNull
@@ -26,7 +28,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressViewHolder> {
     public AddressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.item_address, parent, false);
+        View view = inflater.inflate(layoutId, parent, false);
 
         return new AddressViewHolder(view);
     }

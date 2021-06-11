@@ -30,8 +30,8 @@
 
                 <ImageView
                     android:id="@+id/icon_profile"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/ic_baseline_person_24"
                     android:importantForAccessibility="no"
                     app:layout_constraintStart_toStartOf="parent"
@@ -52,9 +52,10 @@
 
                 <ImageView
                     android:id="@+id/icon_arrowForward_profile"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    android:contentDescription="@string/icon_clickable"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -76,8 +77,8 @@
 
                 <ImageView
                     android:id="@+id/icon_favorite"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/ic_baseline_like_24"
                     android:importantForAccessibility="no"
                     app:layout_constraintStart_toStartOf="parent"
@@ -98,9 +99,10 @@
 
                 <ImageView
                     android:id="@+id/icon_arrowForward_favorite"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    android:contentDescription="@string/icon_clickable"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -122,8 +124,8 @@
 
                 <ImageView
                     android:id="@+id/icon_logout"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/ic_baseline_logout_24"
                     android:importantForAccessibility="no"
                     app:layout_constraintStart_toStartOf="parent"
@@ -144,9 +146,10 @@
 
                 <ImageView
                     android:id="@+id/icon_arrowForward_logout"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    android:contentDescription="@string/icon_clickable"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>

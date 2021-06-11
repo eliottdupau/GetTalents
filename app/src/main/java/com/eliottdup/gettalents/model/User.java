@@ -17,8 +17,6 @@ public class User implements Serializable {
 
     private String id;
     private String pseudo;
-    private String name;
-    private String firstName;
     private String mail;
     private Date birthday;
     private String urlProfilePicture;
