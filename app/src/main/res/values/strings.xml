@@ -23,6 +23,7 @@
     <string name="label_add_address">Add Address</string>
     <string name="label_save">Save</string>
     <string name="label_add">Add</string>
+    <string name="label_update">Update</string>
     <string name="label_cancel">Cancel</string>
 
     <!-- Edit Text Hint -->
@@ -35,7 +36,6 @@
     <string name="error_empty">Must contain at least one character</string>
 
     <!-- Image Content Description -->
-
     <string name="profile_picture">This image is the profile picture of the user</string>
     <string name="icon_clickable">That icon is clickable</string>
 

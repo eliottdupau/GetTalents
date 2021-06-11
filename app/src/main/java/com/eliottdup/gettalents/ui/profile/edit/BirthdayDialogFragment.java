@@ -6,24 +6,26 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.DateUtils;
+import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.Calendar;
-import java.util.UUID;
 
 public class BirthdayDialogFragment extends DialogFragment {
     private DatePicker datePicker;
     private MaterialButton positiveButton, negativeButton;
+
+    private UserViewModel viewModel;
 
     private User user;
 
@@ -47,8 +49,10 @@ public class BirthdayDialogFragment extends DialogFragment {
         positiveButton = root.findViewById(R.id.button_save);
         negativeButton = root.findViewById(R.id.button_cancel);
 
+        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+
         getUser();
-        initView();
+        setupView();
 
         return root;
     }
@@ -60,20 +64,15 @@ public class BirthdayDialogFragment extends DialogFragment {
     }
 
     private void getUser() {
-        user = new User(UUID.randomUUID().toString());
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, 4);
-        calendar.set(Calendar.MONTH, 0);
-        calendar.set(Calendar.YEAR, 1996);
-        user.setBirthday(calendar.getTime());
+        user = viewModel.getUser().getValue();
     }
 
-    private void initView() {
+    private void setupView() {
+        datePicker.setMaxDate(Calendar.getInstance().getTime().getTime());
+
         positiveButton.setOnClickListener(view -> {
-            Toast.makeText(getContext(),
-                    DateUtils.formatDate(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth()),
-                    Toast.LENGTH_SHORT).show();
+            user.setBirthday(DateUtils.formatDate(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth()));
+            viewModel.setUser(user);
             dismiss();
         });
 

@@ -21,5 +21,10 @@ public class Address implements Serializable {
 
     public Address(String id) {
         this.id = id;
+
+        this.address = "";
+        this.zipCode = "";
+        this.city = "";
+        this.country = "";
     }
 }

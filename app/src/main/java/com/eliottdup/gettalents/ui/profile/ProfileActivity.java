@@ -2,14 +2,18 @@ package com.eliottdup.gettalents.ui.profile;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.profile.consult.ConsultProfileFragment;
 import com.eliottdup.gettalents.ui.profile.edit.EditProfileFragment;
+import com.eliottdup.gettalents.viewmodel.UserViewModel;
 
 public class ProfileActivity extends AppCompatActivity implements ConsultProfileFragment.OnButtonClickedListener, EditProfileFragment.OnButtonClickedListener {
+    private UserViewModel viewModel;
+
     private FragmentManager fragmentManager;
     private ConsultProfileFragment consultProfileFragment;
     private EditProfileFragment editProfileFragment;
@@ -18,6 +22,8 @@ public class ProfileActivity extends AppCompatActivity implements ConsultProfile
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         fragmentManager = getSupportFragmentManager();
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,35 +15,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Address;
+import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class AddressDialogFragment extends DialogFragment {
-    private static final String KEY_ADDRESS = "address";
+import java.util.List;
+
+public class UpdateAddressDialogFragment extends DialogFragment {
+    private static final String KEY_ADDRESS_ID = "addressId";
 
     private TextInputLayout addressLayout, zipCodeLayout, cityLayout, countryLayout;
     private TextInputEditText addressView, zipCodeView, cityView, countryView;
     private MaterialButton positiveButton, negativeButton;
 
+    private UserViewModel viewModel;
+
+    private String addressId;
+    private User user;
+    private List<Address> addresses;
     private Address address;
-    private String addressStr, zipCodeStr, cityStr, countryStr;
 
-    public AddressDialogFragment() {}
+    public UpdateAddressDialogFragment() {}
 
-    public static AddressDialogFragment newInstance() {
-        return new AddressDialogFragment();
-    }
-
-    public static AddressDialogFragment newInstance(Address address) {
-        AddressDialogFragment addressDialogFragment = new AddressDialogFragment();
+    public static UpdateAddressDialogFragment newInstance(String addressId) {
+        UpdateAddressDialogFragment addressDialogFragment = new UpdateAddressDialogFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable(KEY_ADDRESS, address);
+        args.putString(KEY_ADDRESS_ID, addressId);
         addressDialogFragment.setArguments(args);
 
         return addressDialogFragment;
@@ -77,9 +81,12 @@ public class AddressDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null) {
-            this.address = (Address) getArguments().getSerializable(KEY_ADDRESS);
+            this.addressId = getArguments().getString(KEY_ADDRESS_ID);
         }
 
+        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+
+        getAddress();
         initView();
     }
 
@@ -89,34 +96,48 @@ public class AddressDialogFragment extends DialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    private void initView() {
-        if (this.address != null) {
-            addressView.setText(address.getAddress());
-            zipCodeView.setText(address.getZipCode());
-            cityView.setText(address.getCity());
-            countryView.setText(address.getCountry());
-        }
+    private void getAddress() {
+        user = viewModel.getUser().getValue();
 
-        addressStr = this.address != null ? address.getAddress() : "";
-        zipCodeStr = this.address != null ? address.getZipCode() : "";
-        cityStr = this.address != null ? address.getCity() : "";
-        countryStr = this.address != null ? address.getCountry() : "";
+        if (user != null) {
+            addresses = user.getAddresses();
+
+            for (Address address : addresses) {
+                if (address.getId().equals(addressId)) {
+                    this.address = address;
+                }
+            }
+        }
+    }
+
+    private void initView() {
+        addressView.setText(address.getAddress());
+        zipCodeView.setText(address.getZipCode());
+        cityView.setText(address.getCity());
+        countryView.setText(address.getCountry());
 
         addTextChangedListener(addressView);
         addTextChangedListener(zipCodeView);
         addTextChangedListener(cityView);
         addTextChangedListener(countryView);
 
-        String address = String.format("%s, %s %s - %s", addressView.getText(), zipCodeView.getText(), cityView.getText(), countryView.getText());
+        positiveButton.setText(getString(R.string.label_update));
         positiveButton.setOnClickListener(view -> {
             if (isAddressCorrect()) {
-                Toast.makeText(getContext(), address, Toast.LENGTH_SHORT).show();
+                for (int i = 0; i < addresses.size(); i++) {
+                    if (address.getId().equals(addresses.get(i).getId())) {
+                        addresses.set(i, address);
+                    }
+                }
+                user.setAddresses(addresses);
+                viewModel.setUser(user);
+
                 dismiss();
             } else {
-                if (addressStr.isEmpty()) addressLayout.setError(getString(R.string.error_empty));
-                if (zipCodeStr.isEmpty()) zipCodeLayout.setError(getString(R.string.error_empty));
-                if (cityStr.isEmpty()) cityLayout.setError(getString(R.string.error_empty));
-                if (countryStr.isEmpty()) countryLayout.setError(getString(R.string.error_empty));
+                if (address.getAddress().isEmpty()) addressLayout.setError(getString(R.string.error_empty));
+                if (address.getZipCode().isEmpty()) zipCodeLayout.setError(getString(R.string.error_empty));
+                if (address.getCity().isEmpty()) cityLayout.setError(getString(R.string.error_empty));
+                if (address.getCountry().isEmpty()) countryLayout.setError(getString(R.string.error_empty));
             }
         });
 
@@ -142,26 +163,26 @@ public class AddressDialogFragment extends DialogFragment {
     private void manageTextListener(EditText editText, String input) {
         switch (editText.getId()) {
             case R.id.editText_address:
-                addressStr = input;
+                address.setAddress(input);
                 if (addressLayout.getError() != null) addressLayout.setError(null);
                 break;
             case R.id.editText_zipCode:
-                zipCodeStr = input;
+                address.setZipCode(input);
                 if (zipCodeLayout.getError() != null) zipCodeLayout.setError(null);
                 break;
             case R.id.editText_city:
-                cityStr = input;
+                address.setCity(input);
                 if (cityLayout.getError() != null) cityLayout.setError(null);
                 break;
             case R.id.editText_country:
-                countryStr = input;
+                address.setCountry(input);
                 if (countryLayout.getError() != null) countryLayout.setError(null);
                 break;
         }
     }
 
     private boolean isAddressCorrect() {
-        return addressStr.length() > 0 && zipCodeStr.length() > 0 &&
-                cityStr.length() > 0 && countryStr.length() > 0;
+        return address.getAddress().length() > 0 && address.getZipCode().length() > 0 &&
+                address.getCity().length() > 0 && address.getCountry().length() > 0;
     }
 }

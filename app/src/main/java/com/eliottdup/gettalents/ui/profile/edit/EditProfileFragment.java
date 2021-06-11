@@ -1,6 +1,5 @@
 package com.eliottdup.gettalents.ui.profile.edit;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -8,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,17 +22,15 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.profile.consult.AddressAdapter;
+import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
+import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
 public class EditProfileFragment extends Fragment {
     private MaterialToolbar toolbar;
@@ -41,6 +39,8 @@ public class EditProfileFragment extends Fragment {
     private TextView pseudoView, birthdayView, mailView;
     private MaterialButton addressButton;
     private RecyclerView recyclerView;
+
+    private UserViewModel viewModel;
 
     private FragmentManager fragmentManager;
 
@@ -90,12 +90,15 @@ public class EditProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        configureToolbar();
-        configureRecyclerView();
-        getUser();
-        initView();
+        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
         fragmentManager = getParentFragmentManager();
+
+        configureToolbar();
+        configureRecyclerView();
+
+        getUser();
+        setupView();
     }
 
     @Override
@@ -131,59 +134,21 @@ public class EditProfileFragment extends Fragment {
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     Address address = adapter.getAddress(position);
 
-                    AddressDialogFragment addressDialogFragment = AddressDialogFragment.newInstance(address);
-                    addressDialogFragment.show(fragmentManager, "addressFragment");
+                    UpdateAddressDialogFragment updateAddressDialogFragment = UpdateAddressDialogFragment.newInstance(address.getId());
+                    updateAddressDialogFragment.show(fragmentManager, "updateAddressFragment");
                 });
     }
 
     private void getUser() {
-        user = new User(UUID.randomUUID().toString());
-        user.setPseudo("Lataupedu59");
-        user.setMail("rene.lataupe@yahoo.fr");
-        user.setUrlProfilePicture("https://torange.biz/photofxnew/76/HD/lion-profile-picture-76801.jpg");
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, 4);
-        calendar.set(Calendar.MONTH, 0);
-        calendar.set(Calendar.YEAR, 1996);
-        user.setBirthday(calendar.getTime());
-
-        Address address = new Address(UUID.randomUUID().toString());
-        address.setAddress("34 rue des peupliers");
-        address.setZipCode("59360");
-        address.setCity("Seclin");
-        address.setCountry("France");
-
-        Address address2 = new Address(UUID.randomUUID().toString());
-        address2.setAddress("122 rue des grands arbres qui poussent vite");
-        address2.setZipCode("60000");
-        address2.setCity("Saint Quentin");
-        address2.setCountry("France");
-
-        Address address3 = new Address(UUID.randomUUID().toString());
-        address3.setAddress("26 avenue des puits");
-        address3.setZipCode("02387");
-        address3.setCity("Compiègne");
-        address3.setCountry("France");
-
-        addresses.add(address);
-        addresses.add(address2);
-        addresses.add(address3);
+        user = viewModel.getUser().getValue();
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            updateUI(this.user);
+        });
     }
 
-    private void initView() {
-        Glide.with(this)
-                .load(user.getUrlProfilePicture())
-                .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
-                .into(profilePicture);
-
-        pseudoView.setText(user.getPseudo());
-        mailView.setText(user.getMail());
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.FRENCH);
-        birthdayView.setText(dateFormat.format(user.getBirthday()));
-
-        adapter.notifyDataSetChanged();
+    private void setupView() {
+        updateUI(user);
 
         profilePictureCard.setOnClickListener(view -> {
             PhotoDialogFragment photoDialogFragment = PhotoDialogFragment.newInstance();
@@ -199,9 +164,25 @@ public class EditProfileFragment extends Fragment {
             BirthdayDialogFragment birthdayDialogFragment = BirthdayDialogFragment.newInstance();
             birthdayDialogFragment.show(fragmentManager, "birthdayFragment");
         });
+
         addressButton.setOnClickListener(view -> {
-            AddressDialogFragment addressDialogFragment = AddressDialogFragment.newInstance();
-            addressDialogFragment.show(fragmentManager, "addressFragment");
+            CreateAddressDialogFragment createAddressDialogFragment = CreateAddressDialogFragment.newInstance();
+            createAddressDialogFragment.show(fragmentManager, "createAddressFragment");
         });
+    }
+
+    private void updateUI(User user) {
+        Glide.with(this)
+                .load(user.getUrlProfilePicture())
+                .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                .into(profilePicture);
+
+        pseudoView.setText(user.getPseudo());
+        mailView.setText(user.getMail());
+
+        birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
+
+        addresses = user.getAddresses();
+        adapter.updateData(addresses);
     }
 }

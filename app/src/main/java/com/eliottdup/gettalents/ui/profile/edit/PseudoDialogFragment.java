@@ -6,29 +6,29 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.util.UUID;
 
 public class PseudoDialogFragment extends DialogFragment {
     private TextInputLayout pseudoLayout;
     private TextInputEditText pseudoView;
     private MaterialButton positiveButton, negativeButton;
 
+    private UserViewModel viewModel;
+
     private User user;
-    private String pseudo;
 
     public PseudoDialogFragment() { }
 
@@ -51,10 +51,17 @@ public class PseudoDialogFragment extends DialogFragment {
         positiveButton = root.findViewById(R.id.button_save);
         negativeButton = root.findViewById(R.id.button_cancel);
 
-        getUser();
-        initView();
-
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+
+        getUser();
+        setupView();
     }
 
     @NonNull
@@ -64,13 +71,11 @@ public class PseudoDialogFragment extends DialogFragment {
     }
 
     private void getUser() {
-        user = new User(UUID.randomUUID().toString());
-        user.setPseudo("Lataupedu59");
+        user = viewModel.getUser().getValue();
     }
 
-    private void initView() {
+    private void setupView() {
         pseudoView.setText(user.getPseudo());
-        pseudo = user.getPseudo();
 
         pseudoView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -78,7 +83,7 @@ public class PseudoDialogFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence input, int i, int i1, int i2) {
-                pseudo = input.toString().trim();
+                user.setPseudo(input.toString().trim());
 
                 if (pseudoLayout.getError() != null) pseudoLayout.setError(null);
             }
@@ -88,8 +93,8 @@ public class PseudoDialogFragment extends DialogFragment {
         });
 
         positiveButton.setOnClickListener(view -> {
-            if (pseudo.length() > 0) {
-                Toast.makeText(getContext(), pseudoView.getText(), Toast.LENGTH_SHORT).show();
+            if (user.getPseudo().length() > 0) {
+                viewModel.setUser(user);
                 dismiss();
             } else {
                 pseudoLayout.setError(getString(R.string.error_empty));
