@@ -27,7 +27,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConsultProfileFragment extends Fragment {
+public class MyProfileFragment extends Fragment {
     private MaterialToolbar toolbar;
     private ImageView profilePicture;
     private TextView pseudoView, birthdayView, mailView;
@@ -47,10 +47,10 @@ public class ConsultProfileFragment extends Fragment {
         void onEditProfileButtonClicked();
     }
 
-    public ConsultProfileFragment() { }
+    public MyProfileFragment() { }
 
-    public static ConsultProfileFragment newInstance() {
-        return new ConsultProfileFragment();
+    public static MyProfileFragment newInstance() {
+        return new MyProfileFragment();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ConsultProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_consult_profile, container, false);
+        View root = inflater.inflate(R.layout.fragment_my_profile, container, false);
 
         toolbar = root.findViewById(R.id.topAppBar);
         profilePicture = root.findViewById(R.id.icon_profilePicture);

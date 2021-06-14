@@ -7,15 +7,13 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.ui.profile.consult.ConsultProfileFragment;
+import com.eliottdup.gettalents.ui.profile.consult.MyProfileFragment;
 import com.eliottdup.gettalents.ui.profile.edit.EditProfileFragment;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
 
-public class ProfileActivity extends AppCompatActivity implements ConsultProfileFragment.OnButtonClickedListener, EditProfileFragment.OnButtonClickedListener {
-    private UserViewModel viewModel;
-
+public class ProfileActivity extends AppCompatActivity implements MyProfileFragment.OnButtonClickedListener, EditProfileFragment.OnButtonClickedListener {
     private FragmentManager fragmentManager;
-    private ConsultProfileFragment consultProfileFragment;
+    private MyProfileFragment myProfileFragment;
     private EditProfileFragment editProfileFragment;
 
     @Override
@@ -23,7 +21,7 @@ public class ProfileActivity extends AppCompatActivity implements ConsultProfile
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        UserViewModel viewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         fragmentManager = getSupportFragmentManager();
 
@@ -31,10 +29,10 @@ public class ProfileActivity extends AppCompatActivity implements ConsultProfile
     }
 
     private void configureDefaultFragment() {
-        if (consultProfileFragment == null) consultProfileFragment = ConsultProfileFragment.newInstance();
+        if (myProfileFragment == null) myProfileFragment = MyProfileFragment.newInstance();
 
         fragmentManager.beginTransaction()
-                .add(R.id.fragmentContainer, consultProfileFragment)
+                .add(R.id.fragmentContainer, myProfileFragment)
                 .commit();
     }
 
@@ -55,10 +53,10 @@ public class ProfileActivity extends AppCompatActivity implements ConsultProfile
 
     @Override
     public void onSaveChangesButtonClicked() {
-        if (consultProfileFragment == null) consultProfileFragment = ConsultProfileFragment.newInstance();
+        if (myProfileFragment == null) myProfileFragment = MyProfileFragment.newInstance();
 
         fragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, consultProfileFragment)
+                .replace(R.id.fragmentContainer, myProfileFragment)
                 .addToBackStack(null)
                 .commit();
     }
