@@ -5,6 +5,7 @@ import com.eliottdup.gettalents.model.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 import androidx.lifecycle.LiveData;
@@ -29,7 +30,8 @@ public class UserViewModel extends ViewModel {
     }
 
     private User retrieveUser() {
-        User user = new User(UUID.randomUUID().toString());
+        User user = new User("1");
+        //User user = new User(UUID.randomUUID().toString());
         user.setPseudo("Lataupedu59");
         user.setMail("rene.lataupe@gmail.com");
         user.setUrlProfilePicture("https://torange.biz/photofxnew/76/HD/lion-profile-picture-76801.jpg");
@@ -65,6 +67,15 @@ public class UserViewModel extends ViewModel {
         addresses.add(address3);
 
         user.setAddresses(addresses);
+
+        List<String> relationsId = new ArrayList<>();
+        String relationId1 = user.getId();
+        String relationId2 = UUID.randomUUID().toString();
+
+        relationsId.add(relationId1);
+        relationsId.add(relationId2);
+
+        user.setRelationsId(relationsId);
 
         return user;
     }

@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
-                    android:text="@string/title_favorite"
+                    android:text="@string/title_my_favorite"
                     app:layout_constraintStart_toEndOf="@+id/icon_favorite"
                     app:layout_constraintEnd_toStartOf="@+id/icon_arrowForward_favorite"
                     app:layout_constraintTop_toTopOf="parent"
