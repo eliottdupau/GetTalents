@@ -1,6 +1,8 @@
 package com.eliottdup.gettalents.viewmodel;
 
 import com.eliottdup.gettalents.model.Address;
+import com.eliottdup.gettalents.model.Photo;
+import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
 
 import java.util.ArrayList;
@@ -30,8 +32,8 @@ public class UserViewModel extends ViewModel {
     }
 
     private User retrieveUser() {
-        User user = new User("1");
-        //User user = new User(UUID.randomUUID().toString());
+        //User user = new User("1");
+        User user = new User(UUID.randomUUID().toString());
         user.setPseudo("Lataupedu59");
         user.setMail("rene.lataupe@gmail.com");
         user.setUrlProfilePicture("https://torange.biz/photofxnew/76/HD/lion-profile-picture-76801.jpg");
@@ -42,6 +44,16 @@ public class UserViewModel extends ViewModel {
         calendar.set(Calendar.YEAR, 1996);
         user.setBirthday(calendar.getTime());
 
+        addAddress(user);
+
+        addRelation(user);
+
+        addReview(user);
+
+        return user;
+    }
+
+    private void addAddress(User user) {
         ArrayList<Address> addresses = new ArrayList<>();
 
         Address address = new Address(UUID.randomUUID().toString());
@@ -67,7 +79,9 @@ public class UserViewModel extends ViewModel {
         addresses.add(address3);
 
         user.setAddresses(addresses);
+    }
 
+    private void addRelation(User user) {
         List<String> relationsId = new ArrayList<>();
         String relationId1 = user.getId();
         String relationId2 = UUID.randomUUID().toString();
@@ -75,8 +89,23 @@ public class UserViewModel extends ViewModel {
         relationsId.add(relationId1);
         relationsId.add(relationId2);
 
-        user.setRelationsId(relationsId);
+        user.setRelationListId(relationsId);
+    }
 
-        return user;
+    private void addReview(User user) {
+        List<Review> reviewList = new ArrayList<>();
+
+        Review review = new Review(UUID.randomUUID().toString());
+        review.setComment("My fabulous comment");
+        review.setRating(1.5f);
+
+        Review review2 = new Review(UUID.randomUUID().toString());
+        review2.setComment("Another wonderful review from myself");
+        review2.setRating(4.0f);
+
+        reviewList.add(review);
+        reviewList.add(review2);
+
+        user.setReviewList(reviewList);
     }
 }

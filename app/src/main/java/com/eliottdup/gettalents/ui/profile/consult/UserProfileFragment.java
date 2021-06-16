@@ -8,32 +8,44 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.adapter.review.ReviewAdapter;
 import com.eliottdup.gettalents.model.Address;
+import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.chat.ChatActivity;
-import com.eliottdup.gettalents.ui.evaluate.EvaluateActivity;
+import com.eliottdup.gettalents.ui.review.ReviewActivity;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserProfileFragment extends Fragment {
     private MaterialToolbar toolbar;
     private ImageView profilePicture, favoriteIcon;
     private TextView pseudoView, addressView;
     private MaterialCardView evaluateButton, chatButton, favoriteButton;
+    private RecyclerView recyclerView;
 
     private UserViewModel viewModel;
 
     private User user;
+
+    private ReviewAdapter adapter;
+    private List<Review> reviewList;
 
     public OnButtonClickedListener callback;
 
@@ -65,6 +77,7 @@ public class UserProfileFragment extends Fragment {
         chatButton = root.findViewById(R.id.container_chat);
         favoriteButton = root.findViewById(R.id.container_favorite);
         favoriteIcon = root.findViewById(R.id.icon_favorite);
+        recyclerView = root.findViewById(R.id.recyclerView_review);
 
         return root;
     }
@@ -75,9 +88,11 @@ public class UserProfileFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
-        configureToolbar();
-
         getUser();
+
+        configureToolbar();
+        configureRecyclerView();
+
         setupView();
     }
 
@@ -92,13 +107,21 @@ public class UserProfileFragment extends Fragment {
         callback = (OnButtonClickedListener) getActivity();
     }
 
+    private void getUser() {
+        user = viewModel.getUser().getValue();
+    }
+
     private void configureToolbar() {
         toolbar.setTitle(getString(R.string.title_other_profile));
         toolbar.setNavigationOnClickListener(view -> callback.onBackButtonClicked());
     }
 
-    private void getUser() {
-        user = viewModel.getUser().getValue();
+    private void configureRecyclerView() {
+        //reviewList = new ArrayList<>();
+        reviewList = user.getReviewList();
+        adapter = new ReviewAdapter(reviewList, Glide.with(this));
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void setupView() {
@@ -115,7 +138,7 @@ public class UserProfileFragment extends Fragment {
         updateFavoriteView(user.isInFavorite(user.getId()));
 
         evaluateButton.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), EvaluateActivity.class);
+            Intent intent = new Intent(getContext(), ReviewActivity.class);
             startActivity(intent);
         });
 
@@ -132,8 +155,8 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void manageRelation(boolean isInFavorite) {
-        if (isInFavorite) user.getRelationsId().remove(user.getId());
-        else user.getRelationsId().add(user.getId());
+        if (isInFavorite) user.getRelationListId().remove(user.getId());
+        else user.getRelationListId().add(user.getId());
     }
 
     private void updateFavoriteView(boolean isInFavorite) {

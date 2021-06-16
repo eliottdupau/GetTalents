@@ -21,9 +21,10 @@ import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.User;
-import com.eliottdup.gettalents.ui.profile.consult.AddressAdapter;
+import com.eliottdup.gettalents.adapter.address.AddressAdapter;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
+import com.eliottdup.gettalents.viewmodel.PhotoViewModel;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
@@ -40,7 +41,8 @@ public class EditProfileFragment extends Fragment {
     private MaterialButton addressButton;
     private RecyclerView recyclerView;
 
-    private UserViewModel viewModel;
+    private UserViewModel userViewModel;
+    private PhotoViewModel photoViewModel;
 
     private FragmentManager fragmentManager;
 
@@ -90,7 +92,8 @@ public class EditProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        photoViewModel = new ViewModelProvider(requireActivity()).get(PhotoViewModel.class);
 
         fragmentManager = getParentFragmentManager();
 
@@ -98,6 +101,7 @@ public class EditProfileFragment extends Fragment {
         configureRecyclerView();
 
         getUser();
+        managePhoto();
         setupView();
     }
 
@@ -114,7 +118,7 @@ public class EditProfileFragment extends Fragment {
 
     private void configureToolbar() {
         toolbar.setTitle(getString(R.string.title_edit_profile));
-        toolbar.inflateMenu(R.menu.app_bar_edit_profile_menu);
+        toolbar.inflateMenu(R.menu.app_bar_save_changes_menu);
         toolbar.setNavigationOnClickListener(view -> callback.onBackButtonClicked());
 
         toolbar.setOnMenuItemClickListener(item -> {
@@ -140,10 +144,19 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void getUser() {
-        user = viewModel.getUser().getValue();
-        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+        user = userViewModel.getUser().getValue();
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
             updateUI(this.user);
+        });
+    }
+
+    private void managePhoto() {
+        photoViewModel.getPhoto().observe(getViewLifecycleOwner(), photo -> {
+            if (photo.getUri() != null) {
+                user.setUrlProfilePicture(photo.getUri());
+                userViewModel.setUser(user);
+            }
         });
     }
 

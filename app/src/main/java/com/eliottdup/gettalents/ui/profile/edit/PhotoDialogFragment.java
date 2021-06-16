@@ -20,8 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.model.User;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
+import com.eliottdup.gettalents.model.Photo;
+import com.eliottdup.gettalents.viewmodel.PhotoViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.File;
@@ -38,9 +38,9 @@ public class PhotoDialogFragment extends DialogFragment {
 
     private MaterialButton cameraButton, mediaButton;
 
-    private UserViewModel viewModel;
+    private PhotoViewModel viewModel;
 
-    private User user;
+    private Photo photo;
     private String currentPhotoPath;
 
     public PhotoDialogFragment() {}
@@ -69,9 +69,9 @@ public class PhotoDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(PhotoViewModel.class);
 
-        getUser();
+        getPhoto();
         setupView();
     }
 
@@ -81,8 +81,8 @@ public class PhotoDialogFragment extends DialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    private void getUser() {
-        user = viewModel.getUser().getValue();
+    private void getPhoto() {
+        photo = viewModel.getPhoto().getValue();
     }
 
     private void setupView() {
@@ -128,13 +128,13 @@ public class PhotoDialogFragment extends DialogFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            user.setUrlProfilePicture(currentPhotoPath);
-            viewModel.setUser(user);
+            photo.setUri(currentPhotoPath);
+            viewModel.setPhoto(photo);
         }
         else if (requestCode == RC_IMAGE_PICK && resultCode == RESULT_OK) {
             currentPhotoPath =  data.getData().toString();
-            user.setUrlProfilePicture(currentPhotoPath);
-            viewModel.setUser(user);
+            photo.setUri(currentPhotoPath);
+            viewModel.setPhoto(photo);
         }
 
         dismiss();

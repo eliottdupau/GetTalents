@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.adapter.address.AddressAdapter;
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.DateUtils;

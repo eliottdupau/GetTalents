@@ -1,15 +1,13 @@
-package com.eliottdup.gettalents.ui.profile.consult;
+package com.eliottdup.gettalents.adapter.address;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Address;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

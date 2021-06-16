@@ -1,4 +1,4 @@
-package com.eliottdup.gettalents.ui.profile.consult;
+package com.eliottdup.gettalents.adapter.address;
 
 import android.view.View;
 import android.widget.TextView;
