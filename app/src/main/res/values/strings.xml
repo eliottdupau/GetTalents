@@ -17,6 +17,7 @@
     <string name="title_picture">Take a picture from</string>
     <string name="title_camera">Camera</string>
     <string name="title_media">Media</string>
+    <string name="presentation">Avec Sathiel facilite toi la vie en demande de l\'aide aux autres</string>
 
     <!-- Button Label -->
     <string name="label_save_changes">Save changes</string>
@@ -25,6 +26,9 @@
     <string name="label_add">Add</string>
     <string name="label_update">Update</string>
     <string name="label_cancel">Cancel</string>
+    <string name="visitor"><u>Continuer comme visiteur</u></string>
+    <string name="SignUp">S\'inscrire</string>
+    <string name="signIn">Se connecter</string>
 
     <!-- Edit Text Hint -->
     <string name="hint_address">Address</string>
@@ -38,8 +42,22 @@
     <!-- Image Content Description -->
     <string name="profile_picture">This image is the profile picture of the user</string>
     <string name="icon_clickable">That icon is clickable</string>
+    <string name="logo">This is the logo of the app</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="email">exemple@exemple.fr</string>
+    <string name="content_description_email">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="content_description_password">Mot de passe</string>
+    <string name="confirmPassword">Confirmer Mot de passe</string>
+    <string name="content_description_confirm_password">Confirmer mot de passe</string>
+    <string name="forgetPassword">Mot de passe oublié</string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="connection">Connexion</string>
+    <string name="helpEmail">Entrer l\'adresse email associée à votre compte</string>
+    <string name="inscription">Inscription</string>
+    <string name="send">Envoyé</string>
 
 </resources>

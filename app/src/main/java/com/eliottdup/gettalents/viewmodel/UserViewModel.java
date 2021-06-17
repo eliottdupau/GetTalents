@@ -38,7 +38,6 @@ public class UserViewModel extends ViewModel {
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.YEAR, 1996);
         user.setBirthday(calendar.getTime());
-
         ArrayList<Address> addresses = new ArrayList<>();
 
         Address address = new Address(UUID.randomUUID().toString());
