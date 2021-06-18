@@ -60,8 +60,9 @@ public class SignInFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(fragment == null){
-                    Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                    Intent intent = new Intent(getContext(), MainActivity.class);
                     startActivity(intent);
+                    requireActivity().finish();
                 }
                 if(fragment == forgetPasswordFragment){
                     fragmentManager.beginTransaction()
