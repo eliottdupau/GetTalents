@@ -12,10 +12,9 @@ import android.widget.Button;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.MainActivity;
 
-public class AuthenticationActivity extends AppCompatActivity {
+public class AuthenticationActivity extends AppCompatActivity implements SignUpFragment.OnButtonClickedListener, SignInFragment.OnButtonClickedListener, ForgetPasswordFragment.OnButtonClickedListener {
 
     private FragmentManager fragmentManager ;
-
     private AuthenticationFragment authenticationFragment ;
 
     @Override
@@ -31,5 +30,10 @@ public class AuthenticationActivity extends AppCompatActivity {
                 .replace(R.id.mainContainer, authenticationFragment)
                 .commit();
 
+    }
+
+    @Override
+    public void onBackButtonClicked() {
+        onBackPressed();
     }
 }
