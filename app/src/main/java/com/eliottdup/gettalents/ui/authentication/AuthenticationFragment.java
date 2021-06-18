@@ -74,11 +74,13 @@ public class AuthenticationFragment extends Fragment {
                 if(fragment == signInFragment){
                     fragmentManager.beginTransaction()
                             .replace(R.id.mainContainer, signInFragment)
+                            .addToBackStack(null)
                             .commit();
                 }
                 if(fragment == signUpFragment){
                     fragmentManager.beginTransaction()
                             .replace(R.id.mainContainer, signUpFragment)
+                            .addToBackStack(null)
                             .commit();
                 }
             }

@@ -90,6 +90,7 @@ public class SignInFragment extends Fragment {
                 if(fragment == forgetPasswordFragment){
                     fragmentManager.beginTransaction()
                             .replace(R.id.mainContainer, forgetPasswordFragment)
+                            .addToBackStack(null)
                             .commit();
                 }
             }
