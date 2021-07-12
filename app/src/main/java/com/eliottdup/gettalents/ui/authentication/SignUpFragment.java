@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,11 +19,15 @@ import android.widget.EditText;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.MainActivity;
+import com.eliottdup.gettalents.ui.profile.edit.CreateProfilFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUpFragment extends Fragment {
+
+    private FragmentManager fragmentManager;
+    private CreateProfilFragment createProfilFragment;
 
     private Button btnSignUp;
 
@@ -42,9 +47,7 @@ public class SignUpFragment extends Fragment {
         void onBackButtonClicked();
     }
 
-    public SignUpFragment() {
-        // Required empty public constructor
-    }
+    public SignUpFragment() {}
 
     public static SignUpFragment newInstance() {
         return new SignUpFragment();
@@ -61,6 +64,8 @@ public class SignUpFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_sign_up, container, false);
 
+        this.fragmentManager = getParentFragmentManager();
+
         toolbar = root.findViewById(R.id.topAppBar);
 
         this.btnSignUp = root.findViewById(R.id.btnSignUp);
@@ -72,6 +77,8 @@ public class SignUpFragment extends Fragment {
         TextInputEditText inputEmail = root.findViewById(R.id.inputEmail);
         TextInputEditText inputPassword = root.findViewById(R.id.inputPassword);
         TextInputEditText inputConfirmPassword = root.findViewById(R.id.inputConfirmPassword);
+
+        if(createProfilFragment == null) createProfilFragment = createProfilFragment.newInstance();
 
         configureToolbar();
 
@@ -102,19 +109,28 @@ public class SignUpFragment extends Fragment {
 
     private void signUp(){
         btnSignUp.setOnClickListener(v -> {
-            if(checkForm()){
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                startActivity(intent);
-                requireActivity().finish();
-            }
-            else{
-                if(!email.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))
-                    layoutEmail.setError(getString(R.string.error_email_format));
-                if(password.length() <= 7)
-                    layoutPassword.setError(getString(R.string.error_password_length));
-                if(!confirmPassword.equals(password))
-                    layoutConfirmPassword.setError(getString(R.string.error_password_correspond));
-            }
+//            if(checkForm()){
+////                Intent intent = new Intent(getContext(), MainActivity.class);
+////                startActivity(intent);
+////                requireActivity().finish();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.mainContainer, createProfilFragment)
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+//            else{
+//                if(!email.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))
+//                    layoutEmail.setError(getString(R.string.error_email_format));
+//                if(password.length() <= 7)
+//                    layoutPassword.setError(getString(R.string.error_password_length));
+//                if(!confirmPassword.equals(password))
+//                    layoutConfirmPassword.setError(getString(R.string.error_password_correspond));
+//            }
+            fragmentManager.beginTransaction()
+                    .replace(R.id.mainContainer, createProfilFragment)
+                    .addToBackStack(null)
+                    .commit();
+
         });
     }
 
