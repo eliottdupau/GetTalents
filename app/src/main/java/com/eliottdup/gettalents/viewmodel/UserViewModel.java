@@ -31,6 +31,7 @@ public class UserViewModel extends ViewModel {
         User user = new User(UUID.randomUUID().toString());
         user.setPseudo("Lataupedu59");
         user.setMail("rene.lataupe@gmail.com");
+        user.setPassword("123456");
         user.setUrlProfilePicture("https://torange.biz/photofxnew/76/HD/lion-profile-picture-76801.jpg");
 
         Calendar calendar = Calendar.getInstance();

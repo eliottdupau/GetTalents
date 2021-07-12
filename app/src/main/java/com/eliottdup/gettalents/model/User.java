@@ -18,6 +18,7 @@ public class User implements Serializable {
     private String id;
     private String pseudo;
     private String mail;
+    private String password;
     private Date birthday;
     private String urlProfilePicture;
     private List<Address> addresses;
