@@ -21,4 +21,5 @@ public class AddressViewHolder extends RecyclerView.ViewHolder {
     public void bind(Address address) {
         addressView.setText(String.format("%s, %s %s - %s", address.getAddress(), address.getZipCode(), address.getCity(), address.getCountry()));
     }
+    
 }
