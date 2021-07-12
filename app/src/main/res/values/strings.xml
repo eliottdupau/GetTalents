@@ -27,8 +27,8 @@
     <string name="label_update">Update</string>
     <string name="label_cancel">Cancel</string>
     <string name="visitor"><u>Continue as visitor</u></string>
-    <string name="SignUp">Sign Up</string>
-    <string name="signIn">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
     <string name="connection">Sign In</string>
     <string name="send">Send</string>
     <string name="inscription">Sign Up</string>
@@ -43,8 +43,8 @@
     <!-- Edit Text Error Message -->
     <string name="error_empty">Must contain at least one character</string>
     <string name="error_email_format">Invalid Email</string>
-    <string name="error_password_length">Password must be > 8 </string>
-    <string name="error_password_correspond">Nort corresponding password</string>
+    <string name="error_password_length">Password must be greater than 8 characters</string>
+    <string name="error_password_correspond">Password does not match</string>
 
     <!-- Image Content Description -->
     <string name="profile_picture">This image is the profile picture of the user</string>
@@ -56,8 +56,8 @@
     <string name="content_description_email">Email</string>
     <string name="password">Password</string>
     <string name="content_description_password">Password</string>
-    <string name="confirmPassword">Confirm password</string>
-    <string name="content_description_confirm_password">>Confirm password</string>
-    <string name="helpEmail">Enter the email address associated with your account</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="content_description_confirm_password">Confirm password</string>
+    <string name="help_email">Enter the email address associated with your account</string>
 
 </resources>

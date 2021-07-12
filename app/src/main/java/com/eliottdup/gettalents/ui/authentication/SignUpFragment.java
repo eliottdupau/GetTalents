@@ -96,7 +96,7 @@ public class SignUpFragment extends Fragment {
     }
 
     private void configureToolbar() {
-        toolbar.setTitle(getString(R.string.SignUp));
+        toolbar.setTitle(getString(R.string.sign_up));
         toolbar.setNavigationOnClickListener(view -> callback.onBackButtonClicked());
     }
 

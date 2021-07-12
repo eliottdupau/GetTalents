@@ -90,7 +90,7 @@
         android:layout_marginEnd="24dp"
         android:hint="@string/password"
         app:errorEnabled="true"
-        app:helperText="@string/confirmPassword"
+        app:helperText="@string/confirm_password"
         app:boxBackgroundColor="@color/colorWindowBackground"
         app:startIconDrawable="@drawable/ic_outline_lock_24"
         app:startIconContentDescription="@string/password"
