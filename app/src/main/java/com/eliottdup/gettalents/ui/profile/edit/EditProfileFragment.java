@@ -24,7 +24,7 @@ import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.adapter.address.AddressAdapter;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
-import com.eliottdup.gettalents.viewmodel.PhotoViewModel;
+import com.eliottdup.gettalents.viewmodel.PictureViewModel;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
@@ -42,11 +42,12 @@ public class EditProfileFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private UserViewModel userViewModel;
-    private PhotoViewModel photoViewModel;
+    private PictureViewModel pictureViewModel;
 
     private FragmentManager fragmentManager;
 
     private User user;
+    private String oldUri = "";
 
     private AddressAdapter adapter;
     private List<Address> addresses;
@@ -54,8 +55,8 @@ public class EditProfileFragment extends Fragment {
     public OnButtonClickedListener callback;
 
     public interface OnButtonClickedListener {
-        void onBackButtonClicked();
-        void onSaveChangesButtonClicked();
+        void onBackClicked();
+        void onSaveClicked(User user);
     }
 
     public EditProfileFragment() { }
@@ -93,16 +94,15 @@ public class EditProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        photoViewModel = new ViewModelProvider(requireActivity()).get(PhotoViewModel.class);
+        pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
 
         fragmentManager = getParentFragmentManager();
 
         configureToolbar();
         configureRecyclerView();
+        setupView();
 
         getUser();
-        managePhoto();
-        setupView();
     }
 
     @Override
@@ -119,10 +119,17 @@ public class EditProfileFragment extends Fragment {
     private void configureToolbar() {
         toolbar.setTitle(getString(R.string.title_edit_profile));
         toolbar.inflateMenu(R.menu.app_bar_save_changes_menu);
-        toolbar.setNavigationOnClickListener(view -> callback.onBackButtonClicked());
+        toolbar.setNavigationOnClickListener(view -> callback.onBackClicked());
 
         toolbar.setOnMenuItemClickListener(item -> {
-            callback.onSaveChangesButtonClicked();
+            userViewModel.updateUser(user.getId(), user);
+
+            // Todo() : Upload la photo sur le serveur de stockage des photos
+            if (!oldUri.equals(user.getProfilePicture().getUri())) {
+                pictureViewModel.uploadPicture(user.getProfilePicture());
+            }
+
+            callback.onSaveClicked(user);
 
             return false;
         });
@@ -143,27 +150,9 @@ public class EditProfileFragment extends Fragment {
                 });
     }
 
-    private void getUser() {
-        user = userViewModel.getUser().getValue();
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            this.user = user;
-            updateUI(this.user);
-        });
-    }
-
-    private void managePhoto() {
-        photoViewModel.getPhoto().observe(getViewLifecycleOwner(), photo -> {
-            if (photo.getUri() != null) {
-                user.setUrlProfilePicture(photo.getUri());
-                userViewModel.setUser(user);
-            }
-        });
-    }
-
     private void setupView() {
-        updateUI(user);
-
         profilePictureCard.setOnClickListener(view -> {
+            oldUri = user.getProfilePicture().getUri();
             PhotoDialogFragment photoDialogFragment = PhotoDialogFragment.newInstance();
             photoDialogFragment.show(fragmentManager, "photoFragment");
         });
@@ -184,9 +173,16 @@ public class EditProfileFragment extends Fragment {
         });
     }
 
+    private void getUser() {
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            updateUI(user);
+        });
+    }
+
     private void updateUI(User user) {
         Glide.with(this)
-                .load(user.getUrlProfilePicture())
+                .load(user.getProfilePicture().getUri())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
                 .into(profilePicture);
 

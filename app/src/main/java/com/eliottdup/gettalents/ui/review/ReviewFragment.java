@@ -23,11 +23,11 @@ import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.adapter.media.MediaAdapter;
 import com.eliottdup.gettalents.model.Review;
-import com.eliottdup.gettalents.model.Photo;
+import com.eliottdup.gettalents.model.Picture;
 import com.eliottdup.gettalents.ui.profile.edit.PhotoDialogFragment;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.eliottdup.gettalents.viewmodel.ReviewViewModel;
-import com.eliottdup.gettalents.viewmodel.PhotoViewModel;
+import com.eliottdup.gettalents.viewmodel.PictureViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -47,7 +47,7 @@ public class ReviewFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private ReviewViewModel reviewViewModel;
-    private PhotoViewModel photoViewModel;
+    private PictureViewModel pictureViewModel;
 
     private FragmentManager fragmentManager;
 
@@ -55,7 +55,7 @@ public class ReviewFragment extends Fragment {
     private String userId;
 
     private MediaAdapter adapter;
-    private List<Photo> photoList;
+    private List<Picture> pictureList;
 
     public ReviewFragment() {}
 
@@ -98,7 +98,7 @@ public class ReviewFragment extends Fragment {
         }
 
         reviewViewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
-        photoViewModel = new ViewModelProvider(requireActivity()).get(PhotoViewModel.class);
+        pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
 
         fragmentManager = getParentFragmentManager();
 
@@ -117,10 +117,10 @@ public class ReviewFragment extends Fragment {
     }
 
     private void managePhoto() {
-        photoViewModel.getPhoto().observe(getViewLifecycleOwner(), photo -> {
+        pictureViewModel.getPicture().observe(getViewLifecycleOwner(), photo -> {
             if (photo.getUri() != null) {
-                photoList.add(photo);
-                adapter.updateMedia(photoList);
+                pictureList.add(photo);
+                adapter.updateMedia(pictureList);
             }
         });
     }
@@ -143,8 +143,8 @@ public class ReviewFragment extends Fragment {
     }
 
     private void configureRecyclerView() {
-        photoList = new ArrayList<>();
-        adapter = new MediaAdapter(photoList, Glide.with(this));
+        pictureList = new ArrayList<>();
+        adapter = new MediaAdapter(pictureList, Glide.with(this));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
 
@@ -153,9 +153,9 @@ public class ReviewFragment extends Fragment {
 
             builder.setTitle(getString(R.string.title_delete_media))
                     .setPositiveButton(getString(R.string.label_ok), (dialogInterface, i) -> {
-                        Photo photo = adapter.getPhoto(position);
-                        photoList.remove(photo);
-                        adapter.updateMedia(photoList);
+                        Picture picture = adapter.getPhoto(position);
+                        pictureList.remove(picture);
+                        adapter.updateMedia(pictureList);
                     })
                     .setNegativeButton(getString(R.string.label_cancel), (dialogInterface, i) -> { })
                     .show();
@@ -200,7 +200,7 @@ public class ReviewFragment extends Fragment {
         builder.setTitle(getString(R.string.title_evaluation))
                 .setMessage(getString(R.string.disclaimer_leave_appreciation))
                 .setPositiveButton(getString(R.string.label_yes), (dialogInterface, i) -> {
-                    review.setPhotoList(photoList);
+                    review.setPictureList(pictureList);
                     reviewViewModel.setEvaluation(review);
                     requireActivity().onBackPressed();
                 })

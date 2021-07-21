@@ -11,32 +11,31 @@ import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
 
 public class ReviewActivity extends AppCompatActivity {
+    public static final String KEY_USER_ID = "userId";
+
     private UserViewModel viewModel;
 
     private FragmentManager fragmentManager;
     private ReviewFragment reviewFragment;
 
-    private User user;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
 
+        userId = getIntent().getStringExtra(KEY_USER_ID);
+
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         fragmentManager = getSupportFragmentManager();
 
-        getUser();
         configureDefaultFragment();
     }
 
-    private void getUser() {
-        user = viewModel.getUser().getValue();
-    }
-
     private void configureDefaultFragment() {
-        if (reviewFragment == null) reviewFragment = ReviewFragment.newInstance(user.getId());
+        if (reviewFragment == null) reviewFragment = ReviewFragment.newInstance(userId);
 
         fragmentManager.beginTransaction()
                 .replace(R.id.mainContainer, reviewFragment)

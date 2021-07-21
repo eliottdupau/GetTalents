@@ -15,9 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/GetTalents">
-        <activity android:name=".ui.chat.ChatActivity"></activity>
+        <activity android:name=".ui.profile.UserProfileActivity"></activity>
+        <activity android:name=".ui.chat.ChatActivity" />
         <activity android:name=".ui.review.ReviewActivity" />
-        <activity android:name=".ui.profile.ProfileActivity" />
+        <activity android:name=".ui.profile.MyProfileActivity" />
         <activity android:name=".ui.favorite.FavoriteActivity" />
         <activity android:name=".ui.authentication.AuthenticationActivity" />
         <activity

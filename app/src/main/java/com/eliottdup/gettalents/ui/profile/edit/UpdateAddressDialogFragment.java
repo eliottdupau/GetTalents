@@ -86,8 +86,9 @@ public class UpdateAddressDialogFragment extends DialogFragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
-        getAddress();
-        initView();
+        setupView();
+
+        getUser();
     }
 
     @NonNull
@@ -96,9 +97,14 @@ public class UpdateAddressDialogFragment extends DialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    private void getAddress() {
-        user = viewModel.getUser().getValue();
+    private void getUser() {
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            getAddress();
+        });
+    }
 
+    private void getAddress() {
         if (user != null) {
             addresses = user.getAddresses();
 
@@ -108,14 +114,18 @@ public class UpdateAddressDialogFragment extends DialogFragment {
                 }
             }
         }
+
+        updateUI(this.address);
     }
 
-    private void initView() {
+    private void updateUI(Address address) {
         addressView.setText(address.getAddress());
         zipCodeView.setText(address.getZipCode());
         cityView.setText(address.getCity());
         countryView.setText(address.getCountry());
+    }
 
+    private void setupView() {
         addTextChangedListener(addressView);
         addTextChangedListener(zipCodeView);
         addTextChangedListener(cityView);

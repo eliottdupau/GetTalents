@@ -36,16 +36,14 @@ public class MyProfileFragment extends Fragment {
 
     private UserViewModel viewModel;
 
-    private User user;
-
     private AddressAdapter adapter;
     private List<Address> addresses;
 
     public OnButtonClickedListener callback;
 
     public interface OnButtonClickedListener {
-        void onBackButtonClicked();
-        void onEditProfileButtonClicked();
+        void onBackClicked();
+        void onEditClicked();
     }
 
     public MyProfileFragment() { }
@@ -74,6 +72,7 @@ public class MyProfileFragment extends Fragment {
         return root;
     }
 
+    // Todo() : Vérifier que le userLogged est bien récupéré à chaque fois que l'on revient sur ce fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -84,7 +83,6 @@ public class MyProfileFragment extends Fragment {
         configureRecyclerView();
 
         getUser();
-        setupView();
     }
 
     @Override
@@ -101,10 +99,10 @@ public class MyProfileFragment extends Fragment {
     private void configureToolbar() {
         toolbar.setTitle(getString(R.string.title_profile));
         toolbar.inflateMenu(R.menu.app_bar_consult_profile_menu);
-        toolbar.setNavigationOnClickListener(view -> callback.onBackButtonClicked());
+        toolbar.setNavigationOnClickListener(view -> callback.onBackClicked());
 
         toolbar.setOnMenuItemClickListener(item -> {
-            callback.onEditProfileButtonClicked();
+            callback.onEditClicked();
 
             return false;
         });
@@ -118,12 +116,13 @@ public class MyProfileFragment extends Fragment {
     }
 
     private void getUser() {
-        user = viewModel.getUser().getValue();
+        viewModel.getLoggedUser();
+        viewModel.getUser().observe(getViewLifecycleOwner(), this::updateUI);
     }
 
-    private void setupView() {
+    private void updateUI(User user) {
         Glide.with(this)
-                .load(user.getUrlProfilePicture())
+                .load(user.getProfilePicture().getUri())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
                 .into(profilePicture);
 

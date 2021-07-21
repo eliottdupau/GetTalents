@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
@@ -34,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserProfileFragment extends Fragment {
+    public static final String KEY_USER_ID = "userId";
+
     private MaterialToolbar toolbar;
     private ImageView profilePicture, favoriteIcon;
     private TextView pseudoView, addressView;
@@ -43,6 +44,7 @@ public class UserProfileFragment extends Fragment {
     private UserViewModel viewModel;
 
     private User user;
+    private String userId;
 
     private ReviewAdapter adapter;
     private List<Review> reviewList;
@@ -55,8 +57,14 @@ public class UserProfileFragment extends Fragment {
 
     public UserProfileFragment() {}
 
-    public static UserProfileFragment newInstance() {
-        return new UserProfileFragment();
+    public static UserProfileFragment newInstance(String userId) {
+        UserProfileFragment userProfileFragment = new UserProfileFragment();
+
+        Bundle args = new Bundle();
+        args.putString(KEY_USER_ID, userId);
+        userProfileFragment.setArguments(args);
+
+        return userProfileFragment;
     }
 
     @Override
@@ -86,14 +94,17 @@ public class UserProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        if (getArguments() != null) {
+            userId = getArguments().getString(KEY_USER_ID);
+        }
 
-        getUser();
+        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
         configureToolbar();
         configureRecyclerView();
-
         setupView();
+
+        getUser();
     }
 
     @Override
@@ -108,7 +119,11 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void getUser() {
-        user = viewModel.getUser().getValue();
+        viewModel.getUserById(userId);
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            updateUI(user);
+        });
     }
 
     private void configureToolbar() {
@@ -117,28 +132,17 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void configureRecyclerView() {
-        //reviewList = new ArrayList<>();
-        reviewList = user.getReviewList();
+        reviewList = new ArrayList<>();
+        //reviewList = user.getReviewList();
         adapter = new ReviewAdapter(reviewList, Glide.with(this));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void setupView() {
-        Glide.with(this)
-                .load(user.getUrlProfilePicture())
-                .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
-                .into(profilePicture);
-
-        pseudoView.setText(user.getPseudo());
-
-        Address mainAddress = user.getAddresses().get(0);
-        addressView.setText(String.format("%s, %s", mainAddress.getCity(), mainAddress.getCountry()));
-
-        updateFavoriteView(user.isInFavorite(user.getId()));
-
         evaluateButton.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), ReviewActivity.class);
+            intent.putExtra(KEY_USER_ID, userId);
             startActivity(intent);
         });
 
@@ -152,6 +156,24 @@ public class UserProfileFragment extends Fragment {
 
             updateFavoriteView(user.isInFavorite(user.getId()));
         });
+    }
+
+    private void updateUI(User user) {
+        Glide.with(this)
+                .load(user.getProfilePicture().getUri())
+                .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                .centerCrop()
+                .into(profilePicture);
+
+        pseudoView.setText(user.getPseudo());
+
+        Address mainAddress = user.getAddresses().get(0);
+        addressView.setText(String.format("%s, %s", mainAddress.getCity(), mainAddress.getCountry()));
+
+        updateFavoriteView(user.isInFavorite(user.getId()));
+
+        reviewList = user.getReviewList();
+        adapter.updateData(reviewList);
     }
 
     private void manageRelation(boolean isInFavorite) {

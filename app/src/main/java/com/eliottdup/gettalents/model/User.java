@@ -19,7 +19,8 @@ public class User implements Serializable {
     private String pseudo;
     private String mail;
     private Date birthday;
-    private String urlProfilePicture;
+    //private String urlProfilePicture;
+    private Picture profilePicture;
     private List<Address> addresses;
     private List<String> relationListId;
     private List<Review> reviewList;

@@ -11,13 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.authentication.AuthenticationActivity;
 import com.eliottdup.gettalents.ui.favorite.FavoriteActivity;
-import com.eliottdup.gettalents.ui.profile.ProfileActivity;
+import com.eliottdup.gettalents.ui.profile.MyProfileActivity;
 import com.google.android.material.card.MaterialCardView;
-
-import java.util.UUID;
 
 public class MenuFragment extends Fragment {
     private MaterialCardView profileItem, favoriteItem, logoutItem;
@@ -57,10 +54,7 @@ public class MenuFragment extends Fragment {
     private Intent getIntent(View view) {
         switch (view.getId()) {
             case R.id.cardView_profile:
-                Intent intent = new Intent(getContext(), ProfileActivity.class);
-                intent.putExtra(ProfileActivity.KEY_USER, "1");
-                //intent.putExtra(ProfileActivity.KEY_USER, UUID.randomUUID().toString());
-                return intent;
+                return new Intent(getContext(), MyProfileActivity.class);
             case R.id.cardView_favorite:
                 return new Intent(getContext(), FavoriteActivity.class);
             case R.id.cardView_logout:

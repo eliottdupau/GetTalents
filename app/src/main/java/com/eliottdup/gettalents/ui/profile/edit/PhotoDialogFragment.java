@@ -20,8 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.model.Photo;
-import com.eliottdup.gettalents.viewmodel.PhotoViewModel;
+import com.eliottdup.gettalents.model.Picture;
+import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.File;
@@ -38,9 +39,10 @@ public class PhotoDialogFragment extends DialogFragment {
 
     private MaterialButton cameraButton, mediaButton;
 
-    private PhotoViewModel viewModel;
+    private UserViewModel viewModel;
 
-    private Photo photo;
+    private User user;
+    private Picture picture;
     private String currentPhotoPath;
 
     public PhotoDialogFragment() {}
@@ -69,10 +71,11 @@ public class PhotoDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(PhotoViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
-        getPhoto();
         setupView();
+
+        getUser();
     }
 
     @NonNull
@@ -81,8 +84,11 @@ public class PhotoDialogFragment extends DialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    private void getPhoto() {
-        photo = viewModel.getPhoto().getValue();
+    private void getUser() {
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            this.picture = user.getProfilePicture();
+        });
     }
 
     private void setupView() {
@@ -127,14 +133,14 @@ public class PhotoDialogFragment extends DialogFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            photo.setUri(currentPhotoPath);
-            viewModel.setPhoto(photo);
-        }
-        else if (requestCode == RC_IMAGE_PICK && resultCode == RESULT_OK) {
-            currentPhotoPath =  data.getData().toString();
-            photo.setUri(currentPhotoPath);
-            viewModel.setPhoto(photo);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RC_IMAGE_PICK) {
+                currentPhotoPath =  data.getData().toString();
+            }
+
+            picture.setUri(currentPhotoPath);
+            user.setProfilePicture(picture);
+            viewModel.setUser(user);
         }
 
         dismiss();

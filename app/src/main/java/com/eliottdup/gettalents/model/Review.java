@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +19,12 @@ public class Review implements Serializable {
     private String userId;
     private float rating;
     private String comment;
-    private List<Photo> photoList;
+    private List<Picture> pictureList;
 
     public Review(String id) {
         this.id = id;
 
         this.comment = "";
-        this.photoList = new ArrayList<>();
+        this.pictureList = new ArrayList<>();
     }
 }

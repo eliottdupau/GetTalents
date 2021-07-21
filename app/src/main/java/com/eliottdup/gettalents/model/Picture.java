@@ -9,12 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Photo {
+public class Picture {
 
     private String id;
     private String uri;
 
-    public Photo(String id) {
+    public Picture(String id) {
         this.id = id;
     }
 }

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.model.Photo;
+import com.eliottdup.gettalents.model.Picture;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MediaAdapter extends RecyclerView.Adapter<MediaViewHolder> {
-    private List<Photo> photos;
+    private List<Picture> pictures;
     private final RequestManager glide;
 
-    public MediaAdapter(List<Photo> photos, RequestManager glide) {
-        this.photos = photos;
+    public MediaAdapter(List<Picture> pictures, RequestManager glide) {
+        this.pictures = pictures;
         this.glide = glide;
     }
 
@@ -35,20 +35,20 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MediaViewHolder holder, int position) {
-        holder.bind(photos.get(position), glide);
+        holder.bind(pictures.get(position), glide);
     }
 
     @Override
     public int getItemCount() {
-        return photos.size();
+        return pictures.size();
     }
 
-    public void updateMedia(List<Photo> photos) {
-        this.photos = photos;
+    public void updateMedia(List<Picture> pictures) {
+        this.pictures = pictures;
         notifyDataSetChanged();
     }
 
-    public Photo getPhoto(int position) {
-        return this.photos.get(position);
+    public Picture getPhoto(int position) {
+        return this.pictures.get(position);
     }
 }
