@@ -10,7 +10,8 @@
     <string name="title_other_profile">User Profile</string>
     <string name="title_my_favorite">My Favorites</string>
     <string name="title_logout">Log Out</string>
-    <string name="title_addresses">My Addresses</string>
+    <string name="title_addresses">Addresses</string>
+    <string name="title_my_addresses">My Addresses</string>
     <string name="title_address">Address</string>
     <string name="title_edit_profile">Edit Profile</string>
     <string name="title_pseudo">Pseudo</string>
@@ -23,6 +24,9 @@
     <string name="title_rate">Rate</string>
     <string name="title_comment">Comment</string>
     <string name="title_review">Review</string>
+    <string name="title_my_reviews">My Reviews</string>
+    <string name="title_relation">Relation</string>
+    <string name="title_my_relations">My Relations</string>
 
     <!-- Button Label -->
     <string name="label_save_changes">Save changes</string>
@@ -39,6 +43,7 @@
     <string name="hint_zip_code">Zip Code</string>
     <string name="hint_city">City</string>
     <string name="hint_country">Country</string>
+    <string name="hint_search_user">Search</string>
 
     <!-- Edit Text Error Message -->
     <string name="error_empty">Empty field</string>

@@ -1,4 +1,4 @@
-package com.eliottdup.gettalents.ui.profile;
+package com.eliottdup.gettalents.ui.profile.consult.other;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -6,9 +6,10 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.ui.profile.consult.UserProfileFragment;
+import com.eliottdup.gettalents.model.User;
 
 public class UserProfileActivity extends AppCompatActivity implements UserProfileFragment.OnButtonClickedListener {
+    public static final String KEY_USER_ID = "userId";
     private UserProfileFragment userProfileFragment;
 
     @Override
@@ -16,9 +17,11 @@ public class UserProfileActivity extends AppCompatActivity implements UserProfil
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        String userId = getIntent().getStringExtra(KEY_USER_ID);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        if (userProfileFragment == null) userProfileFragment = UserProfileFragment.newInstance("1");
+        if (userProfileFragment == null) userProfileFragment = UserProfileFragment.newInstance(userId);
 
         fragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, userProfileFragment)

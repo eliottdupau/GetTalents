@@ -65,22 +65,29 @@ public class UserRepository {
         return userMutableLiveData;
     }
 
+    User user = new User("1");
+    User user1 = new User("2");
+    User user2 = new User("3");
+
     // Todo() : Supprimer cette méthode et accéder au data via un appel API avec retrofit
     private void initData() {
-        User user = new User("1");
-        User user1 = new User("2");
         //User user = new User(UUID.randomUUID().toString());
         user.setPseudo("Lataupedu59");
         user1.setPseudo("Pierrelaf");
+        user2.setPseudo("MickeyMousse");
         user.setMail("rene.lataupe@gmail.com");
         user1.setMail("pierre.lafond@gmail.com");
+        user2.setMail("mickey.mousse@gmail.com");
 
         Picture picture = new Picture("0");
         Picture picture1 = new Picture("1");
+        Picture picture2 = new Picture("2");
         picture.setUri("https://torange.biz/photofxnew/76/HD/lion-profile-picture-76801.jpg");
         picture1.setUri("https://geo.img.pmdstatic.net/fit/http.3A.2F.2Fprd2-bone-image.2Es3-website-eu-west-1.2Eamazonaws.2Ecom.2FGEO.2Fvar.2Fgeo.2Fstorage.2Fimages.2Fmedia.2Fimages.2Fgirafe.2F2410391-1-fre-FR.2Fgirafe.2Ejpg/768x441/background-color/ffffff/quality/70/cinq-choses-que-vous-ne-saviez-pas-sur-la-girafe.jpg");
+        picture2.setUri("https://solution-nuisible.fr/wp-content/uploads/2020/05/souris-nuisible.jpg");
         user.setProfilePicture(picture);
         user1.setProfilePicture(picture1);
+        user2.setProfilePicture(picture2);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, 4);
@@ -88,16 +95,19 @@ public class UserRepository {
         calendar.set(Calendar.YEAR, 1996);
         user.setBirthday(calendar.getTime());
         user1.setBirthday(calendar.getTime());
+        user2.setBirthday(calendar.getTime());
 
         addAddress(user);
         addAddress(user1);
+        addAddress(user2);
         addRelation(user);
-        addRelation(user1);
         addReview(user);
         addReview(user1);
+        addReview(user2);
 
         userList.add(user);
         userList.add(user1);
+        userList.add(user2);
     }
 
     private void addAddress(User user) {
@@ -129,21 +139,19 @@ public class UserRepository {
     }
 
     private void addRelation(User user) {
-        List<String> relationsId = new ArrayList<>();
-        String relationId1 = user.getId();
-        String relationId2 = UUID.randomUUID().toString();
+        List<User> relationList = new ArrayList<>();
 
-        relationsId.add(relationId1);
-        relationsId.add(relationId2);
+        relationList.add(user1);
+        relationList.add(user2);
 
-        user.setRelationListId(relationsId);
+        user.setRelationList(relationList);
     }
 
     private void addReview(User user) {
         List<Review> reviewList = new ArrayList<>();
 
         Review review = new Review(UUID.randomUUID().toString());
-        review.setComment("My fabulous comment");
+        review.setComment("My fabulous comment, Lorem ipsum et colores templum pli plo plo plorum plis plis");
         review.setRating(1.5f);
 
         Review review2 = new Review(UUID.randomUUID().toString());

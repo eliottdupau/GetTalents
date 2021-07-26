@@ -1,7 +1,6 @@
 package com.eliottdup.gettalents.adapter.review;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,14 @@ import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
+    private User user;
     private List<Review> reviewList;
-    private RequestManager glide;
+    private final RequestManager glide;
 
     public ReviewAdapter(List<Review> reviewList, RequestManager glide) {
         this.reviewList = reviewList;
@@ -38,7 +37,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
-        holder.bind(reviewList.get(position), glide);
+        holder.bind(user, reviewList.get(position), glide);
     }
 
     @Override
@@ -46,7 +45,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
         return reviewList.size();
     }
 
-    public void updateData(List<Review> reviewList) {
+    public void updateData(User user, List<Review> reviewList) {
+        this.user = user;
         this.reviewList = reviewList;
         notifyDataSetChanged();
     }

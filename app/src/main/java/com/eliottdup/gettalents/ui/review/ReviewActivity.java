@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
 
 public class ReviewActivity extends AppCompatActivity {

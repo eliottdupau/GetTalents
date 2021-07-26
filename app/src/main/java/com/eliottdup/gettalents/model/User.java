@@ -19,17 +19,16 @@ public class User implements Serializable {
     private String pseudo;
     private String mail;
     private Date birthday;
-    //private String urlProfilePicture;
     private Picture profilePicture;
     private List<Address> addresses;
-    private List<String> relationListId;
+    private List<User> relationList;
     private List<Review> reviewList;
 
     public User(String id) {
         this.id = id;
     }
 
-    public boolean isInFavorite(String userId) {
+    /*public boolean isInFavorite(String userId) {
         boolean inFavorite = false;
 
         if (!relationListId.isEmpty()) {
@@ -42,5 +41,5 @@ public class User implements Serializable {
         }
 
         return inFavorite;
-    }
+    }*/
 }

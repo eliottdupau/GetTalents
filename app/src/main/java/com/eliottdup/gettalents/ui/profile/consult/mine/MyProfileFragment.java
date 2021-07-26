@@ -1,14 +1,13 @@
-package com.eliottdup.gettalents.ui.profile.consult;
+package com.eliottdup.gettalents.ui.profile.consult.mine;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,33 +17,19 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.adapter.address.AddressAdapter;
-import com.eliottdup.gettalents.model.Address;
+import com.eliottdup.gettalents.adapter.profile.MyProfilePagerAdapter;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
-import com.google.android.material.appbar.MaterialToolbar;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.material.tabs.TabLayout;
 
 public class MyProfileFragment extends Fragment {
-    private MaterialToolbar toolbar;
     private ImageView profilePicture;
     private TextView pseudoView, birthdayView, mailView;
-    private RecyclerView recyclerView;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
 
     private UserViewModel viewModel;
-
-    private AddressAdapter adapter;
-    private List<Address> addresses;
-
-    public OnButtonClickedListener callback;
-
-    public interface OnButtonClickedListener {
-        void onBackClicked();
-        void onEditClicked();
-    }
 
     public MyProfileFragment() { }
 
@@ -62,12 +47,12 @@ public class MyProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_my_profile, container, false);
 
-        toolbar = root.findViewById(R.id.topAppBar);
         profilePicture = root.findViewById(R.id.icon_profilePicture);
         pseudoView = root.findViewById(R.id.textView_pseudo);
         birthdayView = root.findViewById(R.id.textView_birthday);
         mailView = root.findViewById(R.id.textView_mail);
-        recyclerView = root.findViewById(R.id.recyclerView_address);
+        viewPager = root.findViewById(R.id.viewPager);
+        tabLayout = root.findViewById(R.id.tabLayout);
 
         return root;
     }
@@ -79,40 +64,24 @@ public class MyProfileFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
-        configureToolbar();
-        configureRecyclerView();
+        configureViewPager();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         getUser();
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+    private void configureViewPager() {
+        MyProfilePagerAdapter pagerAdapter = new MyProfilePagerAdapter(getParentFragmentManager(),
+                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
+                getContext(),
+                false);
 
-        this.createCallbackToParentActivity();
-    }
-
-    private void createCallbackToParentActivity() {
-        callback = (OnButtonClickedListener) getActivity();
-    }
-
-    private void configureToolbar() {
-        toolbar.setTitle(getString(R.string.title_profile));
-        toolbar.inflateMenu(R.menu.app_bar_consult_profile_menu);
-        toolbar.setNavigationOnClickListener(view -> callback.onBackClicked());
-
-        toolbar.setOnMenuItemClickListener(item -> {
-            callback.onEditClicked();
-
-            return false;
-        });
-    }
-
-    private void configureRecyclerView() {
-        addresses = new ArrayList<>();
-        adapter = new AddressAdapter(addresses, R.layout.item_address);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        viewPager.setAdapter(pagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     private void getUser() {
@@ -130,8 +99,5 @@ public class MyProfileFragment extends Fragment {
         mailView.setText(user.getMail());
 
         birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
-
-        addresses = user.getAddresses();
-        adapter.updateData(addresses);
     }
 }

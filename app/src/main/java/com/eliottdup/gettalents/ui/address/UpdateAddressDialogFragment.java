@@ -1,4 +1,4 @@
-package com.eliottdup.gettalents.ui.profile.edit;
+package com.eliottdup.gettalents.ui.address;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;

@@ -27,12 +27,12 @@ public class ReviewViewHolder extends RecyclerView.ViewHolder {
         profilePictureView = itemView.findViewById(R.id.imageView_profilePicture);
     }
 
-    public void bind(Review review, RequestManager glide) {
+    public void bind(User user, Review review, RequestManager glide) {
         commentView.setText(review.getComment());
         ratingView.setText(String.format("%s", review.getRating()));
-        pseudoView.setText("SuperBebe");
+        pseudoView.setText(user.getPseudo());
 
-        glide.load("https://torange.biz/photofxnew/76/HD/lion-profile-picture-76801.jpg")
+        glide.load(user.getProfilePicture().getUri())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
                 .into(profilePictureView);
     }

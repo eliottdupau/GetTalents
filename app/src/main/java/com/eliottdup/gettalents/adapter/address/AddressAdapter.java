@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Address;
 
 import java.util.List;
@@ -14,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressViewHolder> {
     private List<Address> addresses;
-    private final int layoutId;
+    private boolean isEditable;
 
-    public AddressAdapter(List<Address> addresses, int layoutId) {
+    public AddressAdapter(List<Address> addresses, boolean isEditable) {
         this.addresses = addresses;
-        this.layoutId = layoutId;
+        this.isEditable = isEditable;
     }
 
     @NonNull
@@ -26,14 +27,14 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressViewHolder> {
     public AddressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(layoutId, parent, false);
+        View view = inflater.inflate(R.layout.item_edit_address, parent, false);
 
         return new AddressViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AddressViewHolder holder, int position) {
-        holder.bind(this.addresses.get(position));
+        holder.bind(this.addresses.get(position), isEditable);
     }
 
     @Override
