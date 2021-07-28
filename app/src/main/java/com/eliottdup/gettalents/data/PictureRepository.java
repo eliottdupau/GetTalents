@@ -12,11 +12,11 @@ public class PictureRepository {
     public PictureRepository() {}
 
     // Todo() : Mettre à jour la méthode une fois le back créé
-    public MutableLiveData<Picture> uploadPicture(Picture picture) {
+    public MutableLiveData<Picture> createPicture(Picture picture) {
         MutableLiveData<Picture> pictureMutableLiveData = new MutableLiveData<>();
 
         pictureMutableLiveData.setValue(picture);
-        Log.d("Picture", "Upload -> success");
+        Log.d("HTTP 201", "Create Picture -> success");
 
         return pictureMutableLiveData;
     }

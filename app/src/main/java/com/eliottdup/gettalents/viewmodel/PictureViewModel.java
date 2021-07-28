@@ -31,7 +31,7 @@ public class PictureViewModel extends AndroidViewModel {
         return this.picture;
     }
 
-    public void uploadPicture(Picture picture) {
-        this.picture = pictureRepository.uploadPicture(picture);
+    public void createPicture(Picture picture) {
+        this.picture = pictureRepository.createPicture(picture);
     }
 }

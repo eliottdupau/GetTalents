@@ -21,8 +21,7 @@ import android.view.ViewGroup;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Picture;
-import com.eliottdup.gettalents.model.User;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
+import com.eliottdup.gettalents.viewmodel.PictureViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.File;
@@ -30,6 +29,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -39,9 +39,8 @@ public class PhotoDialogFragment extends DialogFragment {
 
     private MaterialButton cameraButton, mediaButton;
 
-    private UserViewModel viewModel;
+    private PictureViewModel viewModel;
 
-    private User user;
     private Picture picture;
     private String currentPhotoPath;
 
@@ -71,24 +70,17 @@ public class PhotoDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
 
         setupView();
 
-        getUser();
+        picture = new Picture(UUID.randomUUID().toString());
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         return super.onCreateDialog(savedInstanceState);
-    }
-
-    private void getUser() {
-        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            this.user = user;
-            this.picture = user.getProfilePicture();
-        });
     }
 
     private void setupView() {
@@ -139,8 +131,7 @@ public class PhotoDialogFragment extends DialogFragment {
             }
 
             picture.setUri(currentPhotoPath);
-            user.setProfilePicture(picture);
-            viewModel.setUser(user);
+            viewModel.setPicture(picture);
         }
 
         dismiss();

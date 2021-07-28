@@ -32,7 +32,7 @@ public class UserRepository {
         for (User user : userList) {
             if (user.getId().equals(id)) {
                 userMutableLiveData.setValue(user);
-                Log.d("HTTP 200", "Get User -> success");
+                Log.d("HTTP 200", "Get User by Id -> success");
                 break;
             }
         }
@@ -58,7 +58,7 @@ public class UserRepository {
             if (userList.get(i).getId().equals(id)) {
                 userList.set(i, user);
                 userMutableLiveData.setValue(user);
-                Log.d("HTTP 201", "Update User -> success");
+                Log.d("HTTP 204", "Update User -> success");
                 break;
             }
         }

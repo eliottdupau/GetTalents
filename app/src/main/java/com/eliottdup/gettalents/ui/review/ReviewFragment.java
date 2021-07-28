@@ -24,7 +24,6 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.adapter.media.MediaAdapter;
 import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.Picture;
-import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.profile.edit.PhotoDialogFragment;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.eliottdup.gettalents.viewmodel.ReviewViewModel;
@@ -102,16 +101,14 @@ public class ReviewFragment extends Fragment {
     }
 
     private void getEvaluation() {
-        review = reviewViewModel.getEvaluation().getValue();
+        review = reviewViewModel.getReview().getValue();
 
         getUser();
     }
 
     private void getUser() {
         userViewModel.getLoggedUser();
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            review.setUser(user);
-        });
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> review.setUser(user));
     }
 
     private void managePhoto() {
@@ -192,6 +189,7 @@ public class ReviewFragment extends Fragment {
         return input.isEmpty() || input.length() > 200;
     }
 
+    // Todo() : Upload la/les photo sur le serveur de stockage des photos
     private void showValidationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -199,7 +197,7 @@ public class ReviewFragment extends Fragment {
                 .setMessage(getString(R.string.disclaimer_leave_appreciation))
                 .setPositiveButton(getString(R.string.label_yes), (dialogInterface, i) -> {
                     review.setPictureList(pictureList);
-                    reviewViewModel.setEvaluation(review);
+                    reviewViewModel.createReview(review);
                     requireActivity().onBackPressed();
                 })
                 .setNegativeButton(getString(R.string.label_cancel), (dialogInterface, i) -> {})

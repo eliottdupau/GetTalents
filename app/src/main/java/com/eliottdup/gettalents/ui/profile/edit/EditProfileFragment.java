@@ -73,6 +73,7 @@ public class EditProfileFragment extends Fragment {
 
         setupView();
         getUser();
+        getProfilePicture();
     }
 
     private void setupView() {
@@ -101,6 +102,17 @@ public class EditProfileFragment extends Fragment {
         });
     }
 
+    private void getProfilePicture() {
+        pictureViewModel.getPicture().observe(getViewLifecycleOwner(), picture -> {
+            this.user.setProfilePicture(picture);
+
+            Glide.with(this)
+                    .load(picture.getUri())
+                    .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                    .into(profilePicture);
+        });
+    }
+
     private void updateUI(User user) {
         Glide.with(this)
                 .load(user.getProfilePicture().getUri())
@@ -116,9 +128,9 @@ public class EditProfileFragment extends Fragment {
     public void updateUser() {
         userViewModel.updateUser(user.getId(), user);
 
-        // Todo() : Upload la photo sur le serveur de stockage des photos
+        // Todo() : Upload la/les photo sur le serveur de stockage des photos
         if (!oldUri.equals(user.getProfilePicture().getUri())) {
-            pictureViewModel.uploadPicture(user.getProfilePicture());
+            pictureViewModel.createPicture(user.getProfilePicture());
         }
     }
 }
