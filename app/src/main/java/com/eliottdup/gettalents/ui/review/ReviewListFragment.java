@@ -75,6 +75,6 @@ public class ReviewListFragment extends Fragment {
 
     private void updateUI(User user) {
         reviewList = user.getReviewList();
-        adapter.updateData(user, reviewList);
+        adapter.updateData(reviewList);
     }
 }

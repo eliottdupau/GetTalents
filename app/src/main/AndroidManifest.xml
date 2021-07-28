@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/GetTalents">
-        <activity android:name=".ui.profile.edit.EditProfileActivity"></activity>
+        <activity android:name=".ui.picture.PictureActivity"></activity>
+        <activity android:name=".ui.profile.edit.EditProfileActivity" />
         <activity android:name=".ui.relation.RelationActivity" />
         <activity android:name=".ui.review.ReviewListActivity" />
         <activity android:name=".ui.address.AddressActivity" />

@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +19,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.adapter.review.ReviewAdapter;
 import com.eliottdup.gettalents.model.Address;
+import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.chat.ChatActivity;
 import com.eliottdup.gettalents.ui.review.ReviewActivity;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserProfileFragment extends Fragment {
     public static final String KEY_USER_ID = "userId";
@@ -32,15 +39,15 @@ public class UserProfileFragment extends Fragment {
     private ImageView profilePicture, favoriteIcon;
     private TextView pseudoView, addressView;
     private MaterialCardView evaluateButton, chatButton, favoriteButton;
-    //private RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     private UserViewModel viewModel;
 
     private User user;
     private String userId;
 
-    /*private ReviewAdapter adapter;
-    private List<Review> reviewList;*/
+    private ReviewAdapter adapter;
+    private List<Review> reviewList;
 
     public OnButtonClickedListener callback;
 
@@ -77,8 +84,7 @@ public class UserProfileFragment extends Fragment {
         evaluateButton = root.findViewById(R.id.container_evaluation);
         chatButton = root.findViewById(R.id.container_chat);
         favoriteButton = root.findViewById(R.id.container_favorite);
-        favoriteIcon = root.findViewById(R.id.icon_favorite);
-        //recyclerView = root.findViewById(R.id.recyclerView_review);
+        favoriteIcon = root.findViewById(R.id.icon_favorite);recyclerView = root.findViewById(R.id.recyclerView_review);
 
         return root;
     }
@@ -94,7 +100,7 @@ public class UserProfileFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
         configureToolbar();
-        //configureRecyclerView();
+        configureRecyclerView();
         setupView();
 
         getUser();
@@ -124,18 +130,16 @@ public class UserProfileFragment extends Fragment {
         toolbar.setNavigationOnClickListener(view -> callback.onBackButtonClicked());
     }
 
-    /*private void configureRecyclerView() {
+    private void configureRecyclerView() {
         reviewList = new ArrayList<>();
-        //reviewList = user.getReviewList();
         adapter = new ReviewAdapter(reviewList, Glide.with(this));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    }*/
+    }
 
     private void setupView() {
         evaluateButton.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), ReviewActivity.class);
-            intent.putExtra(KEY_USER_ID, userId);
             startActivity(intent);
         });
 
@@ -145,9 +149,9 @@ public class UserProfileFragment extends Fragment {
         });
 
         favoriteButton.setOnClickListener(view -> {
-            /*manageRelation(user.isInFavorite(user.getId()));
+            manageRelation(user.isInFavorite(user.getId()));
 
-            updateFavoriteView(user.isInFavorite(user.getId()));*/
+            updateFavoriteView(user.isInFavorite(user.getId()));
         });
     }
 
@@ -163,16 +167,16 @@ public class UserProfileFragment extends Fragment {
         Address mainAddress = user.getAddresses().get(0);
         addressView.setText(String.format("%s, %s", mainAddress.getCity(), mainAddress.getCountry()));
 
-        //updateFavoriteView(user.isInFavorite(user.getId()));
+        updateFavoriteView(user.isInFavorite(user.getId()));
 
-        /*reviewList = user.getReviewList();
-        adapter.updateData(reviewList);*/
+        reviewList = user.getReviewList();
+        adapter.updateData(reviewList);
     }
 
-    /*private void manageRelation(boolean isInFavorite) {
-        if (isInFavorite) user.getRelationListId().remove(user.getId());
-        else user.getRelationListId().add(user.getId());
-    }*/
+    private void manageRelation(boolean isInFavorite) {
+        if (isInFavorite) user.getRelationList().remove(user);
+        else user.getRelationList().add(user);
+    }
 
     private void updateFavoriteView(boolean isInFavorite) {
         Glide.with(this)

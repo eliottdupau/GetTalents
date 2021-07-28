@@ -26,8 +26,6 @@ import com.google.android.material.tabs.TabLayout;
 public class MyProfileFragment extends Fragment {
     private ImageView profilePicture;
     private TextView pseudoView, birthdayView, mailView;
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
 
     private UserViewModel viewModel;
 
@@ -51,20 +49,15 @@ public class MyProfileFragment extends Fragment {
         pseudoView = root.findViewById(R.id.textView_pseudo);
         birthdayView = root.findViewById(R.id.textView_birthday);
         mailView = root.findViewById(R.id.textView_mail);
-        viewPager = root.findViewById(R.id.viewPager);
-        tabLayout = root.findViewById(R.id.tabLayout);
 
         return root;
     }
 
-    // Todo() : Vérifier que le userLogged est bien récupéré à chaque fois que l'on revient sur ce fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-
-        configureViewPager();
     }
 
     @Override
@@ -72,16 +65,6 @@ public class MyProfileFragment extends Fragment {
         super.onResume();
 
         getUser();
-    }
-
-    private void configureViewPager() {
-        MyProfilePagerAdapter pagerAdapter = new MyProfilePagerAdapter(getParentFragmentManager(),
-                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
-                getContext(),
-                false);
-
-        viewPager.setAdapter(pagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
     }
 
     private void getUser() {

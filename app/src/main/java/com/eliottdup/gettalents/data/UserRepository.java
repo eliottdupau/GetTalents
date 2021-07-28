@@ -9,6 +9,7 @@ import com.eliottdup.gettalents.model.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -100,7 +101,7 @@ public class UserRepository {
         addAddress(user);
         addAddress(user1);
         addAddress(user2);
-        addRelation(user);
+        addRelation();
         addReview(user);
         addReview(user1);
         addReview(user2);
@@ -138,28 +139,68 @@ public class UserRepository {
         user.setAddresses(addresses);
     }
 
-    private void addRelation(User user) {
+    private void addRelation() {
         List<User> relationList = new ArrayList<>();
+        List<User> relationList1 = new ArrayList<>();
+        List<User> relationList2 = new ArrayList<>();
 
-        relationList.add(user1);
         relationList.add(user2);
 
+        relationList1.add(user1);
+        relationList1.add(user2);
+
+        relationList2.add(user);
+        relationList2.add(user1);
+
         user.setRelationList(relationList);
+        user1.setRelationList(relationList1);
+        user2.setRelationList(relationList2);
     }
 
     private void addReview(User user) {
         List<Review> reviewList = new ArrayList<>();
 
+        List<Picture> pictureList = new ArrayList<>();
+        Picture picture = new Picture("0");
+        Picture picture1 = new Picture("1");
+        Picture picture2 = new Picture("2");
+        picture.setUri("https://blog.batimat.com/wp-content/uploads/2020/07/imprevus-chantier.jpg");
+        picture1.setUri("https://www.planradar.com/wp-content/uploads/2020/09/Lean-management-methoden.jpg.webp");
+        picture2.setUri("https://lvdneng.rosselcdn.net/sites/default/files/dpistyles_v2/ena_16_9_extra_big/2020/08/13/node_851416/48606827/public/2020/08/13/B9724278088Z.1_20200813195311_000%2BG6OGG05RN.2-0.jpg?itok=zZj9l35Q1597341227");
+        pictureList.add(picture);
+        pictureList.add(picture1);
+        pictureList.add(picture2);
+
         Review review = new Review(UUID.randomUUID().toString());
+        review.setUser(user1);
         review.setComment("My fabulous comment, Lorem ipsum et colores templum pli plo plo plorum plis plis");
         review.setRating(1.5f);
+        review.setPictureList(pictureList);
+        review.setPublicationDate(new Date());
+
 
         Review review2 = new Review(UUID.randomUUID().toString());
+        review2.setUser(user2);
         review2.setComment("Another wonderful review from myself");
         review2.setRating(4.0f);
+        review2.setPublicationDate(new Date());
+
+        Review review3 = new Review(UUID.randomUUID().toString());
+        review3.setUser(user2);
+        review3.setComment("Another wonderful review from myself");
+        review3.setRating(3.0f);
+        review3.setPublicationDate(new Date());
+
+        Review review4 = new Review(UUID.randomUUID().toString());
+        review4.setUser(user1);
+        review4.setComment("Another wonderful review from myself");
+        review4.setRating(1.0f);
+        review4.setPublicationDate(new Date());
 
         reviewList.add(review);
         reviewList.add(review2);
+        reviewList.add(review3);
+        reviewList.add(review4);
 
         user.setReviewList(reviewList);
     }

@@ -28,12 +28,13 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    /*public boolean isInFavorite(String userId) {
+    // Todo() : Vérifier la fonction des favoris
+    public boolean isInFavorite(String userId) {
         boolean inFavorite = false;
 
-        if (!relationListId.isEmpty()) {
-            for (String relationId : relationListId) {
-                if (relationId.equals(userId)) {
+        if (!relationList.isEmpty()) {
+            for (User user : relationList) {
+                if (user.getId().equals(userId)) {
                     inFavorite = true;
                     break;
                 }
@@ -41,5 +42,5 @@ public class User implements Serializable {
         }
 
         return inFavorite;
-    }*/
+    }
 }

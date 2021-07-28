@@ -8,7 +8,7 @@
         <item name="android:windowBackground">@color/colorWindowBackground</item>
         <item name="android:textColor">@color/colorText</item>
     </style>
-    
+
     <!-- Menu Item -->
 
     <style name="GetTalents.MenuItem" parent="Widget.MaterialComponents.CardView">
@@ -55,6 +55,15 @@
         <item name="cornerSizeTopLeft">0dp</item>
         <item name="cornerSizeBottomRight">12dp</item>
         <item name="cornerSizeBottomLeft">12dp</item>
+    </style>
+
+    <style name="Widget.GetTalents.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="Widget.GetTalents.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
 
 </resources>

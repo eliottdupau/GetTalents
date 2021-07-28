@@ -2,6 +2,7 @@ package com.eliottdup.gettalents.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -16,10 +17,11 @@ import lombok.Setter;
 public class Review implements Serializable {
 
     private String id;
-    private String userId;
+    private User user;
     private float rating;
     private String comment;
     private List<Picture> pictureList;
+    private Date publicationDate;
 
     public Review(String id) {
         this.id = id;

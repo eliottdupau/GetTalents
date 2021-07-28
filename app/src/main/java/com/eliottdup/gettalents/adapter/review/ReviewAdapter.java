@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import com.bumptech.glide.RequestManager;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Review;
-import com.eliottdup.gettalents.model.User;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
-    private User user;
+    private Context context;
     private List<Review> reviewList;
     private final RequestManager glide;
 
@@ -28,7 +27,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
     @NonNull
     @Override
     public ReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_review, parent, false);
 
@@ -37,7 +36,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
-        holder.bind(user, reviewList.get(position), glide);
+        holder.bind(context, reviewList.get(position), glide);
     }
 
     @Override
@@ -45,8 +44,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
         return reviewList.size();
     }
 
-    public void updateData(User user, List<Review> reviewList) {
-        this.user = user;
+    public void updateData(List<Review> reviewList) {
         this.reviewList = reviewList;
         notifyDataSetChanged();
     }

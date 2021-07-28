@@ -24,10 +24,12 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.adapter.media.MediaAdapter;
 import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.Picture;
+import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.profile.edit.PhotoDialogFragment;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.eliottdup.gettalents.viewmodel.ReviewViewModel;
 import com.eliottdup.gettalents.viewmodel.PictureViewModel;
+import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -37,8 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewFragment extends Fragment {
-    private final static String KEY_USER_ID = "userId";
-
     private MaterialToolbar toolbar;
     private RatingBar ratingBar;
     private TextInputLayout commentLayout;
@@ -47,26 +47,20 @@ public class ReviewFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private ReviewViewModel reviewViewModel;
+    private UserViewModel userViewModel;
     private PictureViewModel pictureViewModel;
 
     private FragmentManager fragmentManager;
 
     private Review review;
-    private String userId;
 
     private MediaAdapter adapter;
     private List<Picture> pictureList;
 
     public ReviewFragment() {}
 
-    public static ReviewFragment newInstance(String userId) {
-        ReviewFragment reviewFragment = new ReviewFragment();
-
-        Bundle args = new Bundle();
-        args.putString(KEY_USER_ID, userId);
-        reviewFragment.setArguments(args);
-
-        return reviewFragment;
+    public static ReviewFragment newInstance() {
+        return new ReviewFragment();
     }
 
     @Override
@@ -93,11 +87,8 @@ public class ReviewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getArguments() != null) {
-            userId = getArguments().getString(KEY_USER_ID);
-        }
-
         reviewViewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
 
         fragmentManager = getParentFragmentManager();
@@ -113,7 +104,14 @@ public class ReviewFragment extends Fragment {
     private void getEvaluation() {
         review = reviewViewModel.getEvaluation().getValue();
 
-        if (review != null) review.setUserId(userId);
+        getUser();
+    }
+
+    private void getUser() {
+        userViewModel.getLoggedUser();
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            review.setUser(user);
+        });
     }
 
     private void managePhoto() {

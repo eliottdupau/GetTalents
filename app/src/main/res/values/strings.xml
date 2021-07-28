@@ -23,6 +23,8 @@
     <string name="title_favorite">Favorite</string>
     <string name="title_rate">Rate</string>
     <string name="title_comment">Comment</string>
+    <string name="title_reply">Reply</string>
+    <string name="title_report">Report</string>
     <string name="title_review">Review</string>
     <string name="title_my_reviews">My Reviews</string>
     <string name="title_relation">Relation</string>
@@ -61,5 +63,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>
