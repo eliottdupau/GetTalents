@@ -19,10 +19,28 @@ public class User implements Serializable {
     private String pseudo;
     private String mail;
     private Date birthday;
-    private String urlProfilePicture;
+    private Picture profilePicture;
     private List<Address> addresses;
+    private List<User> relationList;
+    private List<Review> reviewList;
 
     public User(String id) {
         this.id = id;
+    }
+
+    // Todo() : Vérifier la fonction des favoris
+    public boolean isInFavorite(String userId) {
+        boolean inFavorite = false;
+
+        if (!relationList.isEmpty()) {
+            for (User user : relationList) {
+                if (user.getId().equals(userId)) {
+                    inFavorite = true;
+                    break;
+                }
+            }
+        }
+
+        return inFavorite;
     }
 }

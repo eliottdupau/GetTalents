@@ -29,6 +29,7 @@ public class PseudoDialogFragment extends DialogFragment {
     private UserViewModel viewModel;
 
     private User user;
+    private String pseudo = "";
 
     public PseudoDialogFragment() { }
 
@@ -61,7 +62,6 @@ public class PseudoDialogFragment extends DialogFragment {
         viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
         getUser();
-        setupView();
     }
 
     @NonNull
@@ -71,11 +71,15 @@ public class PseudoDialogFragment extends DialogFragment {
     }
 
     private void getUser() {
-        user = viewModel.getUser().getValue();
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            setupView();
+        });
     }
 
     private void setupView() {
-        pseudoView.setText(user.getPseudo());
+        pseudo = user.getPseudo();
+        pseudoView.setText(pseudo);
 
         pseudoView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -83,7 +87,7 @@ public class PseudoDialogFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence input, int i, int i1, int i2) {
-                user.setPseudo(input.toString().trim());
+                pseudo = input.toString().trim();
 
                 if (pseudoLayout.getError() != null) pseudoLayout.setError(null);
             }
@@ -93,7 +97,8 @@ public class PseudoDialogFragment extends DialogFragment {
         });
 
         positiveButton.setOnClickListener(view -> {
-            if (user.getPseudo().length() > 0) {
+            if (pseudo.length() > 0) {
+                user.setPseudo(pseudo);
                 viewModel.setUser(user);
                 dismiss();
             } else {

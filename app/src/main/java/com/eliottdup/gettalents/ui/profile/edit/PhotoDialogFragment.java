@@ -1,24 +1,35 @@
 package com.eliottdup.gettalents.ui.profile.edit;
 
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.model.Picture;
+import com.eliottdup.gettalents.viewmodel.PictureViewModel;
 import com.google.android.material.button.MaterialButton;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -27,6 +38,11 @@ public class PhotoDialogFragment extends DialogFragment {
     private static final int RC_IMAGE_PICK = 2;
 
     private MaterialButton cameraButton, mediaButton;
+
+    private PictureViewModel viewModel;
+
+    private Picture picture;
+    private String currentPhotoPath;
 
     public PhotoDialogFragment() {}
 
@@ -54,7 +70,11 @@ public class PhotoDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initView();
+        viewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
+
+        setupView();
+
+        picture = new Picture(UUID.randomUUID().toString());
     }
 
     @NonNull
@@ -63,15 +83,8 @@ public class PhotoDialogFragment extends DialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    private void initView() {
-        cameraButton.setOnClickListener(view -> {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            try {
-                startActivityForResult(takePictureIntent, RC_IMAGE_CAPTURE);
-            } catch (ActivityNotFoundException e) {
-                Toast.makeText(getContext(), "No Camera to display", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void setupView() {
+        cameraButton.setOnClickListener(view -> dispatchTakePictureIntent(getContext()));
 
         mediaButton.setOnClickListener(view -> {
             Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -79,17 +92,48 @@ public class PhotoDialogFragment extends DialogFragment {
         });
     }
 
+    private void dispatchTakePictureIntent(Context context) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File photoFile = null;
+        try {
+            photoFile = createImageFile(context);
+        } catch (IOException ex) {
+            Log.e("photoFile", ex.getMessage());
+        }
+        if (photoFile != null) {
+            Uri photoURI = FileProvider.getUriForFile(context,
+                    "com.example.android.fileprovider",
+                    photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(takePictureIntent, RC_IMAGE_CAPTURE);
+        }
+    }
+
+    private File createImageFile(Context context) throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.FRENCH).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap bitmap = (Bitmap) extras.get("data");
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RC_IMAGE_PICK) {
+                currentPhotoPath =  data.getData().toString();
+            }
 
-            Toast.makeText(getContext(), "" + bitmap.toString(), Toast.LENGTH_SHORT).show();
-        } else if (requestCode == RC_IMAGE_PICK && resultCode == RESULT_OK) {
-            Uri selectedImage =  data.getData();
-
-            Toast.makeText(getContext(), "" + selectedImage.toString(), Toast.LENGTH_SHORT).show();
+            picture.setUri(currentPhotoPath);
+            viewModel.setPicture(picture);
         }
+
+        dismiss();
     }
 }

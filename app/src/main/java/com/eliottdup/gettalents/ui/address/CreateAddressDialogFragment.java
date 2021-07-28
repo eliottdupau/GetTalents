@@ -1,4 +1,4 @@
-package com.eliottdup.gettalents.ui.profile.edit;
+package com.eliottdup.gettalents.ui.address;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -74,8 +74,9 @@ public class CreateAddressDialogFragment extends DialogFragment {
 
         address = new Address(UUID.randomUUID().toString());
 
+        setupView();
+
         getUser();
-        initView();
     }
 
     @NonNull
@@ -85,10 +86,10 @@ public class CreateAddressDialogFragment extends DialogFragment {
     }
 
     private void getUser() {
-        user = viewModel.getUser().getValue();
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> this.user = user);
     }
 
-    private void initView() {
+    private void setupView() {
         addTextChangedListener(addressView);
         addTextChangedListener(zipCodeView);
         addTextChangedListener(cityView);

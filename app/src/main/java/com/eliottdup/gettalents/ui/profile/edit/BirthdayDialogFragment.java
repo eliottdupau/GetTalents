@@ -51,8 +51,9 @@ public class BirthdayDialogFragment extends DialogFragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
-        getUser();
         setupView();
+
+        getUser();
 
         return root;
     }
@@ -64,7 +65,10 @@ public class BirthdayDialogFragment extends DialogFragment {
     }
 
     private void getUser() {
-        user = viewModel.getUser().getValue();
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            updateUI(user);
+        });
     }
 
     private void setupView() {
@@ -77,7 +81,9 @@ public class BirthdayDialogFragment extends DialogFragment {
         });
 
         negativeButton.setOnClickListener(view -> dismiss());
+    }
 
+    private void updateUI(User user) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(user.getBirthday());
         datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
