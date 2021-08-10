@@ -10,9 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.Category;
-import com.eliottdup.gettalents.ui.profile.consult.AddressViewHolder;
 
 import java.util.List;
 
