@@ -8,7 +8,8 @@ import android.os.Bundle;
 import com.eliottdup.gettalents.R;
 
 public class ReviewActivity extends AppCompatActivity {
-    private FragmentManager fragmentManager;
+    public static final String KEY_USER_ID = "userId";
+
     private ReviewFragment reviewFragment;
 
     @Override
@@ -16,16 +17,14 @@ public class ReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
 
-        fragmentManager = getSupportFragmentManager();
+        int userId = getIntent().getIntExtra(KEY_USER_ID, -1);
 
-        configureDefaultFragment();
-    }
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
-    private void configureDefaultFragment() {
-        if (reviewFragment == null) reviewFragment = ReviewFragment.newInstance();
+        if (reviewFragment == null) reviewFragment = ReviewFragment.newInstance(userId);
 
         fragmentManager.beginTransaction()
-                .replace(R.id.mainContainer, reviewFragment)
+                .replace(R.id.fragmentContainer, reviewFragment)
                 .commit();
     }
 }

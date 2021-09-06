@@ -20,7 +20,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Picture picture, RequestManager glide) {
-        glide.load(picture.getUri())
+        glide.load(picture.getPath())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
                 .centerCrop()
                 .into(photoView);

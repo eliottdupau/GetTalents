@@ -16,7 +16,7 @@ import android.widget.DatePicker;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.DateUtils;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
+import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.Calendar;
@@ -25,7 +25,7 @@ public class BirthdayDialogFragment extends DialogFragment {
     private DatePicker datePicker;
     private MaterialButton positiveButton, negativeButton;
 
-    private UserViewModel viewModel;
+    private EditProfileViewModel viewModel;
 
     private User user;
 
@@ -49,7 +49,7 @@ public class BirthdayDialogFragment extends DialogFragment {
         positiveButton = root.findViewById(R.id.button_save);
         negativeButton = root.findViewById(R.id.button_cancel);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(EditProfileViewModel.class);
 
         setupView();
 
@@ -65,9 +65,9 @@ public class BirthdayDialogFragment extends DialogFragment {
     }
 
     private void getUser() {
-        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+        viewModel.user.observe(getViewLifecycleOwner(), user -> {
             this.user = user;
-            updateUI(user);
+            updateUI(this.user);
         });
     }
 
@@ -75,8 +75,8 @@ public class BirthdayDialogFragment extends DialogFragment {
         datePicker.setMaxDate(Calendar.getInstance().getTime().getTime());
 
         positiveButton.setOnClickListener(view -> {
-            user.setBirthday(DateUtils.formatDate(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth()));
-            viewModel.setUser(user);
+            this.user.setBirthday(String.format("%s-%s-%s", datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth()));
+            viewModel.user.setValue(this.user);
             dismiss();
         });
 
@@ -85,7 +85,7 @@ public class BirthdayDialogFragment extends DialogFragment {
 
     private void updateUI(User user) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(user.getBirthday());
+        calendar.setTime(DateUtils.formatStringToDate(user.getBirthday()));
         datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 }

@@ -5,9 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,17 +15,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.adapter.profile.MyProfilePagerAdapter;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.DateUtils;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
-import com.google.android.material.tabs.TabLayout;
+import com.eliottdup.gettalents.viewmodel.MyProfileViewModel;
 
 public class MyProfileFragment extends Fragment {
     private ImageView profilePicture;
     private TextView pseudoView, birthdayView, mailView;
 
-    private UserViewModel viewModel;
+    private MyProfileViewModel viewModel;
 
     public MyProfileFragment() { }
 
@@ -57,7 +53,7 @@ public class MyProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(MyProfileViewModel.class);
     }
 
     @Override
@@ -69,18 +65,18 @@ public class MyProfileFragment extends Fragment {
 
     private void getUser() {
         viewModel.getLoggedUser();
-        viewModel.getUser().observe(getViewLifecycleOwner(), this::updateUI);
+        viewModel.user.observe(getViewLifecycleOwner(), this::updateUI);
     }
 
     private void updateUI(User user) {
         Glide.with(this)
-                .load(user.getProfilePicture().getUri())
+                .load(user.getProfilePicture().getPath())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                .centerCrop()
                 .into(profilePicture);
 
         pseudoView.setText(user.getPseudo());
-        mailView.setText(user.getMail());
-
+        mailView.setText(user.getEmail());
         birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
     }
 }

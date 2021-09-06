@@ -28,7 +28,7 @@ public class RelationViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(User user, RequestManager glide) {
-        glide.load(user.getProfilePicture().getUri())
+        glide.load(user.getProfilePicture().getPath())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
                 .centerCrop()
                 .into(profilePicture);

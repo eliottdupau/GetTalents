@@ -1,9 +1,14 @@
 package com.eliottdup.gettalents.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
-import com.eliottdup.gettalents.data.UserRepository;
+import com.eliottdup.gettalents.data.repository.ReviewRepository;
+import com.eliottdup.gettalents.data.repository.UserRepository;
+import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -12,13 +17,16 @@ import androidx.lifecycle.MutableLiveData;
 
 public class UserViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
     private MutableLiveData<User> user;
+    public MutableLiveData<List<Review>> reviewList = new MutableLiveData<>();
 
     public UserViewModel(@NonNull Application application) {
         super(application);
 
         userRepository = new UserRepository();
+        reviewRepository = new ReviewRepository();
     }
 
     public void setUser(User user) {
@@ -31,15 +39,19 @@ public class UserViewModel extends AndroidViewModel {
         return this.user;
     }
 
-    public void getUserById(String id) {
+    public void getUserById(int id) {
         this.user = userRepository.getUserById(id);
     }
 
     public void getLoggedUser() {
-        this.user = userRepository.getLoggedUser();
+        this.user = userRepository.getUserById(1);
     }
 
-    public void updateUser(String id, User user) {
-        this.user = userRepository.updateUser(id, user);
+    public void updateUser(int id, User user) {
+        userRepository.updateUser(id, user);
+    }
+
+    public void getReceivedReviewsForUser(int userId) {
+        reviewList = reviewRepository.getReceivedReviewsForUser(userId);
     }
 }

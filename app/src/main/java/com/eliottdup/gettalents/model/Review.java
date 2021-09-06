@@ -1,8 +1,9 @@
 package com.eliottdup.gettalents.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -16,17 +17,47 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Review implements Serializable {
 
-    private String id;
-    private User user;
-    private float rating;
+    @SerializedName("id")
+    @Expose
+    private int id;
+
+    @SerializedName("title")
+    @Expose
+    private String title;
+
+    @SerializedName("comment")
+    @Expose
     private String comment;
-    private List<Picture> pictureList;
-    private Date publicationDate;
 
-    public Review(String id) {
-        this.id = id;
+    @SerializedName("note")
+    @Expose
+    private int note;
 
-        this.comment = "";
-        this.pictureList = new ArrayList<>();
-    }
+    @SerializedName("createdAt")
+    @Expose
+    private String createdAt;
+
+    @SerializedName("updatedAt")
+    @Expose
+    private Object updatedAt;
+
+    @SerializedName("pictures")
+    @Expose
+    private List<Picture> pictureList = null;
+
+    @SerializedName("senderId")
+    @Expose
+    private int senderId;
+
+    @SerializedName("sender")
+    @Expose
+    private User sender;
+
+    @SerializedName("recipientId")
+    @Expose
+    private int recipientId;
+
+    @SerializedName("recipient")
+    @Expose
+    private User recipient;
 }

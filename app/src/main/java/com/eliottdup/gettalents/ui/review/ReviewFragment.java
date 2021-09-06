@@ -24,42 +24,51 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.adapter.media.MediaAdapter;
 import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.Picture;
-import com.eliottdup.gettalents.ui.profile.edit.PhotoDialogFragment;
+import com.eliottdup.gettalents.ui.profile.edit.PictureDialogFragment;
+import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.eliottdup.gettalents.viewmodel.ReviewViewModel;
 import com.eliottdup.gettalents.viewmodel.PictureViewModel;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ReviewFragment extends Fragment {
+    public static final String KEY_USER_ID = "userId";
+
     private MaterialToolbar toolbar;
     private RatingBar ratingBar;
-    private TextInputLayout commentLayout;
-    private TextInputEditText commentView;
+    private TextInputLayout titleLayout, commentLayout;
+    private TextInputEditText titleView, commentView;
     private MaterialCardView mediaButton;
     private RecyclerView recyclerView;
 
     private ReviewViewModel reviewViewModel;
-    private UserViewModel userViewModel;
     private PictureViewModel pictureViewModel;
 
     private FragmentManager fragmentManager;
 
     private Review review;
+    private int recipientId;
 
     private MediaAdapter adapter;
     private List<Picture> pictureList;
 
     public ReviewFragment() {}
 
-    public static ReviewFragment newInstance() {
-        return new ReviewFragment();
+    public static ReviewFragment newInstance(int recipientId) {
+        ReviewFragment reviewFragment = new ReviewFragment();
+
+        Bundle args = new Bundle();
+        args.putSerializable(KEY_USER_ID, recipientId);
+        reviewFragment.setArguments(args);
+
+        return reviewFragment;
     }
 
     @Override
@@ -74,7 +83,9 @@ public class ReviewFragment extends Fragment {
 
         toolbar = root.findViewById(R.id.topAppBar);
         ratingBar = root.findViewById(R.id.ratingBar);
+        titleLayout = root.findViewById(R.id.inputLayout_title);
         commentLayout = root.findViewById(R.id.inputLayout_comment);
+        titleView = root.findViewById(R.id.editText_title);
         commentView = root.findViewById(R.id.editText_comment);
         mediaButton = root.findViewById(R.id.container_addMedia);
         recyclerView = root.findViewById(R.id.recyclerView);
@@ -86,34 +97,36 @@ public class ReviewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (getArguments() != null) {
+            recipientId = getArguments().getInt(KEY_USER_ID);
+        }
+
         reviewViewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
-        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
 
         fragmentManager = getParentFragmentManager();
 
-        getEvaluation();
-        managePhoto();
+        initReview();
+        getUser();
+        managePicture();
 
         configureToolbar();
         configureRecyclerView();
         setupView();
     }
 
-    private void getEvaluation() {
+    private void initReview() {
         review = reviewViewModel.getReview().getValue();
-
-        getUser();
     }
 
     private void getUser() {
-        userViewModel.getLoggedUser();
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> review.setUser(user));
+        review.setRecipientId(recipientId);
+        reviewViewModel.getLoggedUser().observe(getViewLifecycleOwner(), user -> review.setSenderId(user.getId()));
     }
 
-    private void managePhoto() {
+    private void managePicture() {
         pictureViewModel.getPicture().observe(getViewLifecycleOwner(), photo -> {
-            if (photo.getUri() != null) {
+            if (photo.getPath() != null) {
                 pictureList.add(photo);
                 adapter.updateMedia(pictureList);
             }
@@ -127,9 +140,10 @@ public class ReviewFragment extends Fragment {
         toolbar.setNavigationOnClickListener(view -> requireActivity().onBackPressed());
 
         toolbar.setOnMenuItemClickListener(item -> {
-            if (!isEmptyOrOversize(review.getComment())) {
+            if (!isEmptyOrOversize(review.getTitle()) && !isEmptyOrOversize(review.getComment())) {
                 showValidationDialog();
             } else {
+                if (review.getTitle().isEmpty()) titleLayout.setError(getString(R.string.error_empty));
                 if (review.getComment().isEmpty()) commentLayout.setError(getString(R.string.error_empty));
             }
 
@@ -158,8 +172,26 @@ public class ReviewFragment extends Fragment {
     }
 
     private void setupView() {
-        ratingBar.setOnRatingBarChangeListener((ratingBar, rating, b) -> review.setRating(rating));
-        review.setRating(ratingBar.getRating());
+        ratingBar.setOnRatingBarChangeListener((ratingBar, rating, b) -> review.setNote((int) rating));
+        review.setNote((int) ratingBar.getRating());
+
+        titleView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence input, int i, int i1, int i2) {
+                String title = input.toString().trim();
+
+                review.setTitle(title);
+
+                if (isEmptyOrOversize(title)) titleLayout.setError(getString(R.string.error_oversize));
+                else titleLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
 
         commentView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -180,8 +212,8 @@ public class ReviewFragment extends Fragment {
         });
 
         mediaButton.setOnClickListener(view -> {
-            PhotoDialogFragment photoDialogFragment = PhotoDialogFragment.newInstance();
-            photoDialogFragment.show(fragmentManager, "photoFragment");
+            PictureDialogFragment pictureDialogFragment = PictureDialogFragment.newInstance();
+            pictureDialogFragment.show(fragmentManager, "photoFragment");
         });
     }
 
@@ -195,12 +227,21 @@ public class ReviewFragment extends Fragment {
 
         builder.setTitle(getString(R.string.title_evaluation))
                 .setMessage(getString(R.string.disclaimer_leave_appreciation))
-                .setPositiveButton(getString(R.string.label_yes), (dialogInterface, i) -> {
-                    review.setPictureList(pictureList);
-                    reviewViewModel.createReview(review);
-                    requireActivity().onBackPressed();
-                })
+                .setPositiveButton(getString(R.string.label_yes), (dialogInterface, i) -> createReview())
                 .setNegativeButton(getString(R.string.label_cancel), (dialogInterface, i) -> {})
                 .show();
+    }
+
+    private void createReview() {
+        review.setPictureList(pictureList);
+
+        String currentDate = DateUtils.formatDateToString(Calendar.getInstance().getTime());
+        review.setCreatedAt(currentDate);
+        review.setUpdatedAt(currentDate);
+
+        reviewViewModel.createReview(review).observe(getViewLifecycleOwner(), review -> {
+            // Todo () : Do something when call fail and when call succeed
+            requireActivity().onBackPressed();
+        });
     }
 }

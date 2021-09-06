@@ -33,10 +33,10 @@ public class MyProfilePagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 Log.d("ViewPager", "Review : " + position);
                 return ReviewListFragment.newInstance();
-            case 1:
+            /*case 1:
                 Log.d("ViewPager", "Relation : " + position);
-                return RelationFragment.newInstance();
-            case 2:
+                return RelationFragment.newInstance();*/
+            case 1:
                 Log.d("ViewPager", "Address : " + position);
                 return AddressesFragment.newInstance(isEditable);
             default:
@@ -46,7 +46,7 @@ public class MyProfilePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     @Nullable
@@ -55,9 +55,9 @@ public class MyProfilePagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 return context.getString(R.string.title_review);
+            /*case 1:
+                return context.getString(R.string.title_relation);*/
             case 1:
-                return context.getString(R.string.title_relation);
-            case 2:
                 return context.getString(R.string.title_addresses);
             default:
                 return null;

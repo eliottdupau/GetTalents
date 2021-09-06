@@ -45,18 +45,18 @@ public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Context context, Review review, RequestManager glide) {
         commentView.setText(review.getComment());
-        ratingView.setText(String.format("%s", review.getRating()));
-        pseudoView.setText(review.getUser().getPseudo());
-        publicationDateView.setText("Publié le " + DateUtils.formatDate(review.getPublicationDate()));
+        ratingView.setText(String.format("%s", review.getNote()));
+        pseudoView.setText(review.getSender().getPseudo());
+        publicationDateView.setText("Publié le " + DateUtils.formatDate(review.getCreatedAt()));
 
-        glide.load(review.getUser().getProfilePicture().getUri())
+        glide.load(review.getSender().getProfilePicture().getPath())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
                 .centerCrop()
                 .into(profilePictureView);
 
         userContainer.setOnClickListener(view -> {
             Intent intent = new Intent(context, UserProfileActivity.class);
-            intent.putExtra(UserProfileActivity.KEY_USER_ID, review.getUser().getId());
+            intent.putExtra(UserProfileActivity.KEY_USER_ID, review.getSender().getId());
             context.startActivity(intent);
         });
 
@@ -75,7 +75,7 @@ public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
         ItemClickSupport.addTo(recyclerView, R.layout.item_media).setOnItemClickListener((recyclerView, position, v) -> {
             Intent intent = new Intent(context, PictureActivity.class);
-            intent.putExtra(PictureActivity.KEY_IMAGE_URI, pictureList.get(position).getUri());
+            intent.putExtra(PictureActivity.KEY_IMAGE_URI, pictureList.get(position).getPath());
             context.startActivity(intent);
         });
     }

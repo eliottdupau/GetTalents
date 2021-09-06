@@ -18,7 +18,7 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.adapter.review.ReviewAdapter;
 import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
+import com.eliottdup.gettalents.viewmodel.ReviewListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ReviewListFragment extends Fragment {
     private RecyclerView recyclerView;
 
-    private UserViewModel viewModel;
+    private ReviewListViewModel viewModel;
 
     private ReviewAdapter adapter;
     private List<Review> reviewList;
@@ -56,7 +56,7 @@ public class ReviewListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(ReviewListViewModel.class);
 
         configureRecyclerView();
         getUser();
@@ -70,11 +70,17 @@ public class ReviewListFragment extends Fragment {
     }
 
     private void getUser() {
-        viewModel.getUser().observe(getViewLifecycleOwner(), this::updateUI);
+        viewModel.getLoggedUser();
+        viewModel.user.observe(getViewLifecycleOwner(), this::getReceivedReviews);
     }
 
-    private void updateUI(User user) {
-        reviewList = user.getReviewList();
+    private void getReceivedReviews(User user) {
+        viewModel.getReceivedReviewsForUser(user.getId());
+        viewModel.reviewList.observe(getViewLifecycleOwner(), this::updateUI);
+    }
+
+    private void updateUI(List<Review> reviews) {
+        reviewList = reviews;
         adapter.updateData(reviewList);
     }
 }
