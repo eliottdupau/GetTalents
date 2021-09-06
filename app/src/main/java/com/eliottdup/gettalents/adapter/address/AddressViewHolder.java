@@ -22,7 +22,7 @@ public class AddressViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Address address, boolean isEditable) {
-        addressView.setText(String.format("%s, %s %s - %s", address.getAddress(), address.getZipCode(), address.getCity(), address.getCountry()));
+        addressView.setText(String.format("%s %s, %s %s - %s", address.getNumerous(), address.getStreet(), address.getPostalCode(), address.getCity(), address.getCountry()));
 
         editIcon.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }

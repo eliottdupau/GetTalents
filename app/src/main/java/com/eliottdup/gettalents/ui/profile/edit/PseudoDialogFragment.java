@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.User;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
+import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -26,10 +26,9 @@ public class PseudoDialogFragment extends DialogFragment {
     private TextInputEditText pseudoView;
     private MaterialButton positiveButton, negativeButton;
 
-    private UserViewModel viewModel;
+    private EditProfileViewModel viewModel;
 
     private User user;
-    private String pseudo = "";
 
     public PseudoDialogFragment() { }
 
@@ -59,8 +58,9 @@ public class PseudoDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(EditProfileViewModel.class);
 
+        setupView();
         getUser();
     }
 
@@ -70,24 +70,14 @@ public class PseudoDialogFragment extends DialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    private void getUser() {
-        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            this.user = user;
-            setupView();
-        });
-    }
-
     private void setupView() {
-        pseudo = user.getPseudo();
-        pseudoView.setText(pseudo);
-
         pseudoView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void onTextChanged(CharSequence input, int i, int i1, int i2) {
-                pseudo = input.toString().trim();
+                user.setPseudo(input.toString().trim());
 
                 if (pseudoLayout.getError() != null) pseudoLayout.setError(null);
             }
@@ -97,9 +87,8 @@ public class PseudoDialogFragment extends DialogFragment {
         });
 
         positiveButton.setOnClickListener(view -> {
-            if (pseudo.length() > 0) {
-                user.setPseudo(pseudo);
-                viewModel.setUser(user);
+            if (user.getPseudo().length() > 0) {
+                viewModel.user.setValue(user);
                 dismiss();
             } else {
                 pseudoLayout.setError(getString(R.string.error_empty));
@@ -107,5 +96,16 @@ public class PseudoDialogFragment extends DialogFragment {
         });
 
         negativeButton.setOnClickListener(view -> dismiss());
+    }
+
+    private void getUser() {
+        viewModel.user.observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            updateUI(this.user);
+        });
+    }
+
+    private void updateUI(User user) {
+        pseudoView.setText(user.getPseudo());
     }
 }

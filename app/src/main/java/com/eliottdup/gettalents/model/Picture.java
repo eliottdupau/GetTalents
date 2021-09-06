@@ -1,5 +1,8 @@
 package com.eliottdup.gettalents.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +14,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Picture {
 
-    private String id;
-    private String uri;
+    @SerializedName("id")
+    @Expose
+    private int id;
 
-    public Picture(String id) {
-        this.id = id;
-    }
+    @SerializedName("path")
+    @Expose
+    private String path;
 }

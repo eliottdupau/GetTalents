@@ -3,15 +3,16 @@ package com.eliottdup.gettalents.ui.profile.consult.mine;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ScrollView;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.adapter.profile.MyProfilePagerAdapter;
 import com.eliottdup.gettalents.ui.profile.edit.EditProfileActivity;
+import com.eliottdup.gettalents.viewmodel.MyProfileViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -19,6 +20,8 @@ public class MyProfileActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+
+    private MyProfileViewModel viewModel;
 
     private MyProfileFragment myProfileFragment;
 
@@ -31,10 +34,13 @@ public class MyProfileActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
 
+        viewModel = new ViewModelProvider(this).get(MyProfileViewModel.class);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         configureToolbar();
         configureViewPager();
+        getData();
 
         if (myProfileFragment == null) myProfileFragment = MyProfileFragment.newInstance();
 
@@ -64,5 +70,9 @@ public class MyProfileActivity extends AppCompatActivity {
 
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void getData() {
+        viewModel.getLoggedUser();
     }
 }

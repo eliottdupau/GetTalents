@@ -19,6 +19,7 @@ import android.widget.EditText;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.viewmodel.AddressViewModel;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -27,26 +28,23 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.List;
 
 public class UpdateAddressDialogFragment extends DialogFragment {
-    private static final String KEY_ADDRESS_ID = "addressId";
+    private static final String KEY_ADDRESS = "address";
 
-    private TextInputLayout addressLayout, zipCodeLayout, cityLayout, countryLayout;
-    private TextInputEditText addressView, zipCodeView, cityView, countryView;
+    private TextInputLayout numerousLayout, addressLayout, zipCodeLayout, cityLayout, countryLayout;
+    private TextInputEditText numerousView, addressView, zipCodeView, cityView, countryView;
     private MaterialButton positiveButton, negativeButton;
 
-    private UserViewModel viewModel;
+    private AddressViewModel viewModel;
 
-    private String addressId;
-    private User user;
-    private List<Address> addresses;
     private Address address;
 
     public UpdateAddressDialogFragment() {}
 
-    public static UpdateAddressDialogFragment newInstance(String addressId) {
+    public static UpdateAddressDialogFragment newInstance(Address address) {
         UpdateAddressDialogFragment addressDialogFragment = new UpdateAddressDialogFragment();
 
         Bundle args = new Bundle();
-        args.putString(KEY_ADDRESS_ID, addressId);
+        args.putSerializable(KEY_ADDRESS, address);
         addressDialogFragment.setArguments(args);
 
         return addressDialogFragment;
@@ -62,10 +60,12 @@ public class UpdateAddressDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_address_dialog, container, false);
 
+        numerousLayout = root.findViewById(R.id.inputLayout_numerous);
         addressLayout = root.findViewById(R.id.inputLayout_address);
         zipCodeLayout = root.findViewById(R.id.inputLayout_zipCode);
         cityLayout = root.findViewById(R.id.inputLayout_city);
         countryLayout = root.findViewById(R.id.inputLayout_country);
+        numerousView = root.findViewById(R.id.editText_numerous);
         addressView = root.findViewById(R.id.editText_address);
         zipCodeView = root.findViewById(R.id.editText_zipCode);
         cityView = root.findViewById(R.id.editText_city);
@@ -81,14 +81,13 @@ public class UpdateAddressDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null) {
-            this.addressId = getArguments().getString(KEY_ADDRESS_ID);
+            this.address = (Address) getArguments().getSerializable(KEY_ADDRESS);
         }
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(AddressViewModel.class);
 
         setupView();
-
-        getUser();
+        updateUI(address);
     }
 
     @NonNull
@@ -97,35 +96,16 @@ public class UpdateAddressDialogFragment extends DialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    private void getUser() {
-        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            this.user = user;
-            getAddress();
-        });
-    }
-
-    private void getAddress() {
-        if (user != null) {
-            addresses = user.getAddresses();
-
-            for (Address address : addresses) {
-                if (address.getId().equals(addressId)) {
-                    this.address = address;
-                }
-            }
-        }
-
-        updateUI(this.address);
-    }
-
     private void updateUI(Address address) {
-        addressView.setText(address.getAddress());
-        zipCodeView.setText(address.getZipCode());
+        numerousView.setText(address.getNumerous());
+        addressView.setText(address.getStreet());
+        zipCodeView.setText(address.getPostalCode());
         cityView.setText(address.getCity());
         countryView.setText(address.getCountry());
     }
 
     private void setupView() {
+        addTextChangedListener(numerousView);
         addTextChangedListener(addressView);
         addTextChangedListener(zipCodeView);
         addTextChangedListener(cityView);
@@ -134,18 +114,14 @@ public class UpdateAddressDialogFragment extends DialogFragment {
         positiveButton.setText(getString(R.string.label_update));
         positiveButton.setOnClickListener(view -> {
             if (isAddressCorrect()) {
-                for (int i = 0; i < addresses.size(); i++) {
-                    if (address.getId().equals(addresses.get(i).getId())) {
-                        addresses.set(i, address);
-                    }
-                }
-                user.setAddresses(addresses);
-                viewModel.setUser(user);
+                viewModel.updateAddress(address.getId(), address);
+                viewModel.updateAddressInList(address);
 
                 dismiss();
             } else {
-                if (address.getAddress().isEmpty()) addressLayout.setError(getString(R.string.error_empty));
-                if (address.getZipCode().isEmpty()) zipCodeLayout.setError(getString(R.string.error_empty));
+                if (address.getNumerous().isEmpty()) numerousLayout.setError(getString(R.string.error_empty));
+                if (address.getStreet().isEmpty()) addressLayout.setError(getString(R.string.error_empty));
+                if (address.getPostalCode().isEmpty()) zipCodeLayout.setError(getString(R.string.error_empty));
                 if (address.getCity().isEmpty()) cityLayout.setError(getString(R.string.error_empty));
                 if (address.getCountry().isEmpty()) countryLayout.setError(getString(R.string.error_empty));
             }
@@ -172,12 +148,16 @@ public class UpdateAddressDialogFragment extends DialogFragment {
     @SuppressLint("NonConstantResourceId")
     private void manageTextListener(EditText editText, String input) {
         switch (editText.getId()) {
+            case R.id.editText_numerous:
+                address.setNumerous(input);
+                if (numerousLayout.getError() != null) numerousLayout.setError(null);
+                break;
             case R.id.editText_address:
-                address.setAddress(input);
+                address.setStreet(input);
                 if (addressLayout.getError() != null) addressLayout.setError(null);
                 break;
             case R.id.editText_zipCode:
-                address.setZipCode(input);
+                address.setPostalCode(input);
                 if (zipCodeLayout.getError() != null) zipCodeLayout.setError(null);
                 break;
             case R.id.editText_city:
@@ -192,7 +172,8 @@ public class UpdateAddressDialogFragment extends DialogFragment {
     }
 
     private boolean isAddressCorrect() {
-        return address.getAddress().length() > 0 && address.getZipCode().length() > 0 &&
-                address.getCity().length() > 0 && address.getCountry().length() > 0;
+        return address.getNumerous().length() > 0 && address.getStreet().length() > 0
+                && address.getPostalCode().length() > 0 && address.getCity().length() > 0
+                && address.getCountry().length() > 0;
     }
 }

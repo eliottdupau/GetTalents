@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Picture;
+import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
 import com.eliottdup.gettalents.viewmodel.PictureViewModel;
 import com.google.android.material.button.MaterialButton;
 
@@ -29,25 +31,24 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
-public class PhotoDialogFragment extends DialogFragment {
+public class PictureDialogFragment extends DialogFragment {
     private static final int RC_IMAGE_CAPTURE = 1;
     private static final int RC_IMAGE_PICK = 2;
 
     private MaterialButton cameraButton, mediaButton;
 
-    private PictureViewModel viewModel;
+    private PictureViewModel pictureViewModel;
 
     private Picture picture;
     private String currentPhotoPath;
 
-    public PhotoDialogFragment() {}
+    public PictureDialogFragment() {}
 
-    public static PhotoDialogFragment newInstance() {
-        return new PhotoDialogFragment();
+    public static PictureDialogFragment newInstance() {
+        return new PictureDialogFragment();
     }
 
     @Override
@@ -70,11 +71,11 @@ public class PhotoDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
+        pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
 
         setupView();
 
-        picture = new Picture(UUID.randomUUID().toString());
+        picture = new Picture();
     }
 
     @NonNull
@@ -130,8 +131,8 @@ public class PhotoDialogFragment extends DialogFragment {
                 currentPhotoPath =  data.getData().toString();
             }
 
-            picture.setUri(currentPhotoPath);
-            viewModel.setPicture(picture);
+            picture.setPath(currentPhotoPath);
+            pictureViewModel.setPicture(picture);
         }
 
         dismiss();

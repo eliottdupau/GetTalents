@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,19 +20,19 @@ import android.widget.EditText;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.User;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
+import com.eliottdup.gettalents.viewmodel.AddressViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.UUID;
+import java.util.List;
 
 public class CreateAddressDialogFragment extends DialogFragment {
-    private TextInputLayout addressLayout, zipCodeLayout, cityLayout, countryLayout;
-    private TextInputEditText addressView, zipCodeView, cityView, countryView;
+    private TextInputLayout numerousLayout, addressLayout, zipCodeLayout, cityLayout, countryLayout;
+    private TextInputEditText numerousView, addressView, zipCodeView, cityView, countryView;
     private MaterialButton positiveButton, negativeButton;
 
-    private UserViewModel viewModel;
+    private AddressViewModel viewModel;
 
     private Address address;
     private User user;
@@ -52,10 +53,12 @@ public class CreateAddressDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_address_dialog, container, false);
 
+        numerousLayout = root.findViewById(R.id.inputLayout_numerous);
         addressLayout = root.findViewById(R.id.inputLayout_address);
         zipCodeLayout = root.findViewById(R.id.inputLayout_zipCode);
         cityLayout = root.findViewById(R.id.inputLayout_city);
         countryLayout = root.findViewById(R.id.inputLayout_country);
+        numerousView = root.findViewById(R.id.editText_numerous);
         addressView = root.findViewById(R.id.editText_address);
         zipCodeView = root.findViewById(R.id.editText_zipCode);
         cityView = root.findViewById(R.id.editText_city);
@@ -70,12 +73,11 @@ public class CreateAddressDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(AddressViewModel.class);
 
-        address = new Address(UUID.randomUUID().toString());
+        address = new Address();
 
         setupView();
-
         getUser();
     }
 
@@ -85,11 +87,8 @@ public class CreateAddressDialogFragment extends DialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    private void getUser() {
-        viewModel.getUser().observe(getViewLifecycleOwner(), user -> this.user = user);
-    }
-
     private void setupView() {
+        addTextChangedListener(numerousView);
         addTextChangedListener(addressView);
         addTextChangedListener(zipCodeView);
         addTextChangedListener(cityView);
@@ -98,19 +97,28 @@ public class CreateAddressDialogFragment extends DialogFragment {
         positiveButton.setText(getString(R.string.label_add));
         positiveButton.setOnClickListener(view -> {
             if (isAddressCorrect()) {
-                user.getAddresses().add(address);
-                viewModel.setUser(user);
+                viewModel.createAddress(address).observe(getViewLifecycleOwner(), address -> {
+                    viewModel.addAddressInList(address);
 
-                dismiss();
+                    dismiss();
+                });
             } else {
-                if (address.getAddress().isEmpty()) addressLayout.setError(getString(R.string.error_empty));
-                if (address.getZipCode().isEmpty()) zipCodeLayout.setError(getString(R.string.error_empty));
+                if (address.getNumerous().isEmpty()) numerousLayout.setError(getString(R.string.error_empty));
+                if (address.getStreet().isEmpty()) addressLayout.setError(getString(R.string.error_empty));
+                if (address.getPostalCode().isEmpty()) zipCodeLayout.setError(getString(R.string.error_empty));
                 if (address.getCity().isEmpty()) cityLayout.setError(getString(R.string.error_empty));
                 if (address.getCountry().isEmpty()) countryLayout.setError(getString(R.string.error_empty));
             }
         });
 
         negativeButton.setOnClickListener(view -> dismiss());
+    }
+
+    private void getUser() {
+        viewModel.user.observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            address.setUserId(this.user.getId());
+        });
     }
 
     private void addTextChangedListener(EditText editText) {
@@ -131,12 +139,16 @@ public class CreateAddressDialogFragment extends DialogFragment {
     @SuppressLint("NonConstantResourceId")
     private void manageTextListener(EditText editText, String input) {
         switch (editText.getId()) {
+            case R.id.editText_numerous:
+                address.setNumerous(input);
+                if (numerousLayout.getError() != null) numerousLayout.setError(null);
+                break;
             case R.id.editText_address:
-                address.setAddress(input);
+                address.setStreet(input);
                 if (addressLayout.getError() != null) addressLayout.setError(null);
                 break;
             case R.id.editText_zipCode:
-                address.setZipCode(input);
+                address.setPostalCode(input);
                 if (zipCodeLayout.getError() != null) zipCodeLayout.setError(null);
                 break;
             case R.id.editText_city:
@@ -151,7 +163,8 @@ public class CreateAddressDialogFragment extends DialogFragment {
     }
 
     private boolean isAddressCorrect() {
-        return address.getAddress().length() > 0 && address.getZipCode().length() > 0 &&
-                address.getCity().length() > 0 && address.getCountry().length() > 0;
+        return address.getNumerous().length() > 0 && address.getStreet().length() > 0
+                && address.getPostalCode().length() > 0 && address.getCity().length() > 0
+                && address.getCountry().length() > 0;
     }
 }

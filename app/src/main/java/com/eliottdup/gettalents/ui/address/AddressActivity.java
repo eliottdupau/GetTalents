@@ -2,20 +2,16 @@ package com.eliottdup.gettalents.ui.address;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class AddressActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private FloatingActionButton addAddressButton;
-
-    private UserViewModel viewModel;
 
     private FragmentManager fragmentManager;
     private AddressesFragment addressesFragment;
@@ -28,13 +24,10 @@ public class AddressActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.topAppBar);
         addAddressButton = findViewById(R.id.button_addAddress);
 
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-
         fragmentManager = getSupportFragmentManager();
 
         configureToolbar();
         setupView();
-        getUser();
     }
 
     private void configureToolbar() {
@@ -53,9 +46,5 @@ public class AddressActivity extends AppCompatActivity {
             CreateAddressDialogFragment createAddressDialogFragment = CreateAddressDialogFragment.newInstance();
             createAddressDialogFragment.show(fragmentManager, "createAddressFragment");
         });
-    }
-
-    private void getUser() {
-        viewModel.getLoggedUser();
     }
 }

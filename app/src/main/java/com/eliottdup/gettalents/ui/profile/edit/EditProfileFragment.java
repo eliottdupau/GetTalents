@@ -18,8 +18,8 @@ import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.DateUtils;
+import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
 import com.eliottdup.gettalents.viewmodel.PictureViewModel;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.card.MaterialCardView;
 
 public class EditProfileFragment extends Fragment {
@@ -27,13 +27,12 @@ public class EditProfileFragment extends Fragment {
     private MaterialCardView profilePictureCard, pseudoCard, birthdayCard;
     private TextView pseudoView, birthdayView, mailView;
 
-    private UserViewModel userViewModel;
+    private EditProfileViewModel viewModel;
     private PictureViewModel pictureViewModel;
 
     private FragmentManager fragmentManager;
 
     private User user;
-    private String oldUri = "";
 
     public EditProfileFragment() { }
 
@@ -66,21 +65,20 @@ public class EditProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(EditProfileViewModel.class);
         pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
 
         fragmentManager = getParentFragmentManager();
 
         setupView();
         getUser();
-        getProfilePicture();
+        managePicture();
     }
 
     private void setupView() {
         profilePictureCard.setOnClickListener(view -> {
-            oldUri = user.getProfilePicture().getUri();
-            PhotoDialogFragment photoDialogFragment = PhotoDialogFragment.newInstance();
-            photoDialogFragment.show(fragmentManager, "photoFragment");
+            PictureDialogFragment pictureDialogFragment = PictureDialogFragment.newInstance();
+            pictureDialogFragment.show(fragmentManager, "photoFragment");
         });
 
         pseudoCard.setOnClickListener(view -> {
@@ -95,42 +93,32 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void getUser() {
-        userViewModel.getLoggedUser();
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+        viewModel.user.observe(getViewLifecycleOwner(), user -> {
             this.user = user;
-            updateUI(user);
+            updateUI(this.user);
         });
     }
 
-    private void getProfilePicture() {
-        pictureViewModel.getPicture().observe(getViewLifecycleOwner(), picture -> {
-            this.user.setProfilePicture(picture);
-
-            Glide.with(this)
-                    .load(picture.getUri())
-                    .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
-                    .into(profilePicture);
+    private void managePicture() {
+        pictureViewModel.getPicture().observe(getViewLifecycleOwner(), photo -> {
+            if (photo.getPath() != null) {
+                user.setProfilePicture(photo);
+                /*pictureList.add(photo);
+                adapter.updateMedia(pictureList);*/
+            }
         });
     }
 
     private void updateUI(User user) {
         Glide.with(this)
-                .load(user.getProfilePicture().getUri())
+                .load(user.getProfilePicture().getPath())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                .centerCrop()
                 .into(profilePicture);
 
         pseudoView.setText(user.getPseudo());
-        mailView.setText(user.getMail());
+        mailView.setText(user.getEmail());
 
         birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
-    }
-
-    public void updateUser() {
-        userViewModel.updateUser(user.getId(), user);
-
-        // Todo() : Upload la/les photo sur le serveur de stockage des photos
-        if (!oldUri.equals(user.getProfilePicture().getUri())) {
-            pictureViewModel.createPicture(user.getProfilePicture());
-        }
     }
 }

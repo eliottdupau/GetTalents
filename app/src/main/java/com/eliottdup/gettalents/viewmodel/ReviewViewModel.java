@@ -2,10 +2,10 @@ package com.eliottdup.gettalents.viewmodel;
 
 import android.app.Application;
 
-import com.eliottdup.gettalents.data.ReviewRepository;
+import com.eliottdup.gettalents.data.repository.ReviewRepository;
+import com.eliottdup.gettalents.data.repository.UserRepository;
 import com.eliottdup.gettalents.model.Review;
-
-import java.util.UUID;
+import com.eliottdup.gettalents.model.User;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,7 +13,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class ReviewViewModel extends AndroidViewModel {
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
     private MutableLiveData<Review> review;
 
@@ -21,13 +22,26 @@ public class ReviewViewModel extends AndroidViewModel {
         super(application);
 
         reviewRepository = new ReviewRepository();
+        userRepository = new UserRepository();
+    }
+
+    public LiveData<User> getLoggedUser() {
+        return userRepository.getUserById(1);
+    }
+
+    public LiveData<User> getUserById(int userId) {
+        return userRepository.getUserById(userId);
+    }
+
+    public LiveData<Review> createReview(Review review) {
+        return reviewRepository.createReview(review);
     }
 
     public LiveData<Review> getReview() {
         if (review == null) {
             review = new MutableLiveData<>();
 
-            review.setValue(new Review(UUID.randomUUID().toString()));
+            review.setValue(new Review());
         }
 
         return review;
@@ -35,9 +49,5 @@ public class ReviewViewModel extends AndroidViewModel {
 
     public void setReview(Review review) {
         this.review.setValue(review);
-    }
-
-    public void createReview(Review review) {
-        this.review = reviewRepository.createReview(review);
     }
 }

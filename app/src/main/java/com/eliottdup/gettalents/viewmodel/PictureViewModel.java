@@ -2,7 +2,7 @@ package com.eliottdup.gettalents.viewmodel;
 
 import android.app.Application;
 
-import com.eliottdup.gettalents.data.PictureRepository;
+import com.eliottdup.gettalents.data.repository.PictureRepository;
 import com.eliottdup.gettalents.model.Picture;
 
 import androidx.annotation.NonNull;
@@ -32,6 +32,6 @@ public class PictureViewModel extends AndroidViewModel {
     }
 
     public void createPicture(Picture picture) {
-        this.picture = pictureRepository.createPicture(picture);
+        //pictureRepository.createPicture(picture);
     }
 }

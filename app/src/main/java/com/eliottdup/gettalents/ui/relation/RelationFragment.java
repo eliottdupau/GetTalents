@@ -85,8 +85,8 @@ public class RelationFragment extends Fragment {
 
     private void getUser() {
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            relationList = user.getRelationList();
-            adapter.updateData(relationList);
+            /*relationList = user.getRelationList();
+            adapter.updateData(relationList);*/
         });
     }
 }

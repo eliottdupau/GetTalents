@@ -22,6 +22,7 @@
     <string name="title_evaluation">Evaluation</string>
     <string name="title_favorite">Favorite</string>
     <string name="title_rate">Rate</string>
+    <string name="title_title">Title</string>
     <string name="title_comment">Comment</string>
     <string name="title_reply">Reply</string>
     <string name="title_report">Report</string>
@@ -41,6 +42,7 @@
     <string name="label_cancel">Cancel</string>
 
     <!-- Edit Text Hint -->
+    <string name="hint_numerous">Numerous</string>
     <string name="hint_address">Address</string>
     <string name="hint_zip_code">Zip Code</string>
     <string name="hint_city">City</string>
@@ -53,9 +55,11 @@
 
     <!-- Alert Dialog Title -->
     <string name="title_delete_media">Delete media ?</string>
+    <string name="title_delete_address">Delete Address ?</string>
 
     <!-- Alert Dialog Message -->
     <string name="disclaimer_leave_appreciation">Are you sure to leave an review ? Cause it can\'t be remove later</string>
+    <string name="disclaimer_delete_data">Are you sure to delete this ? Cause it can\'t be undo</string>
 
     <!-- Image Content Description -->
     <string name="profile_picture">This image is the profile picture of the user</string>
