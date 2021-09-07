@@ -4,8 +4,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.model.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,13 +30,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends Fragment {
     private GoogleMap map;
+    private MapViewModel viewModel;
 
-    private final OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private final OnMapReadyCallback onMapReadyCallback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
             map = googleMap;
 
             checkPermission();
+            getUsers();
         }
     };
 
@@ -42,7 +47,7 @@ public class MapFragment extends Fragment {
                 if (isGranted) {
                     getLastLocation(map);
                 } else {
-                    // Todo() : Back to HomeScreen
+                    showPermissionRefusedAlertDialog();
                 }
     });
 
@@ -62,8 +67,10 @@ public class MapFragment extends Fragment {
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
+            mapFragment.getMapAsync(onMapReadyCallback);
         }
+
+        viewModel = new ViewModelProvider(requireActivity()).get(MapViewModel.class);
     }
 
     private void checkPermission() {
@@ -85,5 +92,29 @@ public class MapFragment extends Fragment {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             }
         });
+    }
+
+    private void getUsers() {
+        viewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> {
+            for (User user : users) {
+                addMarker(user);
+            }
+        });
+    }
+
+    private void addMarker(User user) {
+        LatLng latLng = new LatLng(user.getAddresses().get(0).getLat(), user.getAddresses().get(0).getLng());
+        map.addMarker(new MarkerOptions().position(latLng).title(user.getPseudo()));
+    }
+
+    private void showPermissionRefusedAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+
+        builder.setTitle(R.string.title_location_permission_denied)
+                .setMessage(R.string.disclaimer_location_permission_denied)
+                .setPositiveButton(R.string.label_ok, (dialogInterface, i) -> {
+
+                })
+                .show();
     }
 }
