@@ -1,5 +1,31 @@
 package com.eliottdup.gettalents.ui.map;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.model.Address;
+import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.ui.profile.consult.other.UserProfileActivity;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.HashMap;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -9,36 +35,32 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.model.User;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 public class MapFragment extends Fragment {
+    public static final String KEY_USER_ID = "userId";
+
     private GoogleMap map;
+    private HashMap<Marker, Integer> markers;
     private MapViewModel viewModel;
 
     private final OnMapReadyCallback onMapReadyCallback = new OnMapReadyCallback() {
+        @SuppressLint("MissingPermission")
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
+            googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            googleMap.setMyLocationEnabled(true);
+
             map = googleMap;
+
+            markers = new HashMap<>();
 
             checkPermission();
             getUsers();
+
+            map.setOnInfoWindowClickListener(marker -> {
+                Intent intent = new Intent(requireActivity(), UserProfileActivity.class);
+                intent.putExtra(KEY_USER_ID, markers.get(marker));
+                startActivity(intent);
+            });
         }
     };
 
@@ -87,9 +109,11 @@ public class MapFragment extends Fragment {
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
             if (location != null) {
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                googleMap.addMarker(new MarkerOptions().position(latLng).title("Marker at my position"));
+                //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                LatLng latLng = new LatLng(50.6228, 3.14417);
+                googleMap.addMarker(new MarkerOptions().position(latLng));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
             }
         });
     }
@@ -103,8 +127,17 @@ public class MapFragment extends Fragment {
     }
 
     private void addMarker(User user) {
-        LatLng latLng = new LatLng(user.getAddresses().get(0).getLat(), user.getAddresses().get(0).getLng());
-        map.addMarker(new MarkerOptions().position(latLng).title(user.getPseudo()));
+        Address mainAddress = user.getAddresses().get(0);
+        LatLng latLng = new LatLng(mainAddress.getLat(), mainAddress.getLng());
+
+        Marker marker = map.addMarker(
+                new MarkerOptions()
+                        .position(latLng)
+                        .title(user.getPseudo())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                        .snippet(String.format("%s - %s", mainAddress.getCity(), mainAddress.getCountry())));
+
+        markers.put(marker, user.getId());
     }
 
     private void showPermissionRefusedAlertDialog() {
@@ -112,9 +145,7 @@ public class MapFragment extends Fragment {
 
         builder.setTitle(R.string.title_location_permission_denied)
                 .setMessage(R.string.disclaimer_location_permission_denied)
-                .setPositiveButton(R.string.label_ok, (dialogInterface, i) -> {
-
-                })
+                .setPositiveButton(R.string.label_ok, (dialogInterface, i) -> { })
                 .show();
     }
 }
