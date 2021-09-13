@@ -56,10 +56,12 @@
     <!-- Alert Dialog Title -->
     <string name="title_delete_media">Delete media ?</string>
     <string name="title_delete_address">Delete Address ?</string>
+    <string name="title_location_permission_denied">App required Location Permission</string>
 
     <!-- Alert Dialog Message -->
     <string name="disclaimer_leave_appreciation">Are you sure to leave an review ? Cause it can\'t be remove later</string>
     <string name="disclaimer_delete_data">Are you sure to delete this ? Cause it can\'t be undo</string>
+    <string name="disclaimer_location_permission_denied">This feature is disable while location permission is not accepted</string>
 
     <!-- Image Content Description -->
     <string name="profile_picture">This image is the profile picture of the user</string>
