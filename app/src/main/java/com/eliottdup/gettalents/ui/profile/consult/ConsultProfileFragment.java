@@ -127,7 +127,7 @@ public class ConsultProfileFragment extends Fragment {
                 .into(profilePicture);
 
         pseudoView.setText(user.getPseudo());
-        mailView.setText(user.getMail());
+        mailView.setText(user.getEmail());
 
         birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
 

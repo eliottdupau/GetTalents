@@ -18,18 +18,22 @@ import lombok.Setter;
 @AllArgsConstructor
 public class User implements Serializable {
 
+
     @SerializedName("id")
     @Expose
-    private String id;
+    private Integer id;
     @SerializedName("pseudo")
     @Expose
     private String pseudo;
     @SerializedName("registrationDate")
     @Expose
-    private Date registrationDate;
+    private String registrationDate;
+    @SerializedName("status")
+    @Expose
+    private String status;
     @SerializedName("email")
     @Expose
-    private String mail;
+    private String email;
     @SerializedName("phone")
     @Expose
     private Integer phone;
@@ -38,18 +42,21 @@ public class User implements Serializable {
     private String presentation;
     @SerializedName("birthday")
     @Expose
-    private Date birthday;
+    private String birthday;
+    @SerializedName("role")
+    @Expose
+    private String role;
     @SerializedName("profilePicture")
     @Expose
     private Picture profilePicture;
     @SerializedName("addresses")
     @Expose
-    private List<Address> addresses;
+    private List<Address> addresses = null;
     @SerializedName("skills")
     @Expose
-    private List<Skill> skills;
+    private List<Skill> skills = null;
 
-    public User(String id) {
-        this.id = id;
-    }
+//    public User(String id) {
+//        this.id = id;
+//    }
 }

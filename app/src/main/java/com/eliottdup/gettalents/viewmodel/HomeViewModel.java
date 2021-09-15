@@ -48,9 +48,10 @@ public class HomeViewModel extends AndroidViewModel {
 
     public void getUserById(String id) { this.user = userRepository.getUserById(id); }
 
-    public LiveData<List<User>> getUsers() {
-        if(this.users == null) this.users = new MutableLiveData<>();
-        return this.users;
+    public void getUsers() {
+//        if(this.users == null) this.users = new MutableLiveData<>();
+//        return this.users;
+        this.users = userRepository.getUsers();
     }
 
     // categories
