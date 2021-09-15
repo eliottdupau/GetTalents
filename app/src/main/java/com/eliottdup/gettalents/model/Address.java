@@ -1,30 +1,59 @@
 package com.eliottdup.gettalents.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Address implements Serializable {
 
-    private String id;
-    private String address;
-    private String zipCode;
+    @SerializedName("id")
+    @Expose
+    private int id;
+
+    @SerializedName("number")
+    @Expose
+    private String numerous;
+
+    @SerializedName("street")
+    @Expose
+    private String street;
+
+    @SerializedName("city")
+    @Expose
     private String city;
+
+    @SerializedName("postalCode")
+    @Expose
+    private String postalCode;
+
+    @SerializedName("country")
+    @Expose
     private String country;
 
-    public Address(String id) {
-        this.id = id;
+    @SerializedName("lng")
+    @Expose
+    private int lng;
 
-        this.address = "";
-        this.zipCode = "";
+    @SerializedName("lat")
+    @Expose
+    private int lat;
+
+    @SerializedName("userId")
+    @Expose
+    private int userId;
+
+    public Address() {
+        this.numerous = "";
+        this.street = "";
+        this.postalCode = "";
         this.city = "";
-        this.country = "";
     }
 }

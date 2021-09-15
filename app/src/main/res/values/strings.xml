@@ -7,9 +7,11 @@
     <string name="title_chat">Chat</string>
     <string name="title_menu">Menu</string>
     <string name="title_profile">My Profile</string>
-    <string name="title_favorite">My Favorites</string>
+    <string name="title_other_profile">User Profile</string>
+    <string name="title_my_favorite">My Favorites</string>
     <string name="title_logout">Log Out</string>
-    <string name="title_addresses">My Addresses</string>
+    <string name="title_addresses">Addresses</string>
+    <string name="title_my_addresses">My Addresses</string>
     <string name="title_address">Address</string>
     <string name="title_edit_profile">Edit Profile</string>
     <string name="title_pseudo">Pseudo</string>
@@ -18,12 +20,25 @@
     <string name="title_camera">Camera</string>
     <string name="title_media">Media</string>
     <string name="presentation">With Sathiel make your life easier by asking for help from others</string>
+    <string name="title_evaluation">Evaluation</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="title_rate">Rate</string>
+    <string name="title_title">Title</string>
+    <string name="title_comment">Comment</string>
+    <string name="title_reply">Reply</string>
+    <string name="title_report">Report</string>
+    <string name="title_review">Review</string>
+    <string name="title_my_reviews">My Reviews</string>
+    <string name="title_relation">Relation</string>
+    <string name="title_my_relations">My Relations</string>
 
     <!-- Button Label -->
     <string name="label_save_changes">Save changes</string>
     <string name="label_add_address">Add Address</string>
     <string name="label_save">Save</string>
     <string name="label_add">Add</string>
+    <string name="label_ok">OK</string>
+    <string name="label_yes">Yes</string>
     <string name="label_update">Update</string>
     <string name="label_cancel">Cancel</string>
     <string name="visitor"><u>Continue as visitor</u></string>
@@ -35,10 +50,12 @@
     <string name="forgetPassword">Forget password</string>
 
     <!-- Edit Text Hint -->
+    <string name="hint_numerous">Numerous</string>
     <string name="hint_address">Address</string>
     <string name="hint_zip_code">Zip Code</string>
     <string name="hint_city">City</string>
     <string name="hint_country">Country</string>
+    <string name="hint_search_user">Search</string>
 
     <!-- Edit Text Error Message -->
     <string name="error_empty">Must contain at least one character</string>
@@ -50,6 +67,22 @@
     <string name="profile_picture">This image is the profile picture of the user</string>
     <string name="icon_clickable">That icon is clickable</string>
     <string name="logo">This is the logo of the app</string>
+    <string name="error_empty">Empty field</string>
+    <string name="error_oversize">Too many characters</string>
+
+    <!-- Alert Dialog Title -->
+    <string name="title_delete_media">Delete media ?</string>
+    <string name="title_delete_address">Delete Address ?</string>
+    <string name="title_location_permission_denied">App required Location Permission</string>
+
+    <!-- Alert Dialog Message -->
+    <string name="disclaimer_leave_appreciation">Are you sure to leave an review ? Cause it can\'t be remove later</string>
+    <string name="disclaimer_delete_data">Are you sure to delete this ? Cause it can\'t be undo</string>
+    <string name="disclaimer_location_permission_denied">This feature is disable while location permission is not accepted</string>
+
+    <!-- Image Content Description -->
+    <string name="profile_picture">This image is the profile picture of the user</string>
+    <string name="icon_clickable">Clickable icon</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="email">exemple@exemple.fr</string>
@@ -63,5 +96,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="validate">Validate</string>
     <string name="pass">Pass</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

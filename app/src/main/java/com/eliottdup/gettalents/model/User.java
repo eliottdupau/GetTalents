@@ -1,7 +1,9 @@
 package com.eliottdup.gettalents.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,15 +17,66 @@ import lombok.Setter;
 @AllArgsConstructor
 public class User implements Serializable {
 
-    private String id;
-    private String pseudo;
-    private String mail;
-    private String password;
-    private Date birthday;
-    private String urlProfilePicture;
-    private List<Address> addresses;
+    @SerializedName("id")
+    @Expose
+    private int id;
 
-    public User(String id) {
-        this.id = id;
-    }
+    @SerializedName("pseudo")
+    @Expose
+    private String pseudo;
+
+    @SerializedName("registrationDate")
+    @Expose
+    private String registrationDate;
+
+    @SerializedName("available")
+    @Expose
+    private int available;
+
+    @SerializedName("email")
+    @Expose
+    private String email;
+
+    @SerializedName("phone")
+    @Expose
+    private int phone;
+
+    @SerializedName("presentation")
+    @Expose
+    private String presentation;
+
+    @SerializedName("birthday")
+    @Expose
+    private String birthday;
+
+    @SerializedName("role")
+    @Expose
+    private String role;
+
+    @SerializedName("profilePicture")
+    @Expose
+    private Picture profilePicture;
+
+    @SerializedName("addresses")
+    @Expose
+    private List<Address> addresses = null;
+
+    /*private List<User> relationList;
+    private List<Review> reviewList;*/
+
+    // Todo() : Vérifier la fonction des favoris
+    /*public boolean isInFavorite(String userId) {
+        boolean inFavorite = false;
+
+        if (!relationList.isEmpty()) {
+            for (User user : relationList) {
+                if (user.getId().equals(userId)) {
+                    inFavorite = true;
+                    break;
+                }
+            }
+        }
+
+        return inFavorite;
+    }*/
 }
