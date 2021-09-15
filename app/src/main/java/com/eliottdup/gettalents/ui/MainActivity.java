@@ -3,6 +3,8 @@ package com.eliottdup.gettalents.ui;
 import android.os.Bundle;
 
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.ui.map.MapFragment;
+import com.eliottdup.gettalents.ui.search.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,5 +26,4 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
     }
-
 }

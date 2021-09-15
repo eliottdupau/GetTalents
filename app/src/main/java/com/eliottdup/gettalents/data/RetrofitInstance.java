@@ -13,7 +13,8 @@ public class RetrofitInstance {
 
     public static Retrofit getInstance() {
         interceptor.level(HttpLoggingInterceptor.Level.BODY);
-        if(retrofit == null) {
+
+        if (retrofit == null) {
             retrofit = new retrofit2.Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client)

@@ -1,33 +1,59 @@
 package com.eliottdup.gettalents.viewmodel;
 
+<<<<<<< HEAD
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.Picture;
+=======
+import android.app.Application;
+import android.util.Log;
+
+import com.eliottdup.gettalents.data.repository.ReviewRepository;
+import com.eliottdup.gettalents.data.repository.UserRepository;
+import com.eliottdup.gettalents.model.Review;
+>>>>>>> d46e51dc00e396aa192c34c9542d929d1b2e4726
 import com.eliottdup.gettalents.model.User;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.UUID;
+import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class UserViewModel extends ViewModel {
+public class UserViewModel extends AndroidViewModel {
+    private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
+
     private MutableLiveData<User> user;
+    public MutableLiveData<List<Review>> reviewList = new MutableLiveData<>();
+
+    public UserViewModel(@NonNull Application application) {
+        super(application);
+
+        userRepository = new UserRepository();
+        reviewRepository = new ReviewRepository();
+    }
 
     public void setUser(User user) {
         this.user.setValue(user);
     }
-    public LiveData<User> getUser() {
-        if (this.user == null) {
-            this.user = new MutableLiveData<>();
 
+<<<<<<< HEAD
 //            setUser(retrieveUser());
         }
+=======
+    public LiveData<User> getUser() {
+        if (this.user == null) this.user = new MutableLiveData<>();
+>>>>>>> d46e51dc00e396aa192c34c9542d929d1b2e4726
 
         return this.user;
     }
+  
+    public void getUserById(int id) {
+        this.user = userRepository.getUserById(id);
+    }
 
+<<<<<<< HEAD
 //    private User retrieveUser() {
 //        User user = new User(UUID.randomUUID().toString());
 //        user.setPseudo("Lataupedu59");
@@ -71,4 +97,17 @@ public class UserViewModel extends ViewModel {
 //
 //        return user;
 //    }
+=======
+    public void getLoggedUser() {
+        this.user = userRepository.getUserById(1);
+    }
+
+    public void updateUser(int id, User user) {
+        userRepository.updateUser(id, user);
+    }
+
+    public void getReceivedReviewsForUser(int userId) {
+        reviewList = reviewRepository.getReceivedReviewsForUser(userId);
+    }
+>>>>>>> d46e51dc00e396aa192c34c9542d929d1b2e4726
 }

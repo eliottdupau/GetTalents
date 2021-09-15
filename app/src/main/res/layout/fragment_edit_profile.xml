@@ -6,13 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.profile.edit.EditProfileFragment">
 
-    <include
-        layout="@layout/custom_toolbar"/>
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/appBar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -212,54 +209,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                style="@style/GetTalents.Profile.Title"
-                android:id="@+id/textView_addressTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:text="@string/title_addresses"
-                app:layout_constraintTop_toBottomOf="@+id/container_mail"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0.8dp"
-                android:background="@color/colorText"
-                app:layout_constraintTop_toBottomOf="@+id/textView_addressTitle"
-                app:layout_constraintStart_toStartOf="@+id/textView_addressTitle"
-                app:layout_constraintEnd_toEndOf="@+id/textView_addressTitle"/>
-
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MaterialComponents.Button"
-                android:id="@+id/button_addAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:paddingStart="32dp"
-                android:paddingEnd="32dp"
-                android:text="@string/label_add_address"
-                app:icon="@drawable/ic_baseline_add_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_addressTitle"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_address"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                app:layout_constraintTop_toBottomOf="@+id/button_addAddress"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
