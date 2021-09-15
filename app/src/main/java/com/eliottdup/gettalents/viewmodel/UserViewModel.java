@@ -38,7 +38,7 @@ public class UserViewModel extends AndroidViewModel {
 
         return this.user;
     }
-
+  
     public void getUserById(int id) {
         this.user = userRepository.getUserById(id);
     }
