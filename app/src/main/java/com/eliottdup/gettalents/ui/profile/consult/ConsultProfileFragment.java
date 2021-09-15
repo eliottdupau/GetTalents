@@ -122,7 +122,7 @@ public class ConsultProfileFragment extends Fragment {
 
     private void setupView() {
         Glide.with(this)
-                .load(user.getUrlProfilePicture())
+                .load(user.getProfilePicture().getPath())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
                 .into(profilePicture);
 

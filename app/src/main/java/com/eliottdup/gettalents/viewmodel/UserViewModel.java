@@ -1,6 +1,7 @@
 package com.eliottdup.gettalents.viewmodel;
 
 import com.eliottdup.gettalents.model.Address;
+import com.eliottdup.gettalents.model.Picture;
 import com.eliottdup.gettalents.model.User;
 
 import java.util.ArrayList;
@@ -31,7 +32,10 @@ public class UserViewModel extends ViewModel {
         User user = new User(UUID.randomUUID().toString());
         user.setPseudo("Lataupedu59");
         user.setMail("rene.lataupe@gmail.com");
-        user.setUrlProfilePicture("https://torange.biz/photofxnew/76/HD/lion-profile-picture-76801.jpg");
+        Picture picture_temp = new Picture();
+        picture_temp.setId(4);
+        picture_temp.setPath("https://torange.biz/photofxnew/76/HD/lion-profile-picture-76801.jpg");
+        user.setProfilePicture(picture_temp);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, 4);

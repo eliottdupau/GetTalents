@@ -173,7 +173,7 @@ public class EditProfileFragment extends Fragment {
 
     private void updateUI(User user) {
         Glide.with(this)
-                .load(user.getUrlProfilePicture())
+                .load(user.getProfilePicture().getPath())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
                 .into(profilePicture);
 

@@ -14,48 +14,28 @@ import com.eliottdup.gettalents.model.Category;
 
 import java.util.List;
 
-/**
- * Created by temp on 20/06/2021
- */
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
-
-    public interface ICategorySelect {
-        void onCategorySelect(String categoryName);
-    }
-
-    private ICategorySelect mCallback;
-
+public class HomeUserCategoryAdapter extends RecyclerView.Adapter<HomeUserCategoryViewHolder> {
     private List<Category> categories;
     private RequestManager glide;
 
-    public CategoryAdapter(List<Category> categories, RequestManager glide, String categoryName, ICategorySelect callback) {
+    public HomeUserCategoryAdapter(List<Category> categories, RequestManager glide) {
         this.categories = categories;
         this.glide = glide;
-        mCallback = callback;
     }
 
     @NonNull
     @Override
-    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HomeUserCategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_category, parent, false);
 
-        return new CategoryViewHolder(view);
+        return new HomeUserCategoryViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HomeUserCategoryViewHolder holder, int position) {
         holder.bind(this.categories.get(position), this.glide);
-        holder.categoryTextView.setOnClickListener( new View.OnClickListener() {
-            public void onClick(View v) {
-                String categoryName = holder.categoryTextView.getText().toString();
-                mCallback.onCategorySelect(categoryName);
-            };
-        });
-//        holder.categoryTextView.setOnClickListener(view -> {
-//            holder.categoryTextView.setText("Click");
-//        });
     }
 
     @Override

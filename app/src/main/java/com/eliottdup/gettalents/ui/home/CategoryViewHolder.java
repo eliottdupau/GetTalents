@@ -16,18 +16,21 @@ import androidx.recyclerview.widget.RecyclerView;
  * Created by temp on 20/06/2021
  */
 public class CategoryViewHolder extends RecyclerView.ViewHolder {
-    private TextView categoryTextView;
+    public TextView categoryTextView;
     private ImageView categoryIconView;
 
     public CategoryViewHolder(@NonNull View itemView) {
         super(itemView);
         categoryTextView = itemView.findViewById(R.id.textView_category);
         categoryIconView = itemView.findViewById(R.id.iconView_category);
+//        categoryTextView.setOnClickListener(view -> {
+//            categoryTextView.setText("CLICK");
+//        });
     }
 
     public void bind(Category category, RequestManager glide) {
         categoryTextView.setText(category.getName());
-        glide.load(category.getIcon()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(categoryIconView);
+        glide.load(category.getCategoryPicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(categoryIconView);
     }
 
 }

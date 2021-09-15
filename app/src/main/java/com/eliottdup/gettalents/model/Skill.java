@@ -11,36 +11,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Created by temp on 17/06/2021
- */
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category implements Serializable {
+public class Skill implements Serializable {
 
-    @SerializedName("id")
+    @SerializedName("idskill")
     @Expose
-    private Integer id;
+    private Integer idskill;
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("categoryPicture")
+    @SerializedName("category")
     @Expose
-    private Picture categoryPicture;
-    @SerializedName("skills")
-    @Expose
-    private List<Skill> skills = null;
+    private Category category;
 //    @SerializedName("users")
 //    @Expose
 //    private List<User> users = null;
-
-//    public Category(String id) {
-//        this.id = id;
-//        this.name = "";
-//        this.icon = "";
-//    }
 
 }
