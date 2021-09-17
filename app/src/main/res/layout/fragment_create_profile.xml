@@ -5,7 +5,7 @@
     android:id="@+id/fragmentCreateProfil"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile.edit.CreateProfilFragment" >
+    tools:context=".ui.profile.edit.CreateProfileFragment" >
 
     <TextView
         android:id="@+id/labelCreateProfile"

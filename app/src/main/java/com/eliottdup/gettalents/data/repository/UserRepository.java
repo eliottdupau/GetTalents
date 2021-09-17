@@ -1,5 +1,6 @@
 package com.eliottdup.gettalents.data.repository;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.eliottdup.gettalents.data.RetrofitInstance;
@@ -8,6 +9,12 @@ import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.Picture;
 import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.ui.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,23 +29,89 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserRepository {
+    private FirebaseAuth firebaseAuth;
 
-    public UserRepository() { }
+    public UserRepository() {
+        firebaseAuth = FirebaseAuth.getInstance();
+    }
 
-    public void createUser(User user) {
+    public MutableLiveData<User> createUserInFirebase(String email, String password) {
+        MutableLiveData<User> userInFirebase = new MutableLiveData<>();
+
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+                User user = new User();
+                if (firebaseUser != null) {
+                    user.setFirebaseUid(firebaseUser.getUid());
+                    user.setEmail(firebaseUser.getEmail());
+                }
+
+                userInFirebase.setValue(user);
+            } else {
+                Log.d("Sign Up", "Failed");
+
+                userInFirebase.postValue(null);
+            }
+        });
+
+        return userInFirebase;
+    }
+
+    public MutableLiveData<User> getUserInFirebase(String email, String password) {
+        MutableLiveData<User> userInFirebase = new MutableLiveData<>();
+
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+                User user = new User();
+                if (firebaseUser != null) {
+                    user.setFirebaseUid(firebaseUser.getUid());
+                    user.setEmail(firebaseUser.getEmail());
+                }
+
+                userInFirebase.setValue(user);
+            } else {
+                userInFirebase.postValue(null);
+            }
+        });
+
+        return userInFirebase;
+    }
+
+    public MutableLiveData<User> createUser(User user) {
+        MutableLiveData<User> userInDB = new MutableLiveData<>();
+
+        initUser(user);
+
         UserService userService = RetrofitInstance.getInstance().create(UserService.class);
         Call<Void> call = userService.createUser(user);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 Log.d("HTTP 201", "User Creation -> success");
+
+                userInDB.setValue(user);
             }
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e("HTTP", "User Creation -> fail");
+
+                userInDB.postValue(null);
             }
         });
+
+        return userInDB;
+    }
+
+    // Todo() : To delete
+    private void initUser(User user) {
+        Picture picture = new Picture();
+        picture.setPath("http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcTL7mM-4xIusFwBanyvvG9gbE1TbjWqPB82cLpQgzlJpzVv8ommngwZtCHmYANJ");
+        user.setProfilePicture(picture);
     }
 
     public MutableLiveData<User> getUserById(int id) {

@@ -11,14 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.ui.authentication.SignInFragment;
 import com.eliottdup.gettalents.ui.skills.CreateSkillsFragment;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 
-public class CreateProfilFragment extends Fragment {
+public class CreateProfileFragment extends Fragment {
 
     private FragmentManager fragmentManager;
     private CreateSkillsFragment createSkillsFragment;
@@ -32,9 +31,9 @@ public class CreateProfilFragment extends Fragment {
     private Button validateButton ;
     private Button passButton;
 
-    public CreateProfilFragment() {}
+    public CreateProfileFragment() {}
 
-    public static CreateProfilFragment newInstance() { return new CreateProfilFragment(); }
+    public static CreateProfileFragment newInstance() { return new CreateProfileFragment(); }
 
     @Override
     public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
@@ -42,7 +41,7 @@ public class CreateProfilFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_create_profil, container, false);
+        View root = inflater.inflate(R.layout.fragment_create_profile, container, false);
 
         this.fragmentManager = getParentFragmentManager();
         if(createSkillsFragment == null) createSkillsFragment = CreateSkillsFragment.newInstance();

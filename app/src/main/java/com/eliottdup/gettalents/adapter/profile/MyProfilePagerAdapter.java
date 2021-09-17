@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.address.AddressesFragment;
-import com.eliottdup.gettalents.ui.relation.RelationFragment;
 import com.eliottdup.gettalents.ui.review.ReviewListFragment;
 
 import androidx.annotation.NonNull;
@@ -33,9 +32,6 @@ public class MyProfilePagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 Log.d("ViewPager", "Review : " + position);
                 return ReviewListFragment.newInstance();
-            /*case 1:
-                Log.d("ViewPager", "Relation : " + position);
-                return RelationFragment.newInstance();*/
             case 1:
                 Log.d("ViewPager", "Address : " + position);
                 return AddressesFragment.newInstance(isEditable);
@@ -55,8 +51,6 @@ public class MyProfilePagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 return context.getString(R.string.title_review);
-            /*case 1:
-                return context.getString(R.string.title_relation);*/
             case 1:
                 return context.getString(R.string.title_addresses);
             default:

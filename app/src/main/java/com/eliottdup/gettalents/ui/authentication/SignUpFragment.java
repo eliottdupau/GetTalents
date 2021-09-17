@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,30 +19,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.MainActivity;
-import com.eliottdup.gettalents.ui.profile.edit.CreateProfilFragment;
+import com.eliottdup.gettalents.ui.profile.edit.CreateProfileFragment;
+import com.eliottdup.gettalents.utils.ApiUtils;
+import com.eliottdup.gettalents.utils.AuthenticationUtils;
+import com.eliottdup.gettalents.viewmodel.AuthenticationViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUpFragment extends Fragment {
-
-    private FragmentManager fragmentManager;
-    private CreateProfilFragment createProfilFragment;
-
+    private CoordinatorLayout coordinatorLayout;
+    private LinearLayout loadingContainer;
+    private MaterialToolbar toolbar;
     private Button btnSignUp;
+    private TextInputLayout layoutEmail, layoutPassword, layoutConfirmPassword;
+    private TextInputEditText inputEmail, inputPassword, inputConfirmPassword;
 
-    private TextInputLayout layoutEmail;
-    private TextInputLayout layoutPassword;
-    private TextInputLayout layoutConfirmPassword;
+    private AuthenticationViewModel viewModel;
+    private FragmentManager fragmentManager;
+
+    private CreateProfileFragment createProfileFragment;
 
     private String email = "";
     private String password = "";
     private String confirmPassword = "";
-
-    private MaterialToolbar toolbar;
 
     public OnButtonClickedListener callback;
 
@@ -64,21 +73,27 @@ public class SignUpFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_sign_up, container, false);
 
-        this.fragmentManager = getParentFragmentManager();
-
+        coordinatorLayout = root.findViewById(R.id.mainContainer);
+        loadingContainer = root.findViewById(R.id.loadingContainer);
         toolbar = root.findViewById(R.id.topAppBar);
+        btnSignUp = root.findViewById(R.id.btnSignUp);
+        layoutEmail = root.findViewById(R.id.layoutEmail);
+        layoutPassword = root.findViewById(R.id.layoutPassword);
+        layoutConfirmPassword = root.findViewById(R.id.layoutConfirmPassword);
+        inputEmail = root.findViewById(R.id.inputEmail);
+        inputPassword = root.findViewById(R.id.inputPassword);
+        inputConfirmPassword = root.findViewById(R.id.inputConfirmPassword);
 
-        this.btnSignUp = root.findViewById(R.id.btnSignUp);
+        return root;
+    }
 
-        this.layoutEmail = root.findViewById(R.id.layoutEmail);
-        this.layoutPassword = root.findViewById(R.id.layoutPassword);
-        this.layoutConfirmPassword = root.findViewById(R.id.layoutConfirmPassword);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        TextInputEditText inputEmail = root.findViewById(R.id.inputEmail);
-        TextInputEditText inputPassword = root.findViewById(R.id.inputPassword);
-        TextInputEditText inputConfirmPassword = root.findViewById(R.id.inputConfirmPassword);
+        viewModel = new ViewModelProvider(requireActivity()).get(AuthenticationViewModel.class);
 
-        if(createProfilFragment == null) createProfilFragment = createProfilFragment.newInstance();
+        fragmentManager = getParentFragmentManager();
 
         configureToolbar();
 
@@ -86,9 +101,14 @@ public class SignUpFragment extends Fragment {
         baseTextListener(inputPassword);
         baseTextListener(inputConfirmPassword);
 
-        signUp();
-
-        return root;
+        btnSignUp.setOnClickListener(v -> {
+            if (AuthenticationUtils.checkSignUpForm(email, password, confirmPassword)) signUp();
+            else {
+                if (!AuthenticationUtils.checkEmail(email)) layoutEmail.setError(getString(R.string.error_email_format));
+                if (!AuthenticationUtils.checkPassword(password)) layoutPassword.setError(getString(R.string.error_password_length));
+                if (!AuthenticationUtils.checkConfirmPassword(password, confirmPassword)) layoutConfirmPassword.setError(getString(R.string.error_password_correspond));
+            }
+        });
     }
 
     @Override
@@ -107,37 +127,39 @@ public class SignUpFragment extends Fragment {
         toolbar.setNavigationOnClickListener(view -> callback.onBackButtonClicked());
     }
 
-    private void signUp(){
-        btnSignUp.setOnClickListener(v -> {
-//            if(checkForm()){
-////                Intent intent = new Intent(getContext(), MainActivity.class);
-////                startActivity(intent);
-////                requireActivity().finish();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.mainContainer, createProfilFragment)
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-//            else{
-//                if(!email.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))
-//                    layoutEmail.setError(getString(R.string.error_email_format));
-//                if(password.length() <= 7)
-//                    layoutPassword.setError(getString(R.string.error_password_length));
-//                if(!confirmPassword.equals(password))
-//                    layoutConfirmPassword.setError(getString(R.string.error_password_correspond));
-//            }
-            fragmentManager.beginTransaction()
-                    .replace(R.id.mainContainer, createProfilFragment)
-                    .addToBackStack(null)
-                    .commit();
+    private void signUp() {
+        viewModel.createUserInFirebase(email, password);
+        ApiUtils.showLoading(loadingContainer, true);
+        viewModel.userInFirebase.observe(getViewLifecycleOwner(), user -> {
+            ApiUtils.showLoading(loadingContainer, false);
+            if (user != null) {
+                if (createProfileFragment == null) createProfileFragment = CreateProfileFragment.newInstance();
 
+                fragmentManager.beginTransaction()
+                        .replace(R.id.mainContainer, createProfileFragment)
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                showSignInError();
+            }
         });
     }
 
-    private boolean checkForm(){
-            return email.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
-                    && password.length() > 7
-                    && confirmPassword.equals(password) ;
+    private void showSignInError() {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Sign Up Failed", Snackbar.LENGTH_LONG);
+        snackbar.setBackgroundTint(getResources().getColor(R.color.colorError));
+
+        snackbar.show();
+    }
+
+    private void createUserInDB(User user) {
+        viewModel.createUserInDB(user);
+        viewModel.userInDB.observe(getViewLifecycleOwner(), userInDB -> goToHome());
+    }
+
+    private void goToHome() {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        startActivity(intent);
     }
 
     private void baseTextListener(EditText editText){
@@ -147,7 +169,7 @@ public class SignUpFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                resetErrorLayout(editText,s.toString());
+                manageInput(editText,s.toString());
             }
 
             @Override
@@ -156,7 +178,7 @@ public class SignUpFragment extends Fragment {
     }
 
     @SuppressLint("NonConstantResourceId")
-    private void resetErrorLayout(EditText editText , String input){
+    private void manageInput(EditText editText , String input){
         switch (editText.getId()){
             case R.id.inputEmail :
                 email = input;

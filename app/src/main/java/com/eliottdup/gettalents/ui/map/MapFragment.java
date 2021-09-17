@@ -47,7 +47,6 @@ public class MapFragment extends Fragment {
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
             googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            googleMap.setMyLocationEnabled(true);
 
             map = googleMap;
 
@@ -105,6 +104,8 @@ public class MapFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void getLastLocation(GoogleMap googleMap) {
+        googleMap.setMyLocationEnabled(true);
+
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {

@@ -160,53 +160,6 @@
 
         <com.google.android.material.card.MaterialCardView
             style="@style/GetTalents.MenuItem"
-            android:id="@+id/cardView_relation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-
-                <ImageView
-                    android:id="@+id/icon_relation"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_baseline_group_24"
-                    android:importantForAccessibility="no"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-                <TextView
-                    style="@style/GetTalents.MenuItem.Title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:text="@string/title_my_relations"
-                    app:layout_constraintStart_toEndOf="@+id/icon_relation"
-                    app:layout_constraintEnd_toStartOf="@+id/icon_arrowForward_relation"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-                <ImageView
-                    android:id="@+id/icon_arrowForward_relation"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
-                    android:contentDescription="@string/icon_clickable"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            style="@style/GetTalents.MenuItem"
             android:id="@+id/cardView_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
