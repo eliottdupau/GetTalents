@@ -142,7 +142,7 @@ public class SignInFragment extends Fragment {
     }
 
     private void signIn(String email, String password) {
-        viewModel.getUserInFirebase(email, password);
+        viewModel.signInWithFirebase(email, password);
         ApiUtils.showLoading(loadingContainer, true);
         viewModel.userInFirebase.observe(getViewLifecycleOwner(), user -> {
             ApiUtils.showLoading(loadingContainer, false);

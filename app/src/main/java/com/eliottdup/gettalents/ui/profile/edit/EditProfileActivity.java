@@ -14,6 +14,8 @@ import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class EditProfileActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
@@ -62,7 +64,7 @@ public class EditProfileActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.label_save_changes))
                 .setPositiveButton(R.string.label_ok, (dialogInterface, i) -> {
-                    viewModel.updateUser(user.getId(), user);
+                    viewModel.updateUser(user.getFirebaseUid(), user);
                     finish();
                 })
                 .setNegativeButton(R.string.label_cancel, (dialogInterface, i) -> { })
@@ -70,9 +72,10 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void getData() {
-        viewModel.getLoggedUser();
-        viewModel.user.observe(this, user -> {
-            this.user = user;
-        });
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            viewModel.getLoggedUser(user.getUid());
+            viewModel.getUser().observe(this, u -> this.user = u);
+        }
     }
 }

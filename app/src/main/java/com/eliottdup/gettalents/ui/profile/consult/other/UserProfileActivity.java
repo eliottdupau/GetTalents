@@ -10,6 +10,8 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.review.ReviewListFragment;
 import com.eliottdup.gettalents.viewmodel.UserProfileViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class UserProfileActivity extends AppCompatActivity {
     public static final String KEY_USER_ID = "userId";
@@ -53,7 +55,10 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void getData() {
-        viewModel.getUserById(userId);
-        viewModel.user.observe(this, user -> toolbar.setTitle(user.getPseudo()));
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            viewModel.getUserById(user.getUid());
+            viewModel.user.observe(this, u -> toolbar.setTitle(u.getPseudo()));
+        }
     }
 }

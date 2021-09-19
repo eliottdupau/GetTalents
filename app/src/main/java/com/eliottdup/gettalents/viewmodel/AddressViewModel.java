@@ -71,9 +71,9 @@ public class AddressViewModel extends AndroidViewModel {
         this.addressList.setValue(addressList);
     }
 
-    public void getLoggedUser() {
+    public void getLoggedUser(String id) {
         // Todo() : Changer avec la méthode de réccupération du user logged
-        this.user = userRepository.getUserById(1);
+        this.user = userRepository.getUserById(id);
     }
 
     public void updateAddress(int addressId, Address address) {

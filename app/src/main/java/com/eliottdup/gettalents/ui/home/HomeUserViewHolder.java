@@ -55,11 +55,11 @@ public class HomeUserViewHolder extends RecyclerView.ViewHolder {
 //    }
 
     public void bind(User user, RequestManager glide) {
-        homeUserNameView.setText(user.getPseudo());
+        /*homeUserNameView.setText(user.getPseudo());
         List<Address> addresses = user.getAddresses();
         Address firstAddress = addresses.get(0);
         homeUserCityView.setText(firstAddress.getCity());
-        glide.load(user.getProfilePicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(homeUserProfilePictureView);
+        glide.load(user.getProfilePicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(homeUserProfilePictureView);*/
 //        List<Skill> skills = user.getSkills();
 //        List<String> categoriesNames = new ArrayList<>();
 //        for (Skill skill : skills) {

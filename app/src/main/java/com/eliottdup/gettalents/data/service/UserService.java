@@ -22,12 +22,12 @@ public interface UserService {
     Call<List<User>> getAllUsers();
 
     @GET("users/{id}")
-    Call<User> getUserById(@Path("id") int id);
+    Call<User> getUserById(@Path("id") String id);
 
     @PATCH("users/{id}")
-    Call<Void> updateUser(@Path("id") int id,
+    Call<Void> updateUser(@Path("id") String id,
                           @Body User user);
 
     @DELETE("users/{id}")
-    Call<Void> deleteUser(@Path("id") int id);
+    Call<Void> deleteUser(@Path("id") String id);
 }

@@ -11,6 +11,7 @@
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/drawable/ic_baseline_keyboard_backspace_24.xml" value="0.607728337236534" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/activity_address.xml" value="0.38293650793650796" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/activity_authentication.xml" value="0.5714285714285714" />
+        <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/activity_create_profile.xml" value="0.5714285714285714" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/activity_edit_profile.xml" value="0.5367063492063492" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/activity_my_profile.xml" value="0.5367063492063492" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/activity_review.xml" value="0.5714285714285714" />
@@ -22,6 +23,7 @@
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/fragment_address_dialog.xml" value="0.5367063492063492" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/fragment_authentication.xml" value="0.5714285714285714" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/fragment_create_profil.xml" value="0.5714285714285714" />
+        <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/fragment_create_profile.xml" value="0.40674603174603174" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/fragment_edit_profile.xml" value="0.41369047619047616" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/fragment_map.xml" value="0.2927400468384075" />
         <entry key="..\:/Documents/Developpement/android/GetTalents/app/src/main/res/layout/fragment_menu.xml" value="0.40674603174603174" />

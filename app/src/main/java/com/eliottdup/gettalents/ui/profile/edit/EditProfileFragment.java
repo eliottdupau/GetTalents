@@ -93,7 +93,7 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void getUser() {
-        viewModel.user.observe(getViewLifecycleOwner(), user -> {
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
             updateUI(this.user);
         });
@@ -103,8 +103,12 @@ public class EditProfileFragment extends Fragment {
         pictureViewModel.getPicture().observe(getViewLifecycleOwner(), photo -> {
             if (photo.getPath() != null) {
                 user.setProfilePicture(photo);
-                /*pictureList.add(photo);
-                adapter.updateMedia(pictureList);*/
+
+                Glide.with(this)
+                        .load(user.getProfilePicture().getPath())
+                        .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                        .centerCrop()
+                        .into(profilePicture);
             }
         });
     }

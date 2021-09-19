@@ -59,7 +59,7 @@ public class UserRepository {
         return userInFirebase;
     }
 
-    public MutableLiveData<User> getUserInFirebase(String email, String password) {
+    public MutableLiveData<User> signInWithFirebase(String email, String password) {
         MutableLiveData<User> userInFirebase = new MutableLiveData<>();
 
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
@@ -114,7 +114,7 @@ public class UserRepository {
         user.setProfilePicture(picture);
     }
 
-    public MutableLiveData<User> getUserById(int id) {
+    public MutableLiveData<User> getUserById(String id) {
         MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
 
         UserService userService = RetrofitInstance.getInstance().create(UserService.class);
@@ -156,7 +156,7 @@ public class UserRepository {
         return usersMutableLiveData;
     }
 
-    public void updateUser(int id, User user) {
+    public void updateUser(String id, User user) {
         UserService userService = RetrofitInstance.getInstance().create(UserService.class);
         Call<Void> call = userService.updateUser(id, user);
         call.enqueue(new Callback<Void>() {
@@ -172,7 +172,7 @@ public class UserRepository {
         });
     }
 
-    public void deleteUser(int id) {
+    public void deleteUser(String id) {
         UserService userService = RetrofitInstance.getInstance().create(UserService.class);
         Call<Void> call = userService.deleteUser(id);
         call.enqueue(new Callback<Void>() {

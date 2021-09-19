@@ -40,11 +40,11 @@ public class Address implements Serializable {
 
     @SerializedName("lng")
     @Expose
-    private int lng;
+    private double lng;
 
     @SerializedName("lat")
     @Expose
-    private int lat;
+    private double lat;
 
     @SerializedName("userId")
     @Expose

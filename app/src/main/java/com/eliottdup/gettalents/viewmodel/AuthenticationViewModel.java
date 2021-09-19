@@ -25,11 +25,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
         userInFirebase = userRepository.createUserInFirebase(email, password);
     }
 
-    public void createUserInDB(User user) {
-        userInDB = userRepository.createUser(user);
-    }
-
-    public void getUserInFirebase(String email, String password) {
-        userInFirebase = userRepository.getUserInFirebase(email, password);
+    public void signInWithFirebase(String email, String password) {
+        userInFirebase = userRepository.signInWithFirebase(email, password);
     }
 }

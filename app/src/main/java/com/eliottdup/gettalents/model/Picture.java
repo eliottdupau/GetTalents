@@ -18,7 +18,7 @@ public class Picture implements Serializable {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
 
     @SerializedName("path")
     @Expose

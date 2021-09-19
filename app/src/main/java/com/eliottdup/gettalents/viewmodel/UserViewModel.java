@@ -37,15 +37,15 @@ public class UserViewModel extends AndroidViewModel {
         return this.user;
     }
   
-    public void getUserById(int id) {
+    public void getUserById(String id) {
         this.user = userRepository.getUserById(id);
     }
 
-    public void getLoggedUser() {
-        this.user = userRepository.getUserById(1);
+    public void getLoggedUser(String id) {
+        this.user = userRepository.getUserById(id);
     }
 
-    public void updateUser(int id, User user) {
+    public void updateUser(String id, User user) {
         userRepository.updateUser(id, user);
     }
 

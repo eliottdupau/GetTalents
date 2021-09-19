@@ -20,7 +20,7 @@ public class UserProfileViewModel extends AndroidViewModel {
         userRepository = new UserRepository();
     }
 
-    public void getUserById(int id) {
+    public void getUserById(String id) {
         this.user = userRepository.getUserById(id);
     }
 }

@@ -1,35 +1,49 @@
 package com.eliottdup.gettalents.ui.profile.edit;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.ui.skills.CreateSkillsFragment;
+import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.utils.DateUtils;
+import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
+import com.eliottdup.gettalents.viewmodel.PictureViewModel;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-
 
 public class CreateProfileFragment extends Fragment {
+    private MaterialCardView profilePictureCard, pseudoCard, birthdayCard;
+    private MaterialButton validateButton, skipButton;
+    private ImageView profilePicture;
+    private TextView pseudoView, birthdayView;
+
+    private EditProfileViewModel viewModel;
+    private PictureViewModel pictureViewModel;
 
     private FragmentManager fragmentManager;
-    private CreateSkillsFragment createSkillsFragment;
 
-    private TextInputLayout layoutPseudo;
-    private TextInputEditText inputPseudo;
+    private User user;
 
-    private MaterialCardView birthdayCard;
+    private OnButtonClickedListener callback;
 
-
-    private Button validateButton ;
-    private Button passButton;
+    public interface OnButtonClickedListener {
+        void onSkillButtonClicked(User user);
+        void onSkipButtonClicked();
+    }
 
     public CreateProfileFragment() {}
 
@@ -43,52 +57,95 @@ public class CreateProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_create_profile, container, false);
 
-        this.fragmentManager = getParentFragmentManager();
-        if(createSkillsFragment == null) createSkillsFragment = CreateSkillsFragment.newInstance();
-
-        this.validateButton = root.findViewById(R.id.validatebutton);
-        this.passButton = root.findViewById(R.id.passButton);
-
-        this.layoutPseudo = root.findViewById(R.id.layoutPseudo);
-        this.inputPseudo = root.findViewById(R.id.inputPseudo);
-
-        this.birthdayCard = root.findViewById(R.id.container_birthday);
-
-        goToSkills(validateButton);
-        goToSkills(passButton);
-
-        setupView();
+        validateButton = root.findViewById(R.id.btnValidate);
+        skipButton = root.findViewById(R.id.btnSkip);
+        profilePictureCard = root.findViewById(R.id.container_profilePicture);
+        pseudoCard = root.findViewById(R.id.container_pseudo);
+        birthdayCard = root.findViewById(R.id.container_birthday);
+        profilePictureCard = root.findViewById(R.id.container_profilePicture);
+        profilePicture = root.findViewById(R.id.icon_profilePicture);
+        pseudoView = root.findViewById(R.id.textView_pseudo);
+        birthdayView = root.findViewById(R.id.textView_birthday);
 
         return root;
     }
 
-    private void goToSkills(Button btn){
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Todo: send parameters ?
-                if(btn ==  validateButton){
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.mainContainer, createSkillsFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
-                //Without parameters ?
-                if(btn ==  passButton){
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.mainContainer, createSkillsFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
-            }
-        });
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(EditProfileViewModel.class);
+        pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
+
+        fragmentManager = getParentFragmentManager();
+
+        validateButton.setOnClickListener(v -> callback.onSkillButtonClicked(user));
+        skipButton.setOnClickListener(v -> callback.onSkipButtonClicked());
+
+        setupView();
+        getUser();
+        managePicture();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        createCallbackToParentActivity();
+    }
+
+    private void createCallbackToParentActivity() {
+        callback = (OnButtonClickedListener) getActivity();
     }
 
     private void setupView() {
+        profilePictureCard.setOnClickListener(view -> {
+            PictureDialogFragment pictureDialogFragment = PictureDialogFragment.newInstance();
+            pictureDialogFragment.show(fragmentManager, "photoFragment");
+        });
+
+        pseudoCard.setOnClickListener(view -> {
+            PseudoDialogFragment pseudoDialogFragment = PseudoDialogFragment.newInstance();
+            pseudoDialogFragment.show(fragmentManager, "pseudoFragment");
+        });
+
         birthdayCard.setOnClickListener(view -> {
             BirthdayDialogFragment birthdayDialogFragment = BirthdayDialogFragment.newInstance();
             birthdayDialogFragment.show(fragmentManager, "birthdayFragment");
         });
     }
 
+    private void getUser() {
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            this.user = user;
+            updateUI(user);
+        });
+    }
+
+    private void managePicture() {
+        pictureViewModel.getPicture().observe(getViewLifecycleOwner(), photo -> {
+            if (photo.getPath() != null) {
+                user.setProfilePicture(photo);
+
+                Glide.with(this)
+                        .load(user.getProfilePicture().getPath())
+                        .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                        .centerCrop()
+                        .into(profilePicture);
+            }
+        });
+    }
+
+    private void updateUI(User user) {
+        if (user.getProfilePicture() != null) {
+            Glide.with(this)
+                    .load(user.getProfilePicture().getPath())
+                    .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                    .centerCrop()
+                    .into(profilePicture);
+        }
+
+        if (user.getPseudo() != null) pseudoView.setText(user.getPseudo());
+        if (user.getBirthday() != null) birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
+    }
 }

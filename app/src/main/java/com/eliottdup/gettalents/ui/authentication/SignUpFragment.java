@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
@@ -22,11 +21,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.model.User;
-import com.eliottdup.gettalents.ui.MainActivity;
-import com.eliottdup.gettalents.ui.profile.edit.CreateProfileFragment;
+import com.eliottdup.gettalents.ui.profile.create.CreateProfileActivity;
 import com.eliottdup.gettalents.utils.ApiUtils;
 import com.eliottdup.gettalents.utils.AuthenticationUtils;
+import com.eliottdup.gettalents.utils.KeyUtils;
 import com.eliottdup.gettalents.viewmodel.AuthenticationViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
@@ -42,9 +40,6 @@ public class SignUpFragment extends Fragment {
     private TextInputEditText inputEmail, inputPassword, inputConfirmPassword;
 
     private AuthenticationViewModel viewModel;
-    private FragmentManager fragmentManager;
-
-    private CreateProfileFragment createProfileFragment;
 
     private String email = "";
     private String password = "";
@@ -93,8 +88,6 @@ public class SignUpFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(AuthenticationViewModel.class);
 
-        fragmentManager = getParentFragmentManager();
-
         configureToolbar();
 
         baseTextListener(inputEmail);
@@ -133,12 +126,9 @@ public class SignUpFragment extends Fragment {
         viewModel.userInFirebase.observe(getViewLifecycleOwner(), user -> {
             ApiUtils.showLoading(loadingContainer, false);
             if (user != null) {
-                if (createProfileFragment == null) createProfileFragment = CreateProfileFragment.newInstance();
-
-                fragmentManager.beginTransaction()
-                        .replace(R.id.mainContainer, createProfileFragment)
-                        .addToBackStack(null)
-                        .commit();
+                Intent intent = new Intent(requireActivity(), CreateProfileActivity.class);
+                intent.putExtra(KeyUtils.KEY_USER, user);
+                startActivity(intent);
             } else {
                 showSignInError();
             }
@@ -150,16 +140,6 @@ public class SignUpFragment extends Fragment {
         snackbar.setBackgroundTint(getResources().getColor(R.color.colorError));
 
         snackbar.show();
-    }
-
-    private void createUserInDB(User user) {
-        viewModel.createUserInDB(user);
-        viewModel.userInDB.observe(getViewLifecycleOwner(), userInDB -> goToHome());
-    }
-
-    private void goToHome() {
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        startActivity(intent);
     }
 
     private void baseTextListener(EditText editText){

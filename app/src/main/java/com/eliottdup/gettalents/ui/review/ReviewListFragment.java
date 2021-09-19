@@ -19,6 +19,8 @@ import com.eliottdup.gettalents.adapter.review.ReviewAdapter;
 import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.viewmodel.ReviewListViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class ReviewListFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private ReviewListViewModel viewModel;
+    private FirebaseAuth firebaseAuth;
 
     private ReviewAdapter adapter;
     private List<Review> reviewList;
@@ -57,6 +60,7 @@ public class ReviewListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(ReviewListViewModel.class);
+        firebaseAuth = FirebaseAuth.getInstance();
 
         configureRecyclerView();
         getUser();
@@ -70,8 +74,11 @@ public class ReviewListFragment extends Fragment {
     }
 
     private void getUser() {
-        viewModel.getLoggedUser();
-        viewModel.user.observe(getViewLifecycleOwner(), this::getReceivedReviews);
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            viewModel.getLoggedUser(firebaseUser.getUid());
+            viewModel.user.observe(getViewLifecycleOwner(), this::getReceivedReviews);
+        }
     }
 
     private void getReceivedReviews(User user) {

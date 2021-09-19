@@ -24,6 +24,8 @@ import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.eliottdup.gettalents.viewmodel.AddressViewModel;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +36,8 @@ public class AddressesFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private AddressViewModel viewModel;
-
     private FragmentManager fragmentManager;
+    private FirebaseAuth firebaseAuth;
 
     private boolean isEditable;
 
@@ -78,6 +80,8 @@ public class AddressesFragment extends Fragment {
         }
 
         viewModel = new ViewModelProvider(requireActivity()).get(AddressViewModel.class);
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
         fragmentManager = getParentFragmentManager();
 
@@ -132,7 +136,8 @@ public class AddressesFragment extends Fragment {
     }
 
     private void getUser() {
-        viewModel.getLoggedUser();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        viewModel.getLoggedUser(firebaseUser.getUid());
         viewModel.user.observe(getViewLifecycleOwner(), this::getUserAddresses);
     }
 

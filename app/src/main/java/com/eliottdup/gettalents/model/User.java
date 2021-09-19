@@ -43,7 +43,7 @@ public class User implements Serializable {
 
     @SerializedName("phone")
     @Expose
-    private Integer phone;
+    private int phone;
 
     @SerializedName("presentation")
     @Expose
@@ -64,9 +64,5 @@ public class User implements Serializable {
     @SerializedName("addresses")
     @Expose
     private List<Address> addresses = null;
-
-    @SerializedName("skills")
-    @Expose
-    private List<Skill> skills = null;
 
 }

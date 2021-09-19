@@ -65,7 +65,7 @@ public class BirthdayDialogFragment extends DialogFragment {
     }
 
     private void getUser() {
-        viewModel.user.observe(getViewLifecycleOwner(), user -> {
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
             updateUI(this.user);
         });
@@ -76,7 +76,7 @@ public class BirthdayDialogFragment extends DialogFragment {
 
         positiveButton.setOnClickListener(view -> {
             this.user.setBirthday(String.format("%s-%s-%s", datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth()));
-            viewModel.user.setValue(this.user);
+            viewModel.setUser(this.user);
             dismiss();
         });
 
@@ -84,8 +84,10 @@ public class BirthdayDialogFragment extends DialogFragment {
     }
 
     private void updateUI(User user) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(DateUtils.formatStringToDate(user.getBirthday()));
-        datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        if (user.getBirthday() != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtils.formatStringToDate(user.getBirthday()));
+            datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        }
     }
 }

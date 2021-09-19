@@ -15,6 +15,8 @@ import com.eliottdup.gettalents.ui.profile.edit.EditProfileActivity;
 import com.eliottdup.gettalents.viewmodel.MyProfileViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MyProfileActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
@@ -73,6 +75,7 @@ public class MyProfileActivity extends AppCompatActivity {
     }
 
     private void getData() {
-        viewModel.getLoggedUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) viewModel.getLoggedUser(user.getUid());
     }
 }
