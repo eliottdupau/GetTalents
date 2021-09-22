@@ -16,4 +16,10 @@ public interface UserService {
     @GET("users/{id}")
     Call<User> getUserById(@Path("id") String id);
 
+    @GET("users/category/{id}")
+    Call<List<User>> getUsersByCategoryId(@Path("id") String id);
+
+    @GET("users/skill/{id}")
+    Call<List<User>> getUsersBySkillId(@Path("id") String id);
+
 }

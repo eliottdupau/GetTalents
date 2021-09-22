@@ -52,9 +52,9 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private CategoryAdapter categoryAdapter;
     private HomeUserAdapter homeUserAdapter;
 
-    private Category category;
-    private List<Category> categories;
     private List<User> users;
+    private List<Category> categories;
+    private List<Skill> skills;
 
     private String selectedCategoryName;
 
@@ -109,6 +109,7 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         selectedCategoryName = "";
 
         getCategories();
+        getSkills();
         getUsers();
 
         // temp
@@ -126,9 +127,17 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     public void onCategorySelect(String newCategoryName) {
         if(newCategoryName != selectedCategoryName) {
             selectedCategoryName = newCategoryName;
-            getUsersByCategoryName(newCategoryName);
+            String categoryId = "";
+            for (Category category : categories) {
+                if(category.getName() == newCategoryName) {
+                    categoryId =  category.getId().toString();
+                }
+            }
+            getUsersByCategoryId(categoryId);
+//            getUsersByCategoryName(newCategoryName);
         } else {
             selectedCategoryName = "";
+            getUsers();
 //            // temp
 //            setupViewTemp();
         }
@@ -136,8 +145,18 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
 
     public void onKeyWordInput(String keyWord) {
         if(keyWord.length()>3) {
-            getUsersBySkillName(keyWord);
+            String skillId = "";
+            for (Skill skill : skills) {
+                String skillName = skill.getName();
+                String pattern = keyWord.toUpperCase().concat("[A-Z]*");
+                if(Pattern.matches(pattern, skillName.toUpperCase())) {
+                    skillId =  skill.getIdskill().toString();
+                }
+            }
+            getUsersBySkillId(skillId);
+//            getUsersBySkillName(keyWord);
         } else {
+            getUsers();
 //            // temp
 //            setupViewTemp();
         }
@@ -151,19 +170,18 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         homeUserRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
     }
 
-
-
-    private void getCategory() {
-        homeViewModel.getCategory().observe(getViewLifecycleOwner(), category -> {
-            this.category = category;
-        });
-    }
-
     private void getCategories() {
         homeViewModel.getCategories();
         homeViewModel.categories.observe(getViewLifecycleOwner(), categories -> {
             this.categories = categories;
             categoryAdapter.updateData(this.categories);
+        });
+    }
+
+    private void getSkills() {
+        homeViewModel.getSkills();
+        homeViewModel.skills.observe(getViewLifecycleOwner(), skills -> {
+            this.skills = skills;
         });
     }
 
@@ -175,46 +193,62 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         });
     }
 
-    private void getUsersByCategoryName(String categoryName) {
-
-        // temp methode
-        List<User> newUsers = new ArrayList<>();
-        for (User user : users) {
-            List<Skill> skills = user.getSkills();
-            if (skills != null && !skills.isEmpty()) {
-                for (Skill skill : skills) {
-                    Category skillCategory = skill.getCategory();
-                    if(skillCategory.getName() == categoryName) {
-                        if(!newUsers.contains(user)) {
-                            newUsers.add(user);
-                        }
-                    }
-                }
-            }
-        }
-        homeUserAdapter.updateData(newUsers);
+    private void getUsersByCategoryId(String id) {
+        homeViewModel.getUsersByCategoryId(id);
+        homeViewModel.users.observe(getViewLifecycleOwner(), users -> {
+            this.users = users;
+            homeUserAdapter.updateData(this.users);
+        });
     }
 
-    private void getUsersBySkillName(String keyword) {
-
-        // temp methode
-        List<User> newUsers = new ArrayList<>();
-        for (User user : users) {
-            List<Skill> skills = user.getSkills();
-            if (skills != null && !skills.isEmpty()) {
-                for (Skill skill : skills) {
-                    String skillName = skill.getName();
-                    String pattern = keyword.toUpperCase().concat("[A-Z]*");
-                    if(Pattern.matches(pattern, skillName.toUpperCase())) {
-                        if(!newUsers.contains(user)) {
-                            newUsers.add(user);
-                        }
-                    }
-                }
-            }
-        }
-        homeUserAdapter.updateData(newUsers);
+    private void getUsersBySkillId(String id) {
+        homeViewModel.getUsersBySkillId(id);
+        homeViewModel.users.observe(getViewLifecycleOwner(), users -> {
+            this.users = users;
+            homeUserAdapter.updateData(this.users);
+        });
     }
+
+//    private void getUsersByCategoryName(String categoryName) {
+//
+//        // temp methode
+//        List<User> newUsers = new ArrayList<>();
+//        for (User user : users) {
+//            List<Skill> skills = user.getSkills();
+//            if (skills != null && !skills.isEmpty()) {
+//                for (Skill skill : skills) {
+//                    Category skillCategory = skill.getCategory();
+//                    if(skillCategory.getName() == categoryName) {
+//                        if(!newUsers.contains(user)) {
+//                            newUsers.add(user);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        homeUserAdapter.updateData(newUsers);
+//    }
+
+//    private void getUsersBySkillName(String keyword) {
+//
+//        // temp methode
+//        List<User> newUsers = new ArrayList<>();
+//        for (User user : users) {
+//            List<Skill> skills = user.getSkills();
+//            if (skills != null && !skills.isEmpty()) {
+//                for (Skill skill : skills) {
+//                    String skillName = skill.getName();
+//                    String pattern = keyword.toUpperCase().concat("[A-Z]*");
+//                    if(Pattern.matches(pattern, skillName.toUpperCase())) {
+//                        if(!newUsers.contains(user)) {
+//                            newUsers.add(user);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        homeUserAdapter.updateData(newUsers);
+//    }
 
 
 //    private void setupViewTemp() {

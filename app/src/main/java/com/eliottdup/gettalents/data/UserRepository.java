@@ -63,4 +63,46 @@ public class UserRepository {
         return userMutableLiveData;
     }
 
+    public MutableLiveData<List<User>> getUsersByCategoryId(String id) {
+        MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
+
+        UserService userService = RetrofitInstance.getInstance().create(UserService.class);
+        Call<List<User>> call = userService.getUsersByCategoryId(id);
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+                Log.d("HTTP 200", "Get Users By Category -> success");
+                usersMutableLiveData.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
+                Log.d("HTTP 404", "User Not Found");
+            }
+        });
+
+        return usersMutableLiveData;
+    }
+
+    public MutableLiveData<List<User>> getUsersBySkillId(String id) {
+        MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
+
+        UserService userService = RetrofitInstance.getInstance().create(UserService.class);
+        Call<List<User>> call = userService.getUsersBySkillId(id);
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+                Log.d("HTTP 200", "Get Users By Category -> success");
+                usersMutableLiveData.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
+                Log.d("HTTP 404", "User Not Found");
+            }
+        });
+
+        return usersMutableLiveData;
+    }
+
 }

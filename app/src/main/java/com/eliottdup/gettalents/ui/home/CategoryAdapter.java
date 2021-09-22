@@ -53,9 +53,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
                 mCallback.onCategorySelect(categoryName);
             };
         });
-//        holder.categoryTextView.setOnClickListener(view -> {
-//            holder.categoryTextView.setText("Click");
-//        });
     }
 
     @Override

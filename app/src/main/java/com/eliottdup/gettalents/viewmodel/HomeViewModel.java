@@ -8,8 +8,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.eliottdup.gettalents.data.CategoryRepository;
+import com.eliottdup.gettalents.data.SkillRepository;
 import com.eliottdup.gettalents.data.UserRepository;
 import com.eliottdup.gettalents.model.Category;
+import com.eliottdup.gettalents.model.Skill;
 import com.eliottdup.gettalents.model.User;
 
 import java.util.List;
@@ -23,11 +25,14 @@ public class HomeViewModel extends AndroidViewModel {
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final SkillRepository skillRepository;
 
     public MutableLiveData<List<User>> users;
     public MutableLiveData<User> user;
     public MutableLiveData<List<Category>> categories;
     public MutableLiveData<Category> category;
+    public MutableLiveData<List<Skill>> skills;
+    public MutableLiveData<Skill> skill;
 
 
     public HomeViewModel(@NonNull Application application) {
@@ -35,6 +40,7 @@ public class HomeViewModel extends AndroidViewModel {
 
         categoryRepository = new CategoryRepository();
         userRepository = new UserRepository();
+        skillRepository = new SkillRepository();
     }
 
     // users
@@ -49,28 +55,36 @@ public class HomeViewModel extends AndroidViewModel {
     public void getUserById(String id) { this.user = userRepository.getUserById(id); }
 
     public void getUsers() {
-//        if(this.users == null) this.users = new MutableLiveData<>();
-//        return this.users;
         this.users = userRepository.getUsers();
+    }
+
+    public void getUsersByCategoryId(String id) {
+        this.users = userRepository.getUsersByCategoryId(id);
+    }
+
+    public void getUsersBySkillId(String id) {
+        this.users = userRepository.getUsersBySkillId(id);
     }
 
     // categories
 
-    public void setCategory(Category category) { this.category.setValue(category); }
+    public void setCategory(Category category) { this.category.setValue(category); } // inutilisé
 
     public LiveData<Category> getCategory() {
         if(this.category == null) this.category = new MutableLiveData<>();
         return this.category;
-    }
+    } // inutilisé
 
-    public void getCategporyById(String id) { this.category = categoryRepository.getCategoryById(id); }
+    public void getCategporyById(String id) { this.category = categoryRepository.getCategoryById(id); } // inutilisé
 
     public void getCategories() {
-//        if(this.categories == null) this.categories = new MutableLiveData<>();
-//        return this.categories;
         this.categories = categoryRepository.getCategories();
     }
 
+    // skills
 
+    public void getSkills() {
+        this.skills = skillRepository.getSkills();
+    }
 
 }

@@ -68,7 +68,7 @@
     <string name="profile_picture">This image is the profile picture of the user</string>
     <string name="icon_clickable">That icon is clickable</string>
     <string name="logo">This is the logo of the app</string>
-    <string name="error_empty">Empty field</string>
+<!--    <string name="error_empty">Empty field</string>-->
     <string name="error_oversize">Too many characters</string>
 
     <!-- Alert Dialog Title -->
@@ -82,8 +82,8 @@
     <string name="disclaimer_location_permission_denied">This feature is disable while location permission is not accepted</string>
 
     <!-- Image Content Description -->
-    <string name="profile_picture">This image is the profile picture of the user</string>
-    <string name="icon_clickable">Clickable icon</string>
+<!--    <string name="profile_picture">This image is the profile picture of the user</string>-->
+<!--    <string name="icon_clickable">Clickable icon</string>-->
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="email">exemple@exemple.fr</string>
