@@ -148,8 +148,8 @@ public class SignUpFragment extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                manageInput(editText,s.toString());
+            public void onTextChanged(CharSequence input, int start, int before, int count) {
+                manageInput(editText, input.toString().trim());
             }
 
             @Override

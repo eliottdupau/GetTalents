@@ -1,9 +1,11 @@
-package com.eliottdup.gettalents.data;
+package com.eliottdup.gettalents.data.repository;
 
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.eliottdup.gettalents.data.service.CategoryService;
+import com.eliottdup.gettalents.data.RetrofitInstance;
 import com.eliottdup.gettalents.model.Category;
 
 import java.util.ArrayList;

@@ -1,21 +1,33 @@
 package com.eliottdup.gettalents.ui.profile.edit;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.data.helper.FirebaseStorageHelper;
+import com.eliottdup.gettalents.model.Picture;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 
 public class EditProfileActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
@@ -64,11 +76,32 @@ public class EditProfileActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.label_save_changes))
                 .setPositiveButton(R.string.label_ok, (dialogInterface, i) -> {
-                    viewModel.updateUser(user.getFirebaseUid(), user);
+                    uploadPicture("images/profile/" + user.getFirebaseUid());
                     finish();
                 })
                 .setNegativeButton(R.string.label_cancel, (dialogInterface, i) -> { })
                 .show();
+    }
+
+    private void uploadPicture(String ref) {
+        StorageReference rootRef = FirebaseStorage.getInstance().getReference();
+        StorageReference pictureRef = rootRef.child(ref);
+
+        Uri file = Uri.fromFile(new File(user.getProfilePicture().getPath()));
+        UploadTask uploadTask = pictureRef.putFile(file);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                user.getProfilePicture().setPath("images/profile/" + user.getFirebaseUid());
+                viewModel.updateUser(user.getFirebaseUid(), user);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("Profilepicture", e.getMessage());
+            }
+        });
     }
 
     private void getData() {

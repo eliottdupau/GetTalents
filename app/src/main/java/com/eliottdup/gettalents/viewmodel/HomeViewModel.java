@@ -5,10 +5,9 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.eliottdup.gettalents.data.CategoryRepository;
-import com.eliottdup.gettalents.data.UserRepository;
+import com.eliottdup.gettalents.data.repository.CategoryRepository;
+import com.eliottdup.gettalents.data.repository.UserRepository;
 import com.eliottdup.gettalents.model.Category;
 import com.eliottdup.gettalents.model.User;
 
@@ -51,7 +50,7 @@ public class HomeViewModel extends AndroidViewModel {
     public void getUsers() {
 //        if(this.users == null) this.users = new MutableLiveData<>();
 //        return this.users;
-        this.users = userRepository.getUsers();
+        this.users = userRepository.getAllUsers();
     }
 
     // categories

@@ -25,6 +25,7 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.MainActivity;
 import com.eliottdup.gettalents.utils.ApiUtils;
 import com.eliottdup.gettalents.utils.AuthenticationUtils;
+import com.eliottdup.gettalents.utils.ErrorUtils;
 import com.eliottdup.gettalents.viewmodel.AuthenticationViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
@@ -151,16 +152,9 @@ public class SignInFragment extends Fragment {
                 startActivity(intent);
                 requireActivity().finish();
             } else {
-                showSignInError();
+                ErrorUtils.displayLongError(coordinatorLayout, "Id incorrect");
             }
         });
-    }
-
-    private void showSignInError() {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Id incorrects", Snackbar.LENGTH_LONG);
-        snackbar.setBackgroundTint(getResources().getColor(R.color.colorError));
-
-        snackbar.show();
     }
 
     private void baseTextListener(EditText editText){
@@ -169,8 +163,8 @@ public class SignInFragment extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                manageInput(editText,s.toString());
+            public void onTextChanged(CharSequence input, int start, int before, int count) {
+                manageInput(editText, input.toString().trim());
             }
 
             @Override

@@ -24,7 +24,7 @@ public class AuthenticationActivity extends AppCompatActivity implements SignUpF
 
         fragmentManager = getSupportFragmentManager();
 
-        if(authenticationFragment == null) authenticationFragment = AuthenticationFragment.newInstance();
+        if (authenticationFragment == null) authenticationFragment = AuthenticationFragment.newInstance();
 
         fragmentManager.beginTransaction()
                 .replace(R.id.mainContainer, authenticationFragment)

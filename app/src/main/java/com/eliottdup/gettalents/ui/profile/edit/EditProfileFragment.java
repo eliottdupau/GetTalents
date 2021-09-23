@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.data.helper.FirebaseStorageHelper;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
@@ -114,11 +115,15 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void updateUI(User user) {
-        Glide.with(this)
+        FirebaseStorageHelper.downloadProfilePicture(
+                getContext(),
+                profilePicture,
+                user.getProfilePicture().getPath());
+        /*Glide.with(this)
                 .load(user.getProfilePicture().getPath())
                 .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
                 .centerCrop()
-                .into(profilePicture);
+                .into(profilePicture);*/
 
         pseudoView.setText(user.getPseudo());
         mailView.setText(user.getEmail());
