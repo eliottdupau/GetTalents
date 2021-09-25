@@ -30,7 +30,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
     private List<Category> categories;
     private RequestManager glide;
 
-    public CategoryAdapter(List<Category> categories, RequestManager glide, String categoryName, ICategorySelect callback) {
+    public CategoryAdapter(List<Category> categories, RequestManager glide, ICategorySelect callback) {
         this.categories = categories;
         this.glide = glide;
         mCallback = callback;

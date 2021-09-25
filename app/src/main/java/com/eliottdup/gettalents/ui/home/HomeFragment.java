@@ -19,23 +19,18 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.Category;
-import com.eliottdup.gettalents.model.Picture;
 import com.eliottdup.gettalents.model.Skill;
 import com.eliottdup.gettalents.model.User;
-import com.eliottdup.gettalents.ui.address.UpdateAddressDialogFragment;
 import com.eliottdup.gettalents.ui.profile.consult.other.UserProfileActivity;
-import com.eliottdup.gettalents.ui.profile.consult.other.UserProfileFragment;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.eliottdup.gettalents.viewmodel.HomeViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -56,16 +51,14 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private CategoryAdapter categoryAdapter;
     private HomeUserAdapter homeUserAdapter;
 
-    private List<User> users;
     private List<Category> categories;
     private List<Skill> skills;
+    private List<User> users;
 
-    private String selectedCategoryName;
-    private String inputKeyWord;
+    private List<User> usersByCategory;
+    private List<User> usersBySkill;
 
-    private List<User> tempUsersByCategory;
-    private List<User> tempUsersBySkill;
-
+    private List<String> selectedCategoriesNames;
 
     public static final String KEY_USER_ID = "userId";
 
@@ -96,8 +89,8 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         keyWordsView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                String keyWord = keyWordsView.getText().toString();
-                onKeyWordInput(keyWord);
+                String keyWords = keyWordsView.getText().toString();
+                onKeyWordInput(keyWords);
                 return true;
             }
         });
@@ -119,79 +112,19 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         configureCategoryRecyclerView();
         configureHomeUserRecyclerView();
 
-        selectedCategoryName = "";
-        inputKeyWord = "";
-
         getCategories();
         getSkills();
         getUsers();
+
+        this.selectedCategoriesNames = new ArrayList<>();
 
     }
 
     private void configureCategoryRecyclerView() {
         categories = new ArrayList<>();
-        categoryAdapter = new CategoryAdapter(categories, Glide.with(this), selectedCategoryName, this);
+        categoryAdapter = new CategoryAdapter(categories, Glide.with(this), this);
         categoryRecyclerView.setAdapter(categoryAdapter);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-    }
-
-    public String findCategoryId(String categoryName) {
-        String categoryId = "";
-        for (Category category : categories) {
-            if(category.getName() == categoryName) {
-                categoryId =  category.getId().toString();
-            }
-        }
-        return categoryId;
-    }
-
-    @Override
-    public void onCategorySelect(String newCategoryName) {
-        if(newCategoryName != selectedCategoryName) {
-            selectedCategoryName = newCategoryName;
-            if (inputKeyWord == "") {
-                getUsersByCategoryId(findCategoryId(newCategoryName));
-            } else {
-                getUsersByCategoryAndSkillId(findCategoryId(newCategoryName), findSkillId(inputKeyWord));
-            }
-        } else {
-            selectedCategoryName = "";
-            if (inputKeyWord == "") {
-                getUsers();
-            } else {
-                getUsersBySkillId(findSkillId(inputKeyWord));
-            }
-        }
-    }
-
-    public String findSkillId(String keyWord) {
-        String skillId = "";
-        for (Skill skill : skills) {
-            String skillName = skill.getName();
-            String pattern = keyWord.toUpperCase().concat("[A-Z]*");
-            if(Pattern.matches(pattern, skillName.toUpperCase())) {
-                skillId =  skill.getIdskill().toString();
-            }
-        }
-        return skillId;
-    }
-
-    public void onKeyWordInput(String keyWord) {
-        if(keyWord.length()>3) {
-            inputKeyWord = keyWord;
-            if (selectedCategoryName == "") {
-                getUsersBySkillId(findSkillId(keyWord));
-            } else {
-                getUsersByCategoryAndSkillId(findCategoryId(selectedCategoryName), findSkillId(keyWord));
-            }
-        } else {
-            inputKeyWord = "";
-            if (selectedCategoryName == "") {
-                getUsers();
-            } else {
-                getUsersByCategoryId(findCategoryId(selectedCategoryName));
-            }
-        }
     }
 
     private void configureHomeUserRecyclerView() {
@@ -220,287 +153,84 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         homeViewModel.getUsers();
         homeViewModel.users.observe(getViewLifecycleOwner(), users -> {
             this.users = users;
+            this.usersByCategory = users;
+            this.usersBySkill = users;
             homeUserAdapter.updateData(this.users);
         });
     }
 
-    private void getUsersByCategoryId(String id) {
-        homeViewModel.getUsersByCategoryId(id);
-        homeViewModel.users.observe(getViewLifecycleOwner(), users -> {
-            this.users = users;
-            homeUserAdapter.updateData(this.users);
-        });
-    }
-
-    private void getUsersBySkillId(String id) {
-        homeViewModel.getUsersBySkillId(id);
-        homeViewModel.users.observe(getViewLifecycleOwner(), users -> {
-            this.users = users;
-            homeUserAdapter.updateData(this.users);
-        });
-    }
-
-    private List<User> filterUsers(List<User> usersByCategory, List<User> usersBySkill) {
-        List<User> users = new ArrayList<>();
-        for (User userByCategory : usersByCategory) {
-            for (User userBySkill : usersBySkill) {
-                if(userByCategory.getId() == userBySkill.getId()) {
-                    users.add(userByCategory);
-                }
+    public void updateUsersByFilters() {
+        List<User> filteredUsers = new ArrayList<>();
+        for (User userSkill : this.usersBySkill) {
+            if(this.usersByCategory.contains(userSkill)) {
+                filteredUsers.add(userSkill);
             }
         }
-        return users;
+        homeUserAdapter.updateData(filteredUsers);
     }
 
-
-    private void getUsersByCategoryAndSkillId(String categoryId, String skillId) {
-
-        this.tempUsersByCategory = new ArrayList<>();
-        this.tempUsersBySkill = new ArrayList<>();
-
-        homeViewModel.getUsersByCategoryId(categoryId);
-        homeViewModel.users.observe(getViewLifecycleOwner(), usersByCategory -> {
-            this.tempUsersByCategory = usersByCategory;
-
-            homeViewModel.getUsersBySkillId(skillId);
-            homeViewModel.users.observe(getViewLifecycleOwner(), usersBySkill -> {
-                this.tempUsersBySkill = usersBySkill;
-
-                this.users = filterUsers(this.tempUsersByCategory, this.tempUsersBySkill);
-            });
-        });
+    public void filterByCategory() {
+        if(this.selectedCategoriesNames.isEmpty()) {
+            this.usersByCategory = this.users;
+        } else {
+            List<User> tempUsers = new ArrayList<>();
+            for (User user : this.users) {
+                for (Skill skill : user.getSkills()) {
+                    if(this.selectedCategoriesNames.contains(skill.getCategory().getName())) {
+                        tempUsers.add(user);
+                    }
+                }
+            }
+            this.usersByCategory = tempUsers;
+        }
+        updateUsersByFilters();
     }
 
-//    private void getUsersByCategoryName(String categoryName) {
-//
-//        // temp methode
-//        List<User> newUsers = new ArrayList<>();
-//        for (User user : users) {
-//            List<Skill> skills = user.getSkills();
-//            if (skills != null && !skills.isEmpty()) {
-//                for (Skill skill : skills) {
-//                    Category skillCategory = skill.getCategory();
-//                    if(skillCategory.getName() == categoryName) {
-//                        if(!newUsers.contains(user)) {
-//                            newUsers.add(user);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        homeUserAdapter.updateData(newUsers);
-//    }
+    public void filterBySkills(List<String> keyWords) {
+        if(keyWords.isEmpty()) {
+            this.usersBySkill = this.users;
+        } else {
+            List<User> tempUsers = new ArrayList<>();
+            for (User user : this.users) {
+                for (Skill userSkill : user.getSkills()) {
+                    String userSkillName = userSkill.getName();
+                    for (String keyWord: keyWords) {
+                        String pattern = keyWord.toUpperCase().concat("[A-Z]*");
+                        if(Pattern.matches(pattern, userSkillName.toUpperCase())) {
+                            if(!tempUsers.contains(user)) {
+                                tempUsers.add(user);
+                            }
+                        }
+                    }
+                }
+            }
+            this.usersBySkill = tempUsers;
+        }
+        updateUsersByFilters();
+    }
 
-//    private void getUsersBySkillName(String keyword) {
-//
-//        // temp methode
-//        List<User> newUsers = new ArrayList<>();
-//        for (User user : users) {
-//            List<Skill> skills = user.getSkills();
-//            if (skills != null && !skills.isEmpty()) {
-//                for (Skill skill : skills) {
-//                    String skillName = skill.getName();
-//                    String pattern = keyword.toUpperCase().concat("[A-Z]*");
-//                    if(Pattern.matches(pattern, skillName.toUpperCase())) {
-//                        if(!newUsers.contains(user)) {
-//                            newUsers.add(user);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        homeUserAdapter.updateData(newUsers);
-//    }
+    @Override
+    public void onCategorySelect(String newCategoryName) {
+        if(this.selectedCategoriesNames.contains(newCategoryName)) {
+            List<String> tempCategoriesNamesList = new ArrayList<>();
+            for (String categoryName: selectedCategoriesNames) {
+                if(!categoryName.equals(newCategoryName)) {
+                    tempCategoriesNamesList.add(categoryName);
+                }
+            }
+            this.selectedCategoriesNames = tempCategoriesNamesList;
+        } else {
+            this.selectedCategoriesNames.add(newCategoryName);
+        }
+        filterByCategory();
+    }
 
-
-//    private void setupViewTemp() {
-//
-//        // temp skills
-//
-//        Skill skill_1 = new Skill();
-//        skill_1.setIdskill(1);
-//        skill_1.setName("Menuiserie");
-//
-//        Skill skill_2 = new Skill();
-//        skill_2.setIdskill(2);
-//        skill_2.setName("Plomberie");
-//
-//        Skill skill_3 = new Skill();
-//        skill_3.setIdskill(3);
-//        skill_3.setName("Plantation");
-//
-//        Skill skill_4 = new Skill();
-//        skill_4.setIdskill(4);
-//        skill_4.setName("Arbustes");
-//
-//        Skill skill_5 = new Skill();
-//        skill_5.setIdskill(5);
-//        skill_5.setName("Toilettage");
-//
-//        Skill skill_6 = new Skill();
-//        skill_6.setIdskill(6);
-//        skill_6.setName("Chien");
-//
-//        // temp categories
-//
-//        Category category_1 = new Category();
-//        category_1.setId(1);
-//        category_1.setName("Bricolage");
-//        Picture picture_cat_1 = new Picture();
-//        picture_cat_1.setId(1);
-//        // https://www.iconexperience.com/g_collection/search/?q=aniaml
-//        picture_cat_1.setPath("https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/128x128/tools.png");
-//        category_1.setCategoryPicture(picture_cat_1);
-//        ArrayList<Skill> skills_cat_1 = new ArrayList<>();
-//        skills_cat_1.add(skill_1);
-//        skill_1.setCategory(category_1);
-//        skills_cat_1.add(skill_2);
-//        skill_2.setCategory(category_1);
-//        category_1.setSkills(skills_cat_1);
-//
-//        Category category_2 = new Category();
-//        category_2.setId(2);
-//        category_2.setName("Jardinage");
-//        Picture picture_cat_2 = new Picture();
-//        picture_cat_2.setId(2);
-//        picture_cat_2.setPath("https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/128x128/plant.png");
-//        category_2.setCategoryPicture(picture_cat_2);
-//        ArrayList<Skill> skills_cat_2 = new ArrayList<>();
-//        skills_cat_2.add(skill_3);
-//        skill_3.setCategory(category_2);
-//        skills_cat_2.add(skill_4);
-//        skill_4.setCategory(category_2);
-//        category_2.setSkills(skills_cat_2);
-//
-//        Category category_3 = new Category();
-//        category_3.setId(3);
-//        category_3.setName("Animaux");
-//        Picture picture_cat_3 = new Picture();
-//        picture_cat_3.setId(3);
-//        picture_cat_3.setPath("https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/128x128/dog.png");
-//        category_3.setCategoryPicture(picture_cat_3);
-//        ArrayList<Skill> skills_cat_3 = new ArrayList<>();
-//        skills_cat_3.add(skill_5);
-//        skill_5.setCategory(category_3);
-//        skills_cat_3.add(skill_6);
-//        skill_6.setCategory(category_3);
-//        category_3.setSkills(skills_cat_3);
-//
-//        categories = new ArrayList<>();
-//        categories.add(category_1);
-//        categories.add(category_2);
-//        categories.add(category_3);
-//
-//        categoryAdapter.updateData(categories);
-//
-//        // temp users
-//
-//        User user_1 = new User("1");
-//        user_1.setPseudo("Chilperic");
-//        user_1.setMail("chilperic@mail.com");
-//        user_1.setPhone(123456789);
-//        user_1.setPresentation("Je suis un bricoleur et un ami des animaux.");
-//        Picture picture_1 = new Picture();
-//        picture_1.setId(1);
-//        picture_1.setPath("https://img-4.linternaute.com/M-OdZ18KuQUin9akqJYOZxqk7MY=/620x415/smart/0f57298c13314fd6a9a6879327570405/ccmcms-linternaute/bebe-singe.jpg");
-//        user_1.setProfilePicture(picture_1);
-//
-//        User user_2 = new User("2");
-//        user_2.setPseudo("Foulque");
-//        user_2.setMail("foulque@mail.com");
-//        user_2.setPhone(123456789);
-//        user_2.setPresentation("Je n'aime rien.");
-//        Picture picture_2 = new Picture();
-//        picture_2.setId(2);
-//        picture_2.setPath("https://img-4.linternaute.com/-62RZbasdwxBe5rTtu0u6aR9ekQ=/620x435/smart/fc15734ed3a741fbb59cf051cce0a81e/ccmcms-linternaute/bebe-fennec.jpg");
-//        user_2.setProfilePicture(picture_2);
-//
-//        User user_3 = new User("3");
-//        user_3.setPseudo("Gonzague");
-//        user_3.setMail("gonzague@mail.com");
-//        user_3.setPhone(123456789);
-//        user_2.setPresentation("Je suis un bricoleur et un jardinier.");
-//        Picture picture_3 = new Picture();
-//        picture_3.setId(3);
-//        picture_3.setPath("https://torange.biz/photofxnew/76/HD/lion-profile-picture-76801.jpg");
-//        user_3.setProfilePicture(picture_3);
-//
-//        Calendar calendar = Calendar.getInstance();
-//
-//        calendar.set(Calendar.DAY_OF_MONTH, 13);
-//        calendar.set(Calendar.MONTH, 2);
-//        calendar.set(Calendar.YEAR, 1992);
-//        user_1.setRegistrationDate(calendar.getTime());
-//        user_1.setBirthday(calendar.getTime());
-//
-//        calendar.set(Calendar.DAY_OF_MONTH, 5);
-//        calendar.set(Calendar.MONTH, 7);
-//        calendar.set(Calendar.YEAR, 1962);
-//        user_2.setRegistrationDate(calendar.getTime());
-//        user_2.setBirthday(calendar.getTime());
-//
-//        calendar.set(Calendar.DAY_OF_MONTH, 24);
-//        calendar.set(Calendar.MONTH, 10);
-//        calendar.set(Calendar.YEAR, 1978);
-//        user_3.setRegistrationDate(calendar.getTime());
-//        user_3.setBirthday(calendar.getTime());
-//
-//        ArrayList<Address> addresses_1 = new ArrayList<>();
-//
-//        Address address_1_1 = new Address(UUID.randomUUID().toString());
-//        address_1_1.setAddress("36 rue des jambons");
-//        address_1_1.setZipCode("69360");
-//        address_1_1.setCity("Youpi-en-Josas");
-//        address_1_1.setCountry("France");
-//        addresses_1.add(address_1_1);
-//        Address address_1_2 = new Address(UUID.randomUUID().toString());
-//        address_1_2.setAddress("12 rue du navet");
-//        address_1_2.setZipCode("39000");
-//        address_1_2.setCity("Ploin");
-//        address_1_2.setCountry("France");
-//        addresses_1.add(address_1_2);
-//        user_1.setAddresses(addresses_1);
-//
-//        ArrayList<Address> addresses_2 = new ArrayList<>();
-//        Address address_2 = new Address(UUID.randomUUID().toString());
-//        address_2.setAddress("1 rue du chat anxieux");
-//        address_2.setZipCode("60000");
-//        address_2.setCity("Saint-Glinglin");
-//        address_2.setCountry("France");
-//        addresses_2.add(address_2);
-//        user_2.setAddresses(addresses_2);
-//
-//        ArrayList<Address> addresses_3 = new ArrayList<>();
-//        Address address_3 = new Address(UUID.randomUUID().toString());
-//        address_3.setAddress("<23 rue des huîtres malades>");
-//        address_3.setZipCode("12100");
-//        address_3.setCity("Bouldogne");
-//        address_3.setCountry("France");
-//        addresses_3.add(address_3);
-//        user_3.setAddresses(addresses_3);
-//
-//        ArrayList<Skill> skills_user_1 = new ArrayList<>();
-//        skills_user_1.add(skill_1);
-//        skills_user_1.add(skill_5);
-//        user_1.setSkills(skills_user_1);
-//
-//        ArrayList<Skill> skills_user_2 = new ArrayList<>();
-//        user_2.setSkills(skills_user_2);
-//
-//        ArrayList<Skill> skills_user_3 = new ArrayList<>();
-//        skills_user_3.add(skill_1);
-//        skills_user_3.add(skill_2);
-//        skills_user_3.add(skill_3);
-//        user_3.setSkills(skills_user_3);
-//
-//        users = new ArrayList<>();
-//        users.add(user_1);
-//        users.add(user_2);
-//        users.add(user_3);
-//
-//        homeUserAdapter.updateData(users);
-//
-//    }
-
+    public void onKeyWordInput(String keyWords) {
+        List<String> keyWordsList = new ArrayList();
+        if(keyWords.length()>3) {
+            keyWordsList = Arrays.asList(keyWords.split(" "));
+        }
+        filterBySkills(keyWordsList);
+    }
 
 }
