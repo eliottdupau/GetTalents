@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,9 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -114,7 +118,6 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
 
         this.selectedCategoriesNames = new ArrayList<>();
         this.keyWordsList = new ArrayList<>();
-
     }
 
     private void configureCategoryRecyclerView() {
@@ -131,6 +134,56 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         homeUserRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
     }
 
+    public double calculateDistance(double lat1, double lat2, double lng1, double lng2) {
+        if ((lat1 == lat2) && (lng1 == lng2)) {
+            return 0;
+        }
+        else {
+            double theta = lng1 - lng2;
+            double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
+            dist = Math.acos(dist);
+            dist = Math.toDegrees(dist);
+            dist = dist * 60 * 1.1515;
+            // convert to kms
+            dist = dist * 1.609344;
+            return (dist);
+        }
+    }
+
+    private List<User> sortUsersByLocation(List<User> allUsers) {
+
+        double latUser1 = 50.883331;
+        double lngUser1 = 1.66667;
+
+        List<Pair<Double, User>> distUserCouplesList = new ArrayList<>();
+        for (User user: allUsers) {
+            double latUser2 = user.getAddresses().get(0).getLat();
+            double lngUser2 = user.getAddresses().get(0).getLng();
+            double distance = calculateDistance(latUser1, latUser2, lngUser1, lngUser2);
+            Pair<Double, User> distUserCouple = new Pair<Double, User>(distance, user);
+            distUserCouplesList.add(distUserCouple);
+        }
+
+        Collections.sort(distUserCouplesList, new Comparator<Pair<Double, User>>() {
+            @Override
+            public int compare(final Pair<Double, User> p1, final Pair<Double, User> p2) {
+                if (p1.first < p2.first) {
+                    return -1;
+                } else if (p1.first.equals(p2.first)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        List<User> newUsersList = new ArrayList<>();
+        for(Pair<Double, User> distUserCouple: distUserCouplesList) {
+            newUsersList.add(distUserCouple.second);
+        }
+
+        return newUsersList;
+    }
+
     private void getCategories() {
         homeViewModel.getCategories();
         homeViewModel.categories.observe(getViewLifecycleOwner(), categories -> {
@@ -142,8 +195,8 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private void getUsers() {
         homeViewModel.getUsers();
         homeViewModel.users.observe(getViewLifecycleOwner(), users -> {
-            this.users = users;
-            this.filteredUsers = users;
+            this.users = sortUsersByLocation(users);
+            this.filteredUsers = sortUsersByLocation(users);
             homeUserAdapter.updateData(this.users);
         });
     }
