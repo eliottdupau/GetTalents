@@ -32,28 +32,12 @@ public class HomeUserViewHolder extends RecyclerView.ViewHolder {
     private TextView homeUserCityView;
     private ImageView homeUserProfilePictureView;
 
-//    private ListView categriesNamesView;
-
-//    private ArrayAdapter<String> categoriesAdapter;
-
-//    private RecyclerView categoryRecyclerView ;
-//    private HomeUserCategoryAdapter homeUserCategoryAdapter;
-//    private List<Category> categories;
-
     public HomeUserViewHolder(@NonNull View itemView) {
         super(itemView);
         homeUserNameView = itemView.findViewById(R.id.text_profileName);
         homeUserCityView = itemView.findViewById(R.id.text_profileCity);
         homeUserProfilePictureView = itemView.findViewById(R.id.icon_profilePicture);
-//        categriesNamesView = itemView.findViewById(R.id.categories_names_list);
     }
-
-//    private void configureCategoryRecyclerView() {
-//        categories = new ArrayList<>();
-//        homeUserCategoryAdapter = new HomeUserCategoryAdapter(categories, Glide.with(this));
-//        categoryRecyclerView.setAdapter(homeUserCategoryAdapter);
-//        categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//    }
 
     public double calculateDistance(double lat1, double lat2, double lng1, double lng2) {
         if ((lat1 == lat2) && (lng1 == lng2)) {
@@ -94,15 +78,6 @@ public class HomeUserViewHolder extends RecyclerView.ViewHolder {
         }
         homeUserCityView.setText(cityDisplay);
         glide.load(user.getProfilePicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(homeUserProfilePictureView);
-//        List<Skill> skills = user.getSkills();
-//        List<String> categoriesNames = new ArrayList<>();
-//        for (Skill skill : skills) {
-//            Category category = skill.getCategory();
-//            categoriesNames.add(category.getName());
-//        }
-//        ArrayAdapter categoriesAdapter = new ArrayAdapter<String>(this,R.layout.item_home_user,categoriesNames);
-//        categriesNamesView.setAdapter(categoriesAdapter);
-//        homeUserCategoryAdapter = new HomeUserCategoryAdapter(categories, Glide.with(this));
-//        categriesNamesView.setAdapter(homeUserCategoryAdapter);
+
     }
 }
