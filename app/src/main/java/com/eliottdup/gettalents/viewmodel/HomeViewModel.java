@@ -14,6 +14,7 @@ import com.eliottdup.gettalents.model.Category;
 import com.eliottdup.gettalents.model.Skill;
 import com.eliottdup.gettalents.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.NonNull;
@@ -65,6 +66,18 @@ public class HomeViewModel extends AndroidViewModel {
     public void getUsersBySkillId(String id) {
         this.users = userRepository.getUsersBySkillId(id);
     }
+
+//    public void getUsersByCategoryAndSkillId(String categoryId, String skillId) {
+//        MutableLiveData<List<User>> usersByCategory = userRepository.getUsersByCategoryId(categoryId);
+//        MutableLiveData<List<User>> usersBySkill = userRepository.getUsersBySkillId(skillId);
+//        List<User> tempList = new ArrayList<>();
+//        for (User userBySkill : usersBySkill.getValue()) {
+//            if(usersByCategory.getValue().contains(userBySkill)) {
+//                tempList.add(userBySkill);
+//            }
+//        }
+//        this.users.setValue(tempList);
+//    }
 
     // categories
 

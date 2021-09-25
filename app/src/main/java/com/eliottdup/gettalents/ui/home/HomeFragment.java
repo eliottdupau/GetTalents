@@ -1,5 +1,6 @@
 package com.eliottdup.gettalents.ui.home;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -23,6 +24,9 @@ import com.eliottdup.gettalents.model.Category;
 import com.eliottdup.gettalents.model.Picture;
 import com.eliottdup.gettalents.model.Skill;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.ui.address.UpdateAddressDialogFragment;
+import com.eliottdup.gettalents.ui.profile.consult.other.UserProfileActivity;
+import com.eliottdup.gettalents.ui.profile.consult.other.UserProfileFragment;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.eliottdup.gettalents.viewmodel.HomeViewModel;
 import com.google.android.material.textfield.TextInputEditText;
@@ -57,6 +61,15 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private List<Skill> skills;
 
     private String selectedCategoryName;
+    private String inputKeyWord;
+
+    private List<User> tempUsersByCategory;
+    private List<User> tempUsersBySkill;
+
+
+    public static final String KEY_USER_ID = "userId";
+
+    private FragmentManager fragmentManager;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -90,10 +103,10 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         });
         ItemClickSupport.addTo(homeUserRecyclerView, R.layout.item_home_user)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-//                    User user = homeUserAdapter.getUser(position);
-//                    Intent intent = new Intent(getContext(), UserProfileActivity.class);
-//                    intent.putExtra("userId", user.getId());
-//                    startActivity(intent);
+                    User user = homeUserAdapter.getUser(position);
+                    Intent intent = new Intent(getContext(), UserProfileActivity.class);
+                    intent.putExtra(KEY_USER_ID, user.getId());
+                    startActivity(intent);
                 });
         return root;
     }
@@ -107,13 +120,12 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         configureHomeUserRecyclerView();
 
         selectedCategoryName = "";
+        inputKeyWord = "";
 
         getCategories();
         getSkills();
         getUsers();
 
-        // temp
-//        setupViewTemp();
     }
 
     private void configureCategoryRecyclerView() {
@@ -123,42 +135,62 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
+    public String findCategoryId(String categoryName) {
+        String categoryId = "";
+        for (Category category : categories) {
+            if(category.getName() == categoryName) {
+                categoryId =  category.getId().toString();
+            }
+        }
+        return categoryId;
+    }
+
     @Override
     public void onCategorySelect(String newCategoryName) {
         if(newCategoryName != selectedCategoryName) {
             selectedCategoryName = newCategoryName;
-            String categoryId = "";
-            for (Category category : categories) {
-                if(category.getName() == newCategoryName) {
-                    categoryId =  category.getId().toString();
-                }
+            if (inputKeyWord == "") {
+                getUsersByCategoryId(findCategoryId(newCategoryName));
+            } else {
+                getUsersByCategoryAndSkillId(findCategoryId(newCategoryName), findSkillId(inputKeyWord));
             }
-            getUsersByCategoryId(categoryId);
-//            getUsersByCategoryName(newCategoryName);
         } else {
             selectedCategoryName = "";
-            getUsers();
-//            // temp
-//            setupViewTemp();
+            if (inputKeyWord == "") {
+                getUsers();
+            } else {
+                getUsersBySkillId(findSkillId(inputKeyWord));
+            }
         }
+    }
+
+    public String findSkillId(String keyWord) {
+        String skillId = "";
+        for (Skill skill : skills) {
+            String skillName = skill.getName();
+            String pattern = keyWord.toUpperCase().concat("[A-Z]*");
+            if(Pattern.matches(pattern, skillName.toUpperCase())) {
+                skillId =  skill.getIdskill().toString();
+            }
+        }
+        return skillId;
     }
 
     public void onKeyWordInput(String keyWord) {
         if(keyWord.length()>3) {
-            String skillId = "";
-            for (Skill skill : skills) {
-                String skillName = skill.getName();
-                String pattern = keyWord.toUpperCase().concat("[A-Z]*");
-                if(Pattern.matches(pattern, skillName.toUpperCase())) {
-                    skillId =  skill.getIdskill().toString();
-                }
+            inputKeyWord = keyWord;
+            if (selectedCategoryName == "") {
+                getUsersBySkillId(findSkillId(keyWord));
+            } else {
+                getUsersByCategoryAndSkillId(findCategoryId(selectedCategoryName), findSkillId(keyWord));
             }
-            getUsersBySkillId(skillId);
-//            getUsersBySkillName(keyWord);
         } else {
-            getUsers();
-//            // temp
-//            setupViewTemp();
+            inputKeyWord = "";
+            if (selectedCategoryName == "") {
+                getUsers();
+            } else {
+                getUsersByCategoryId(findCategoryId(selectedCategoryName));
+            }
         }
     }
 
@@ -166,7 +198,6 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         users = new ArrayList<>();
         homeUserAdapter = new HomeUserAdapter(users, Glide.with(this));
         homeUserRecyclerView.setAdapter(homeUserAdapter);
-//        homeUserRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         homeUserRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
     }
 
@@ -206,6 +237,37 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         homeViewModel.users.observe(getViewLifecycleOwner(), users -> {
             this.users = users;
             homeUserAdapter.updateData(this.users);
+        });
+    }
+
+    private List<User> filterUsers(List<User> usersByCategory, List<User> usersBySkill) {
+        List<User> users = new ArrayList<>();
+        for (User userByCategory : usersByCategory) {
+            for (User userBySkill : usersBySkill) {
+                if(userByCategory.getId() == userBySkill.getId()) {
+                    users.add(userByCategory);
+                }
+            }
+        }
+        return users;
+    }
+
+
+    private void getUsersByCategoryAndSkillId(String categoryId, String skillId) {
+
+        this.tempUsersByCategory = new ArrayList<>();
+        this.tempUsersBySkill = new ArrayList<>();
+
+        homeViewModel.getUsersByCategoryId(categoryId);
+        homeViewModel.users.observe(getViewLifecycleOwner(), usersByCategory -> {
+            this.tempUsersByCategory = usersByCategory;
+
+            homeViewModel.getUsersBySkillId(skillId);
+            homeViewModel.users.observe(getViewLifecycleOwner(), usersBySkill -> {
+                this.tempUsersBySkill = usersBySkill;
+
+                this.users = filterUsers(this.tempUsersByCategory, this.tempUsersBySkill);
+            });
         });
     }
 

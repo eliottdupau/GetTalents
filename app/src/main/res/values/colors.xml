@@ -20,9 +20,12 @@
 <!--    <color name="colorPrimaryDark">#29434E</color>-->
 <!--    <color name="colorAccent">#FFCA28</color>-->
 
+    <color name="colorPrimaryLight">#A98274</color>
     <color name="colorPrimary">#795548</color>
     <color name="colorPrimaryDark">#4B2C20</color>
+    <color name="colorAccentLight">#6FF9FF</color>
     <color name="colorAccent">#26C6DA</color>
+    <color name="colorAccentDark">#0095A8</color>
 
     <color name="colorError">#B00020</color>
     <color name="colorSuccess">#4BB543</color>

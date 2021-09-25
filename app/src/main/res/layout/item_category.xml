@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:maxLines="2"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimary"
             android:textSize="16dp"
             android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
