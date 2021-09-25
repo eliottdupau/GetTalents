@@ -52,17 +52,14 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private HomeUserAdapter homeUserAdapter;
 
     private List<Category> categories;
-    private List<Skill> skills;
     private List<User> users;
 
-    private List<User> usersByCategory;
-    private List<User> usersBySkill;
+    private List<User> filteredUsers;
 
     private List<String> selectedCategoriesNames;
+    private List<String> keyWordsList;
 
     public static final String KEY_USER_ID = "userId";
-
-    private FragmentManager fragmentManager;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -113,10 +110,10 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         configureHomeUserRecyclerView();
 
         getCategories();
-        getSkills();
         getUsers();
 
         this.selectedCategoriesNames = new ArrayList<>();
+        this.keyWordsList = new ArrayList<>();
 
     }
 
@@ -142,71 +139,51 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         });
     }
 
-    private void getSkills() {
-        homeViewModel.getSkills();
-        homeViewModel.skills.observe(getViewLifecycleOwner(), skills -> {
-            this.skills = skills;
-        });
-    }
-
     private void getUsers() {
         homeViewModel.getUsers();
         homeViewModel.users.observe(getViewLifecycleOwner(), users -> {
             this.users = users;
-            this.usersByCategory = users;
-            this.usersBySkill = users;
+            this.filteredUsers = users;
             homeUserAdapter.updateData(this.users);
         });
     }
 
-    public void updateUsersByFilters() {
-        List<User> filteredUsers = new ArrayList<>();
-        for (User userSkill : this.usersBySkill) {
-            if(this.usersByCategory.contains(userSkill)) {
-                filteredUsers.add(userSkill);
-            }
+    public void addUserToFilteredList(User user) {
+        if(!this.filteredUsers.contains(user)) {
+            this.filteredUsers.add(user);
         }
-        homeUserAdapter.updateData(filteredUsers);
     }
 
-    public void filterByCategory() {
-        if(this.selectedCategoriesNames.isEmpty()) {
-            this.usersByCategory = this.users;
-        } else {
-            List<User> tempUsers = new ArrayList<>();
-            for (User user : this.users) {
-                for (Skill skill : user.getSkills()) {
-                    if(this.selectedCategoriesNames.contains(skill.getCategory().getName())) {
-                        tempUsers.add(user);
-                    }
-                }
-            }
-            this.usersByCategory = tempUsers;
-        }
-        updateUsersByFilters();
-    }
-
-    public void filterBySkills(List<String> keyWords) {
-        if(keyWords.isEmpty()) {
-            this.usersBySkill = this.users;
-        } else {
-            List<User> tempUsers = new ArrayList<>();
-            for (User user : this.users) {
-                for (Skill userSkill : user.getSkills()) {
-                    String userSkillName = userSkill.getName();
-                    for (String keyWord: keyWords) {
+    public void filterUsers() {
+        this.filteredUsers = new ArrayList<>();
+        for (User user : this.users) {
+            for (Skill userSkill : user.getSkills()) {
+                if (!this.keyWordsList.isEmpty()) {
+                    for (String keyWord: this.keyWordsList) {
+                        String userSkillName = userSkill.getName();
                         String pattern = keyWord.toUpperCase().concat("[A-Z]*");
                         if(Pattern.matches(pattern, userSkillName.toUpperCase())) {
-                            if(!tempUsers.contains(user)) {
-                                tempUsers.add(user);
+                            if (!this.selectedCategoriesNames.isEmpty()) {
+                                String userCategoryName = userSkill.getCategory().getName();
+                                if(this.selectedCategoriesNames.contains(userCategoryName)) {
+                                    addUserToFilteredList(user);
+                                }
+                            } else {
+                                addUserToFilteredList(user);
                             }
                         }
                     }
+                } else if (!this.selectedCategoriesNames.isEmpty()) {
+                    String userCategoryName = userSkill.getCategory().getName();
+                    if(this.selectedCategoriesNames.contains(userCategoryName)) {
+                        addUserToFilteredList(user);
+                    }
+                } else {
+                    this.filteredUsers = this.users;
                 }
             }
-            this.usersBySkill = tempUsers;
         }
-        updateUsersByFilters();
+        homeUserAdapter.updateData(this.filteredUsers);
     }
 
     @Override
@@ -222,15 +199,15 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         } else {
             this.selectedCategoriesNames.add(newCategoryName);
         }
-        filterByCategory();
+        filterUsers();
     }
 
     public void onKeyWordInput(String keyWords) {
-        List<String> keyWordsList = new ArrayList();
+        this.keyWordsList = new ArrayList<>();
         if(keyWords.length()>3) {
-            keyWordsList = Arrays.asList(keyWords.split(" "));
+            this.keyWordsList = Arrays.asList(keyWords.split(" "));
         }
-        filterBySkills(keyWordsList);
+        filterUsers();
     }
 
 }
