@@ -24,6 +24,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
 
@@ -109,11 +111,10 @@ public class MapFragment extends Fragment {
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
             if (location != null) {
-                //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                LatLng latLng = new LatLng(50.6228, 3.14417);
+                LatLng latLng = new LatLng(50.632381,  3.057093);
                 googleMap.addMarker(new MarkerOptions().position(latLng));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                googleMap.moveCamera(CameraUpdateFactory.zoomTo(13));
             }
         });
     }

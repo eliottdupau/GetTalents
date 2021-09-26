@@ -26,6 +26,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
+import java.util.Random;
 
 public class CreateAddressDialogFragment extends DialogFragment {
     private TextInputLayout numerousLayout, addressLayout, zipCodeLayout, cityLayout, countryLayout;
@@ -36,6 +37,8 @@ public class CreateAddressDialogFragment extends DialogFragment {
 
     private Address address;
     private User user;
+
+    private Double lng, lat;
 
     public CreateAddressDialogFragment() {}
 
@@ -97,6 +100,7 @@ public class CreateAddressDialogFragment extends DialogFragment {
         positiveButton.setText(getString(R.string.label_add));
         positiveButton.setOnClickListener(view -> {
             if (isAddressCorrect()) {
+                generateCoordinates();
                 viewModel.createAddress(address).observe(getViewLifecycleOwner(), address -> {
                     viewModel.addAddressInList(address);
 
@@ -166,5 +170,12 @@ public class CreateAddressDialogFragment extends DialogFragment {
         return address.getNumerous().length() > 0 && address.getStreet().length() > 0
                 && address.getPostalCode().length() > 0 && address.getCity().length() > 0
                 && address.getCountry().length() > 0;
+    }
+
+    private void generateCoordinates() {
+        Random random = new Random();
+
+        address.setLat(50.601739 + (50.657709 - 50.601739) * random.nextDouble());
+        address.setLng(2.976295 + (2.976639 - 2.976295) * random.nextDouble());
     }
 }

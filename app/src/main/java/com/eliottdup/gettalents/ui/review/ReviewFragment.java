@@ -46,19 +46,19 @@ public class ReviewFragment extends Fragment {
     private RatingBar ratingBar;
     private TextInputLayout titleLayout, commentLayout;
     private TextInputEditText titleView, commentView;
-    private MaterialCardView mediaButton;
-    private RecyclerView recyclerView;
+    //private MaterialCardView mediaButton;
+    //private RecyclerView recyclerView;
 
     private ReviewViewModel reviewViewModel;
-    private PictureViewModel pictureViewModel;
+    //private PictureViewModel pictureViewModel;
 
     private FragmentManager fragmentManager;
 
     private Review review;
     private int recipientId;
 
-    private MediaAdapter adapter;
-    private List<Picture> pictureList;
+    /*private MediaAdapter adapter;
+    private List<Picture> pictureList;*/
 
     public ReviewFragment() {}
 
@@ -88,8 +88,8 @@ public class ReviewFragment extends Fragment {
         commentLayout = root.findViewById(R.id.inputLayout_comment);
         titleView = root.findViewById(R.id.editText_title);
         commentView = root.findViewById(R.id.editText_comment);
-        mediaButton = root.findViewById(R.id.container_addMedia);
-        recyclerView = root.findViewById(R.id.recyclerView);
+        //mediaButton = root.findViewById(R.id.container_addMedia);
+        //recyclerView = root.findViewById(R.id.recyclerView);
 
         return root;
     }
@@ -103,16 +103,16 @@ public class ReviewFragment extends Fragment {
         }
 
         reviewViewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
-        pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
+        //pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
 
         fragmentManager = getParentFragmentManager();
 
         initReview();
         getUser();
-        managePicture();
+        //managePicture();
 
         configureToolbar();
-        configureRecyclerView();
+        //configureRecyclerView();
         setupView();
     }
 
@@ -128,14 +128,14 @@ public class ReviewFragment extends Fragment {
         }
     }
 
-    private void managePicture() {
+    /*private void managePicture() {
         pictureViewModel.getPicture().observe(getViewLifecycleOwner(), photo -> {
             if (photo.getPath() != null) {
                 pictureList.add(photo);
                 adapter.updateMedia(pictureList);
             }
         });
-    }
+    }*/
 
     private void configureToolbar() {
         toolbar.setTitle(getString(R.string.title_evaluation));
@@ -155,7 +155,7 @@ public class ReviewFragment extends Fragment {
         });
     }
 
-    private void configureRecyclerView() {
+    /*private void configureRecyclerView() {
         pictureList = new ArrayList<>();
         adapter = new MediaAdapter(pictureList, Glide.with(this));
         recyclerView.setAdapter(adapter);
@@ -173,7 +173,7 @@ public class ReviewFragment extends Fragment {
                     .setNegativeButton(getString(R.string.label_cancel), (dialogInterface, i) -> { })
                     .show();
         });
-    }
+    }*/
 
     private void setupView() {
         ratingBar.setOnRatingBarChangeListener((ratingBar, rating, b) -> review.setNote((int) rating));
@@ -215,10 +215,10 @@ public class ReviewFragment extends Fragment {
             public void afterTextChanged(Editable editable) {}
         });
 
-        mediaButton.setOnClickListener(view -> {
+        /*mediaButton.setOnClickListener(view -> {
             PictureDialogFragment pictureDialogFragment = PictureDialogFragment.newInstance();
             pictureDialogFragment.show(fragmentManager, "photoFragment");
-        });
+        });*/
     }
 
     private boolean isEmptyOrOversize(String input) {
@@ -230,13 +230,14 @@ public class ReviewFragment extends Fragment {
 
         builder.setTitle(getString(R.string.title_evaluation))
                 .setMessage(getString(R.string.disclaimer_leave_appreciation))
-                .setPositiveButton(getString(R.string.label_yes), (dialogInterface, i) -> createReview())
+                .setPositiveButton(getString(R.string.label_yes), (dialogInterface, i) -> uploadReview())
                 .setNegativeButton(getString(R.string.label_cancel), (dialogInterface, i) -> {})
                 .show();
     }
 
-    private void createReview() {
-        review.setPictureList(pictureList);
+    private void uploadReview() {
+        //review.setPictureList(pictureList);
+        review.setPictureList(new ArrayList<>());
 
         String currentDate = DateUtils.formatDateToString(Calendar.getInstance().getTime());
         review.setCreatedAt(currentDate);

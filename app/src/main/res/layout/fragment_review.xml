@@ -69,7 +69,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/textView_media"
         style="@style/GetTalents.Profile.Title"
         android:layout_width="match_parent"
@@ -119,6 +119,6 @@
         app:layout_constraintStart_toEndOf="@+id/container_addMedia"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/container_addMedia"
-        app:layout_constraintBottom_toBottomOf="@+id/container_addMedia"/>
+        app:layout_constraintBottom_toBottomOf="@+id/container_addMedia"/>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
