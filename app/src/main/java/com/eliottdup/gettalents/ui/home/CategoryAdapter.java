@@ -1,11 +1,13 @@
 package com.eliottdup.gettalents.ui.home;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
@@ -28,7 +30,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
     private List<Category> categories;
     private RequestManager glide;
 
-    public CategoryAdapter(List<Category> categories, RequestManager glide, String categoryName, ICategorySelect callback) {
+    public CategoryAdapter(List<Category> categories, RequestManager glide, ICategorySelect callback) {
         this.categories = categories;
         this.glide = glide;
         mCallback = callback;
@@ -50,12 +52,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
         holder.categoryTextView.setOnClickListener( new View.OnClickListener() {
             public void onClick(View v) {
                 String categoryName = holder.categoryTextView.getText().toString();
+                if (holder.categoryTextView.getCurrentTextColor() == Color.parseColor("#26C6DA")) {
+                    holder.categoryTextView.setTextColor(Color.parseColor("#795548"));
+                } else {
+                    holder.categoryTextView.setTextColor(Color.parseColor("#26C6DA"));
+                }
+
                 mCallback.onCategorySelect(categoryName);
             };
         });
-//        holder.categoryTextView.setOnClickListener(view -> {
-//            holder.categoryTextView.setText("Click");
-//        });
     }
 
     @Override

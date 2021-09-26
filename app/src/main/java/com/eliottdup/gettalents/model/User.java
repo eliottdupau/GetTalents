@@ -65,4 +65,8 @@ public class User implements Serializable {
     @Expose
     private List<Address> addresses = null;
 
+    @SerializedName("skills")
+    @Expose
+    private List<Skill> skills = null;
+
 }

@@ -17,8 +17,10 @@ import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.Category;
 import com.eliottdup.gettalents.model.Skill;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.utils.DistanceUtils;
 import com.eliottdup.gettalents.viewmodel.HomeViewModel;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,44 +33,36 @@ public class HomeUserViewHolder extends RecyclerView.ViewHolder {
     private TextView homeUserCityView;
     private ImageView homeUserProfilePictureView;
 
-//    private ListView categriesNamesView;
-
-//    private ArrayAdapter<String> categoriesAdapter;
-
-//    private RecyclerView categoryRecyclerView ;
-//    private HomeUserCategoryAdapter homeUserCategoryAdapter;
-//    private List<Category> categories;
-
     public HomeUserViewHolder(@NonNull View itemView) {
         super(itemView);
         homeUserNameView = itemView.findViewById(R.id.text_profileName);
         homeUserCityView = itemView.findViewById(R.id.text_profileCity);
         homeUserProfilePictureView = itemView.findViewById(R.id.icon_profilePicture);
-//        categriesNamesView = itemView.findViewById(R.id.categories_names_list);
     }
 
-//    private void configureCategoryRecyclerView() {
-//        categories = new ArrayList<>();
-//        homeUserCategoryAdapter = new HomeUserCategoryAdapter(categories, Glide.with(this));
-//        categoryRecyclerView.setAdapter(homeUserCategoryAdapter);
-//        categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//    }
-
     public void bind(User user, RequestManager glide) {
-        /*homeUserNameView.setText(user.getPseudo());
+        homeUserNameView.setText(user.getPseudo());
         List<Address> addresses = user.getAddresses();
         Address firstAddress = addresses.get(0);
-        homeUserCityView.setText(firstAddress.getCity());
-        glide.load(user.getProfilePicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(homeUserProfilePictureView);*/
-//        List<Skill> skills = user.getSkills();
-//        List<String> categoriesNames = new ArrayList<>();
-//        for (Skill skill : skills) {
-//            Category category = skill.getCategory();
-//            categoriesNames.add(category.getName());
-//        }
-//        ArrayAdapter categoriesAdapter = new ArrayAdapter<String>(this,R.layout.item_home_user,categoriesNames);
-//        categriesNamesView.setAdapter(categoriesAdapter);
-//        homeUserCategoryAdapter = new HomeUserCategoryAdapter(categories, Glide.with(this));
-//        categriesNamesView.setAdapter(homeUserCategoryAdapter);
+        String cityName = firstAddress.getCity();
+        double latUser1 = 50.883331;
+        double lngUser1 = 1.66667;
+        double latUser2 = Double.valueOf(firstAddress.getLat());
+        double lngUser2 = Double.valueOf(firstAddress.getLng());
+        double distance = DistanceUtils.calculateDistance(latUser1, latUser2, lngUser1, lngUser2);
+        String cityDisplay = "";
+        if (distance >= 10) {
+            DecimalFormat df = new DecimalFormat("###");
+            cityDisplay = cityName + " (" + df.format(distance) + " kms)";
+        } else if (distance >= 2) {
+            DecimalFormat df = new DecimalFormat("###.#");
+            cityDisplay = cityName + " (" + df.format(distance) + " kms)";
+        } else {
+            DecimalFormat df = new DecimalFormat("###.#");
+            cityDisplay = cityName + " (" + df.format(distance) + " km)";
+        }
+        homeUserCityView.setText(cityDisplay);
+        glide.load(user.getProfilePicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(homeUserProfilePictureView);
+
     }
 }

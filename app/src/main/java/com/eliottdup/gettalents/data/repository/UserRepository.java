@@ -178,4 +178,48 @@ public class UserRepository {
             }
         });
     }
+
+    public MutableLiveData<List<User>> getUsersByCategoryId(String id) {
+        MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
+
+        com.eliottdup.gettalents.data.service.UserService userService = RetrofitInstance.getInstance().create(com.eliottdup.gettalents.data.service.UserService.class);
+        Call<List<User>> call = userService.getUsersByCategoryId(id);
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(@lombok.NonNull Call<List<User>> call, @lombok.NonNull Response<List<User>> response) {
+                Log.d("HTTP 200", "Get Users By Category -> success");
+                usersMutableLiveData.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(@lombok.NonNull Call<List<User>> call, @lombok.NonNull Throwable t) {
+                Log.d("HTTP 404", "User Not Found");
+            }
+        });
+
+        return usersMutableLiveData;
+    }
+
+    public MutableLiveData<List<User>> getUsersBySkillId(String id) {
+        MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
+
+        com.eliottdup.gettalents.data.service.UserService userService = RetrofitInstance.getInstance().create(com.eliottdup.gettalents.data.service.UserService.class);
+        Call<List<User>> call = userService.getUsersBySkillId(id);
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(@lombok.NonNull Call<List<User>> call, @lombok.NonNull Response<List<User>> response) {
+                Log.d("HTTP 200", "Get Users By Category -> success");
+                usersMutableLiveData.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(@lombok.NonNull Call<List<User>> call, @lombok.NonNull Throwable t) {
+                Log.d("HTTP 404", "User Not Found");
+            }
+        });
+
+        return usersMutableLiveData;
+    }
+
+
 }

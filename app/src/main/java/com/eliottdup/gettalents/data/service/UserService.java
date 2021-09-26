@@ -30,4 +30,11 @@ public interface UserService {
 
     @DELETE("users/{id}")
     Call<Void> deleteUser(@Path("id") String id);
+
+    @GET("users/category/{id}")
+    Call<List<User>> getUsersByCategoryId(@Path("id") String id);
+
+    @GET("users/skill/{id}")
+    Call<List<User>> getUsersBySkillId(@Path("id") String id);
+
 }
