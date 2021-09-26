@@ -1,5 +1,6 @@
 package com.eliottdup.gettalents.ui.home;
 
+import android.content.Context;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
@@ -7,6 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.data.helper.FirebaseStorageHelper;
 import com.eliottdup.gettalents.model.Category;
 
 import androidx.annotation.NonNull;
@@ -26,10 +28,12 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
     }
 
     // bind the category data with each part of the layout
-    public void bind(Category category, RequestManager glide) {
+    public void bind(Context context, Category category) {
 
-        // category image
-        glide.load(category.getCategoryPicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(categoryIconView);
+        FirebaseStorageHelper.downloadProfilePicture(
+                context,
+                categoryIconView,
+                category.getCategoryPicture().getPath());
 
         // category name
         categoryTextView.setText(category.getName());

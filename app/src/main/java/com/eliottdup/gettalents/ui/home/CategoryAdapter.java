@@ -27,12 +27,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
 
     private ICategorySelect iCategorySelect;
 
+    private Context context;
     private List<Category> categories;
-    private RequestManager glide;
 
-    public CategoryAdapter(List<Category> categories, RequestManager glide, ICategorySelect callback) {
+    public CategoryAdapter(Context context, List<Category> categories, ICategorySelect callback) {
         this.categories = categories;
-        this.glide = glide;
+        this.context = context;
         iCategorySelect = callback;
     }
 
@@ -50,7 +50,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
     // bind to the view holder
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        holder.bind(this.categories.get(position), this.glide);
+        holder.bind(context, this.categories.get(position));
 
         // set an event listener on the category name
         holder.categoryTextView.setOnClickListener( new View.OnClickListener() {
