@@ -25,11 +25,11 @@ public class ReviewViewModel extends AndroidViewModel {
         userRepository = new UserRepository();
     }
 
-    public LiveData<User> getLoggedUser() {
-        return userRepository.getUserById(1);
+    public LiveData<User> getLoggedUser(String id) {
+        return userRepository.getUserById(id);
     }
 
-    public LiveData<User> getUserById(int userId) {
+    public LiveData<User> getUserById(String userId) {
         return userRepository.getUserById(userId);
     }
 

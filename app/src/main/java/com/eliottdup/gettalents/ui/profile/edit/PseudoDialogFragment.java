@@ -88,7 +88,7 @@ public class PseudoDialogFragment extends DialogFragment {
 
         positiveButton.setOnClickListener(view -> {
             if (user.getPseudo().length() > 0) {
-                viewModel.user.setValue(user);
+                viewModel.setUser(user);
                 dismiss();
             } else {
                 pseudoLayout.setError(getString(R.string.error_empty));
@@ -99,13 +99,13 @@ public class PseudoDialogFragment extends DialogFragment {
     }
 
     private void getUser() {
-        viewModel.user.observe(getViewLifecycleOwner(), user -> {
+        viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
             updateUI(this.user);
         });
     }
 
     private void updateUI(User user) {
-        pseudoView.setText(user.getPseudo());
+        if (user.getPseudo() != null) pseudoView.setText(user.getPseudo());
     }
 }

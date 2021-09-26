@@ -31,8 +31,7 @@ public class ReviewListViewModel extends AndroidViewModel {
         this.reviewList = reviewRepository.getReceivedReviewsForUser(userId);
     }
 
-    public void getLoggedUser() {
-        // Todo() : Changer avec la méthode de réccupération du user logged
-        this.user = userRepository.getUserById(1);
+    public void getLoggedUser(String id) {
+        this.user = userRepository.getUserById(id);
     }
 }

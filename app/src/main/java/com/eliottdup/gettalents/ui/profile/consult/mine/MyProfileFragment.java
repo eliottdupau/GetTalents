@@ -15,9 +15,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.data.helper.FirebaseStorageHelper;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.viewmodel.MyProfileViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MyProfileFragment extends Fragment {
     private ImageView profilePicture;
@@ -64,16 +67,18 @@ public class MyProfileFragment extends Fragment {
     }
 
     private void getUser() {
-        viewModel.getLoggedUser();
-        viewModel.user.observe(getViewLifecycleOwner(), this::updateUI);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            viewModel.getLoggedUser(user.getUid());
+            viewModel.user.observe(getViewLifecycleOwner(), this::updateUI);
+        }
     }
 
     private void updateUI(User user) {
-        Glide.with(this)
-                .load(user.getProfilePicture().getPath())
-                .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
-                .centerCrop()
-                .into(profilePicture);
+        FirebaseStorageHelper.downloadProfilePicture(
+                getContext(),
+                profilePicture,
+                user.getProfilePicture().getPath());
 
         pseudoView.setText(user.getPseudo());
         mailView.setText(user.getEmail());

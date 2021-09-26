@@ -20,7 +20,7 @@
     <string name="title_picture">Take a picture from</string>
     <string name="title_camera">Camera</string>
     <string name="title_media">Media</string>
-    <string name="presentation">With Sathiel make your life easier by asking for help from others</string>
+    <string name="presentation">With GetTalents make your life easier by asking help to others</string>
     <string name="title_evaluation">Evaluation</string>
     <string name="title_favorite">Favorite</string>
     <string name="title_rate">Rate</string>
@@ -59,7 +59,6 @@
     <string name="hint_search_user">Search</string>
 
     <!-- Edit Text Error Message -->
-    <string name="error_empty">Must contain at least one character</string>
     <string name="error_email_format">Invalid Email</string>
     <string name="error_password_length">Password must be greater than 8 characters</string>
     <string name="error_password_correspond">Password does not match</string>
@@ -81,11 +80,6 @@
     <string name="disclaimer_delete_data">Are you sure to delete this ? Cause it can\'t be undo</string>
     <string name="disclaimer_location_permission_denied">This feature is disable while location permission is not accepted</string>
 
-    <!-- Image Content Description -->
-    <string name="profile_picture">This image is the profile picture of the user</string>
-    <string name="icon_clickable">Clickable icon</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="email">exemple@exemple.fr</string>
     <string name="content_description_email">Email</string>
     <string name="password">Password</string>
@@ -93,12 +87,12 @@
     <string name="confirm_password">Confirm password</string>
     <string name="content_description_confirm_password">Confirm password</string>
     <string name="help_email">Enter the email address associated with your account</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="validate">Validate</string>
-    <string name="pass">Pass</string>
+    <string name="btn_skip">Skip</string>
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_create_profile">Let\'s know each other</string>
 
 </resources>

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.adapter.address.AddressAdapter;
@@ -24,6 +25,8 @@ import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.eliottdup.gettalents.viewmodel.AddressViewModel;
 import com.eliottdup.gettalents.viewmodel.UserViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +35,11 @@ public class AddressesFragment extends Fragment {
     public static final String KEY_IS_EDITABLE = "isEditable";
 
     private RecyclerView recyclerView;
+    private TextView noAddressView;
 
     private AddressViewModel viewModel;
-
     private FragmentManager fragmentManager;
+    private FirebaseAuth firebaseAuth;
 
     private boolean isEditable;
 
@@ -65,6 +69,7 @@ public class AddressesFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_addresses, container, false);
 
         recyclerView = root.findViewById(R.id.recyclerView);
+        noAddressView = root.findViewById(R.id.textView_noAddress);
 
         return root;
     }
@@ -78,6 +83,8 @@ public class AddressesFragment extends Fragment {
         }
 
         viewModel = new ViewModelProvider(requireActivity()).get(AddressViewModel.class);
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
         fragmentManager = getParentFragmentManager();
 
@@ -132,15 +139,25 @@ public class AddressesFragment extends Fragment {
     }
 
     private void getUser() {
-        viewModel.getLoggedUser();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        viewModel.getLoggedUser(firebaseUser.getUid());
         viewModel.user.observe(getViewLifecycleOwner(), this::getUserAddresses);
     }
 
     private void getUserAddresses(User user) {
         viewModel.getAllAddressesForUser(user.getId());
         viewModel.getAddressList().observe(getViewLifecycleOwner(), addresses -> {
-            addressList = addresses;
-            adapter.updateData(addressList);
+            isAddressListEmpty(addresses.size() == 0);
+
+            if (addresses.size() > 0) {
+                addressList = addresses;
+                adapter.updateData(addressList);
+            }
         });
+    }
+
+    private void isAddressListEmpty(boolean isEmpty) {
+        noAddressView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
     }
 }

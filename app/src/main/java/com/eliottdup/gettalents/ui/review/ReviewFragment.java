@@ -33,6 +33,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -121,7 +123,10 @@ public class ReviewFragment extends Fragment {
 
     private void getUser() {
         review.setRecipientId(recipientId);
-        reviewViewModel.getLoggedUser().observe(getViewLifecycleOwner(), user -> review.setSenderId(user.getId()));
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            reviewViewModel.getLoggedUser(user.getUid()).observe(getViewLifecycleOwner(), u -> review.setSenderId(u.getId()));
+        }
     }
 
     private void managePicture() {

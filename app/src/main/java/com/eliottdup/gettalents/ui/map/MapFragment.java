@@ -13,6 +13,7 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.profile.consult.other.UserProfileActivity;
+import com.eliottdup.gettalents.utils.KeyUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,10 +37,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 public class MapFragment extends Fragment {
-    public static final String KEY_USER_ID = "userId";
-
     private GoogleMap map;
-    private HashMap<Marker, Integer> markers;
+    private HashMap<Marker, String> markers;
     private MapViewModel viewModel;
 
     private final OnMapReadyCallback onMapReadyCallback = new OnMapReadyCallback() {
@@ -47,7 +46,6 @@ public class MapFragment extends Fragment {
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
             googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            googleMap.setMyLocationEnabled(true);
 
             map = googleMap;
 
@@ -58,7 +56,7 @@ public class MapFragment extends Fragment {
 
             map.setOnInfoWindowClickListener(marker -> {
                 Intent intent = new Intent(requireActivity(), UserProfileActivity.class);
-                intent.putExtra(KEY_USER_ID, markers.get(marker));
+                intent.putExtra(KeyUtils.KEY_FIREBASE_UID, markers.get(marker));
                 startActivity(intent);
             });
         }
@@ -105,6 +103,8 @@ public class MapFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void getLastLocation(GoogleMap googleMap) {
+        googleMap.setMyLocationEnabled(true);
+
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
@@ -137,7 +137,7 @@ public class MapFragment extends Fragment {
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                         .snippet(String.format("%s - %s", mainAddress.getCity(), mainAddress.getCountry())));
 
-        markers.put(marker, user.getId());
+        markers.put(marker, user.getFirebaseUid());
     }
 
     private void showPermissionRefusedAlertDialog() {

@@ -13,7 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 public class PictureViewModel extends AndroidViewModel {
     private final PictureRepository pictureRepository;
 
-    private MutableLiveData<Picture> picture;
+    private MutableLiveData<Picture> picture = new MutableLiveData<>();
 
     public PictureViewModel(@NonNull Application application) {
         super(application);
@@ -26,8 +26,6 @@ public class PictureViewModel extends AndroidViewModel {
     }
 
     public LiveData<Picture> getPicture() {
-        if (this.picture == null) this.picture = new MutableLiveData<>();
-
         return this.picture;
     }
 

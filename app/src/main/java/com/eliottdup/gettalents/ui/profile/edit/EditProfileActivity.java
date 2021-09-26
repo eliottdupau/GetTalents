@@ -5,15 +5,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
-import com.eliottdup.gettalents.viewmodel.UserViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 
 public class EditProfileActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
@@ -57,22 +63,35 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
-    // Todo() : Upload la/les photos sur le serveur de stockage des photos avant de les enregistrer dans la BDD
     private void openDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.label_save_changes))
                 .setPositiveButton(R.string.label_ok, (dialogInterface, i) -> {
-                    viewModel.updateUser(user.getId(), user);
+                    uploadPicture("images/profile/" + user.getFirebaseUid());
                     finish();
                 })
                 .setNegativeButton(R.string.label_cancel, (dialogInterface, i) -> { })
                 .show();
     }
 
+    private void uploadPicture(String ref) {
+        StorageReference rootRef = FirebaseStorage.getInstance().getReference();
+        StorageReference pictureRef = rootRef.child(ref);
+
+        Uri file = Uri.fromFile(new File(user.getProfilePicture().getPath()));
+        UploadTask uploadTask = pictureRef.putFile(file);
+
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            user.getProfilePicture().setPath("images/profile/" + user.getFirebaseUid());
+            viewModel.updateUser(user.getFirebaseUid(), user);
+        }).addOnFailureListener(e -> Log.e("Profilepicture", e.getMessage()));
+    }
+
     private void getData() {
-        viewModel.getLoggedUser();
-        viewModel.user.observe(this, user -> {
-            this.user = user;
-        });
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            viewModel.getLoggedUser(user.getUid());
+            viewModel.getUser().observe(this, u -> this.user = u);
+        }
     }
 }

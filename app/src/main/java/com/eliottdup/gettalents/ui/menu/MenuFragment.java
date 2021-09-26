@@ -14,12 +14,12 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.authentication.AuthenticationActivity;
 import com.eliottdup.gettalents.ui.profile.consult.mine.MyProfileActivity;
 import com.eliottdup.gettalents.ui.address.AddressActivity;
-import com.eliottdup.gettalents.ui.relation.RelationActivity;
 import com.eliottdup.gettalents.ui.review.ReviewListActivity;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MenuFragment extends Fragment {
-    private MaterialCardView profileItem, addressItem, reviewItem, relationItem, logoutItem;
+    private MaterialCardView profileItem, addressItem, reviewItem, logoutItem;
 
     public MenuFragment() { }
 
@@ -40,13 +40,11 @@ public class MenuFragment extends Fragment {
         profileItem = root.findViewById(R.id.cardView_profile);
         addressItem = root.findViewById(R.id.cardView_address);
         reviewItem = root.findViewById(R.id.cardView_review);
-        relationItem = root.findViewById(R.id.cardView_relation);
         logoutItem = root.findViewById(R.id.cardView_logout);
 
         setupItemClick(profileItem);
         setupItemClick(addressItem);
         setupItemClick(reviewItem);
-        setupItemClick(relationItem);
         setupItemClick(logoutItem);
 
         return root;
@@ -65,9 +63,8 @@ public class MenuFragment extends Fragment {
                 return new Intent(getContext(), AddressActivity.class);
             case R.id.cardView_review:
                 return new Intent(getContext(), ReviewListActivity.class);
-            case R.id.cardView_relation:
-                return new Intent(getContext(), RelationActivity.class);
             case R.id.cardView_logout:
+                FirebaseAuth.getInstance().signOut();
                 return new Intent(getContext(), AuthenticationActivity.class);
             default:
                 return new Intent();

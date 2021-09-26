@@ -18,6 +18,7 @@ import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.adapter.review.ReviewAdapter;
 import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.utils.KeyUtils;
 import com.eliottdup.gettalents.viewmodel.ReviewListViewModel;
 
 import java.util.ArrayList;
@@ -31,10 +32,18 @@ public class ReviewListFragment extends Fragment {
     private ReviewAdapter adapter;
     private List<Review> reviewList;
 
+    private String userFirebaseUid;
+
     public ReviewListFragment() { }
 
-    public static ReviewListFragment newInstance() {
-        return new ReviewListFragment();
+    public static ReviewListFragment newInstance(String userFirebaseUid) {
+        ReviewListFragment reviewListFragment = new ReviewListFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(KeyUtils.KEY_FIREBASE_UID, userFirebaseUid);
+        reviewListFragment.setArguments(bundle);
+
+        return reviewListFragment;
     }
 
     @Override
@@ -56,6 +65,8 @@ public class ReviewListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (getArguments() != null) userFirebaseUid = getArguments().getString(KeyUtils.KEY_FIREBASE_UID);
+
         viewModel = new ViewModelProvider(requireActivity()).get(ReviewListViewModel.class);
 
         configureRecyclerView();
@@ -70,7 +81,7 @@ public class ReviewListFragment extends Fragment {
     }
 
     private void getUser() {
-        viewModel.getLoggedUser();
+        viewModel.getLoggedUser(userFirebaseUid);
         viewModel.user.observe(getViewLifecycleOwner(), this::getReceivedReviews);
     }
 

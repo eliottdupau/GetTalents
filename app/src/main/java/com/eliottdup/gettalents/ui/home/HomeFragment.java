@@ -178,7 +178,7 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private void getUsersByCategoryName(String categoryName) {
 
         // temp methode
-        List<User> newUsers = new ArrayList<>();
+        /*List<User> newUsers = new ArrayList<>();
         for (User user : users) {
             List<Skill> skills = user.getSkills();
             if (skills != null && !skills.isEmpty()) {
@@ -192,13 +192,13 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
                 }
             }
         }
-        homeUserAdapter.updateData(newUsers);
+        homeUserAdapter.updateData(newUsers);*/
     }
 
     private void getUsersBySkillName(String keyword) {
 
         // temp methode
-        List<User> newUsers = new ArrayList<>();
+        /*List<User> newUsers = new ArrayList<>();
         for (User user : users) {
             List<Skill> skills = user.getSkills();
             if (skills != null && !skills.isEmpty()) {
@@ -213,7 +213,7 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
                 }
             }
         }
-        homeUserAdapter.updateData(newUsers);
+        homeUserAdapter.updateData(newUsers);*/
     }
 
 

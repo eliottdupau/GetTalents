@@ -1,5 +1,6 @@
-package com.eliottdup.gettalents.ui.profile.edit;
+package com.eliottdup.gettalents.ui.profile.create;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,17 +17,21 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
-import com.eliottdup.gettalents.data.helper.FirebaseStorageHelper;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.ui.profile.edit.BirthdayDialogFragment;
+import com.eliottdup.gettalents.ui.profile.edit.PictureDialogFragment;
+import com.eliottdup.gettalents.ui.profile.edit.PseudoDialogFragment;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
 import com.eliottdup.gettalents.viewmodel.PictureViewModel;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
-public class EditProfileFragment extends Fragment {
-    private ImageView profilePicture;
+public class CreateProfileFragment extends Fragment {
     private MaterialCardView profilePictureCard, pseudoCard, birthdayCard;
-    private TextView pseudoView, birthdayView, mailView;
+    private MaterialButton validateButton, skipButton;
+    private ImageView profilePicture;
+    private TextView pseudoView, birthdayView;
 
     private EditProfileViewModel viewModel;
     private PictureViewModel pictureViewModel;
@@ -35,29 +40,33 @@ public class EditProfileFragment extends Fragment {
 
     private User user;
 
-    public EditProfileFragment() { }
+    private OnButtonClickedListener callback;
 
-    public static EditProfileFragment newInstance() {
-        return new EditProfileFragment();
+    public interface OnButtonClickedListener {
+        void onSkillButtonClicked(User user);
+        void onSkipButtonClicked();
     }
+
+    public CreateProfileFragment() {}
+
+    public static CreateProfileFragment newInstance() { return new CreateProfileFragment(); }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        View root = inflater.inflate(R.layout.fragment_create_profile, container, false);
 
+        validateButton = root.findViewById(R.id.btnValidate);
+        skipButton = root.findViewById(R.id.btnSkip);
         profilePictureCard = root.findViewById(R.id.container_profilePicture);
         profilePicture = root.findViewById(R.id.icon_profilePicture);
         pseudoCard = root.findViewById(R.id.container_pseudo);
         birthdayCard = root.findViewById(R.id.container_birthday);
         pseudoView = root.findViewById(R.id.textView_pseudo);
         birthdayView = root.findViewById(R.id.textView_birthday);
-        mailView = root.findViewById(R.id.textView_mail);
 
         return root;
     }
@@ -71,9 +80,23 @@ public class EditProfileFragment extends Fragment {
 
         fragmentManager = getParentFragmentManager();
 
+        validateButton.setOnClickListener(v -> callback.onSkillButtonClicked(user));
+        skipButton.setOnClickListener(v -> callback.onSkipButtonClicked());
+
         setupView();
         getUser();
         managePicture();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        createCallbackToParentActivity();
+    }
+
+    private void createCallbackToParentActivity() {
+        callback = (OnButtonClickedListener) getActivity();
     }
 
     private void setupView() {
@@ -96,7 +119,7 @@ public class EditProfileFragment extends Fragment {
     private void getUser() {
         viewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             this.user = user;
-            updateUI(this.user);
+            updateUI(user);
         });
     }
 
@@ -115,14 +138,17 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void updateUI(User user) {
-        FirebaseStorageHelper.downloadProfilePicture(
-                getContext(),
-                profilePicture,
-                user.getProfilePicture().getPath());
+        if (user != null) {
+            if (user.getProfilePicture() != null) {
+                Glide.with(this)
+                        .load(user.getProfilePicture().getPath())
+                        .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                        .centerCrop()
+                        .into(profilePicture);
+            }
 
-        pseudoView.setText(user.getPseudo());
-        mailView.setText(user.getEmail());
-
-        birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
+            if (user.getPseudo() != null) pseudoView.setText(user.getPseudo());
+            if (user.getBirthday() != null) birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.eliottdup.gettalents.data.repository;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.eliottdup.gettalents.data.RetrofitInstance;
@@ -8,6 +9,12 @@ import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.Picture;
 import com.eliottdup.gettalents.model.Review;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.ui.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,26 +29,83 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserRepository {
+    private FirebaseAuth firebaseAuth;
 
-    public UserRepository() { }
+    public UserRepository() {
+        firebaseAuth = FirebaseAuth.getInstance();
+    }
 
-    public void createUser(User user) {
+    public MutableLiveData<User> createUserInFirebase(String email, String password) {
+        MutableLiveData<User> userInFirebase = new MutableLiveData<>();
+
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+                User user = new User();
+                if (firebaseUser != null) {
+                    user.setFirebaseUid(firebaseUser.getUid());
+                    user.setEmail(firebaseUser.getEmail());
+                }
+
+                userInFirebase.setValue(user);
+            } else {
+                Log.d("Sign Up", "Failed");
+
+                userInFirebase.postValue(null);
+            }
+        });
+
+        return userInFirebase;
+    }
+
+    public MutableLiveData<User> signInWithFirebase(String email, String password) {
+        MutableLiveData<User> userInFirebase = new MutableLiveData<>();
+
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+                User user = new User();
+                if (firebaseUser != null) {
+                    user.setFirebaseUid(firebaseUser.getUid());
+                    user.setEmail(firebaseUser.getEmail());
+                }
+
+                userInFirebase.setValue(user);
+            } else {
+                userInFirebase.postValue(null);
+            }
+        });
+
+        return userInFirebase;
+    }
+
+    public MutableLiveData<User> createUser(User user) {
+        MutableLiveData<User> userInDB = new MutableLiveData<>();
+
         UserService userService = RetrofitInstance.getInstance().create(UserService.class);
         Call<Void> call = userService.createUser(user);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 Log.d("HTTP 201", "User Creation -> success");
+
+                userInDB.setValue(user);
             }
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e("HTTP", "User Creation -> fail");
+
+                userInDB.postValue(null);
             }
         });
+
+        return userInDB;
     }
 
-    public MutableLiveData<User> getUserById(int id) {
+    public MutableLiveData<User> getUserById(String id) {
         MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
 
         UserService userService = RetrofitInstance.getInstance().create(UserService.class);
@@ -83,7 +147,7 @@ public class UserRepository {
         return usersMutableLiveData;
     }
 
-    public void updateUser(int id, User user) {
+    public void updateUser(String id, User user) {
         UserService userService = RetrofitInstance.getInstance().create(UserService.class);
         Call<Void> call = userService.updateUser(id, user);
         call.enqueue(new Callback<Void>() {
@@ -99,7 +163,7 @@ public class UserRepository {
         });
     }
 
-    public void deleteUser(int id) {
+    public void deleteUser(String id) {
         UserService userService = RetrofitInstance.getInstance().create(UserService.class);
         Call<Void> call = userService.deleteUser(id);
         call.enqueue(new Callback<Void>() {
