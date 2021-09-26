@@ -23,14 +23,17 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         categoryTextView = itemView.findViewById(R.id.textView_category);
         categoryIconView = itemView.findViewById(R.id.iconView_category);
-//        categoryTextView.setOnClickListener(view -> {
-//            categoryTextView.setText("CLICK");
-//        });
     }
 
+    // bind the category data with each part of the layout
     public void bind(Category category, RequestManager glide) {
-        categoryTextView.setText(category.getName());
+
+        // category image
         glide.load(category.getCategoryPicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(categoryIconView);
+
+        // category name
+        categoryTextView.setText(category.getName());
+
     }
 
 }

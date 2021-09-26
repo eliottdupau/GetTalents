@@ -31,8 +31,6 @@ public class HomeViewModel extends AndroidViewModel {
     public MutableLiveData<List<Category>> categories;
     public MutableLiveData<Category> category;
     public MutableLiveData<List<Skill>> skills;
-    public MutableLiveData<Skill> skill;
-
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
@@ -42,11 +40,13 @@ public class HomeViewModel extends AndroidViewModel {
         skillRepository = new SkillRepository();
     }
 
+    // logged user requests
+
     public void getLoggedUser(String id) {
         this.user = userRepository.getUserById(id);
     }
 
-    // users
+    // users requests
 
     public void setUser(User user) { this.user.setValue(user); }
 
@@ -67,13 +67,13 @@ public class HomeViewModel extends AndroidViewModel {
         this.users = userRepository.getUsersBySkillId(id);
     }
 
-    // categories
+    // categories requests
 
     public void getCategories() {
         this.categories = categoryRepository.getCategories();
     }
 
-    // skills
+    // skills requests
 
     public void getSkills() {
         this.skills = skillRepository.getSkills();
