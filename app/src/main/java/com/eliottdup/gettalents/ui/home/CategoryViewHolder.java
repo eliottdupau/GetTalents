@@ -28,10 +28,7 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
     }
 
     // bind the category data with each part of the layout
-    public void bind(Context context, Category category, RequestManager glide) {
-
-        // category image
-        //glide.load(category.getCategoryPicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(categoryIconView);
+    public void bind(Context context, Category category) {
 
         FirebaseStorageHelper.downloadProfilePicture(
                 context,

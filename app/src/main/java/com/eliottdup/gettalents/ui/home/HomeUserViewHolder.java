@@ -29,16 +29,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by temp on 12/07/2021
- */
 public class HomeUserViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView homeUserNameView;
-    private TextView homeUserCityView;
-    private ImageView homeUserProfilePictureView;
-
-    private User loggedUser;
+    private final TextView homeUserNameView;
+    private final TextView homeUserCityView;
+    private final ImageView homeUserProfilePictureView;
 
     public HomeUserViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -47,13 +42,8 @@ public class HomeUserViewHolder extends RecyclerView.ViewHolder {
         homeUserProfilePictureView = itemView.findViewById(R.id.icon_profilePicture);
     }
 
-    // retrieve the logged user data from the adapter
-    public void setLoggedUser(User user) {
-        this.loggedUser = user;
-    }
-
     // bind the user data with each part of the layout
-    public void bind(Context context, User user, RequestManager glide) {
+    public void bind(Context context, User user, User loggedUser) {
 
         // user image
         FirebaseStorageHelper.downloadProfilePicture(
@@ -72,19 +62,19 @@ public class HomeUserViewHolder extends RecyclerView.ViewHolder {
             // get the city name from the first address
             List<Address> addresses = user.getAddresses();
             Address userfirstAddress = addresses.get(0);
-            String userCityName = userfirstAddress.getCity();
+            String userCityName = userfirstAddress.getCity() + ", " + userfirstAddress.getCountry();
 
-            if (this.loggedUser != null) {
+            if (loggedUser != null) {
 
                 // check if the logged user has an address and if it has coordinates
-                if (this.loggedUser.getAddresses().size() > 0) {
-                    if(this.loggedUser.getAddresses().get(0).getLat() != 0 && this.loggedUser.getAddresses().get(0).getLng() != 0 && userfirstAddress.getLat() != 0 && userfirstAddress.getLng() != 0) {
+                if (loggedUser.getAddresses().size() > 0) {
+                    if(loggedUser.getAddresses().get(0).getLat() != 0 && loggedUser.getAddresses().get(0).getLng() != 0 && userfirstAddress.getLat() != 0 && userfirstAddress.getLng() != 0) {
 
                         // both users coordinates from their first address
-                        double latUser1 = Double.valueOf(this.loggedUser.getAddresses().get(0).getLat());
-                        double lngUser1 = Double.valueOf(this.loggedUser.getAddresses().get(0).getLng());
-                        double latUser2 = Double.valueOf(userfirstAddress.getLat());
-                        double lngUser2 = Double.valueOf(userfirstAddress.getLng());
+                        double latUser1 = loggedUser.getAddresses().get(0).getLat();
+                        double lngUser1 = loggedUser.getAddresses().get(0).getLng();
+                        double latUser2 = userfirstAddress.getLat();
+                        double lngUser2 = userfirstAddress.getLng();
                         // get the distance in kms with the coordinates of each users
                         double distance = DistanceUtils.calculateDistance(latUser1, latUser2, lngUser1, lngUser2);
                         // change the display depending on the distance value

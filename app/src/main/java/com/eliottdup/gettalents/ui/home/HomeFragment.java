@@ -16,8 +16,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
-import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.Category;
 import com.eliottdup.gettalents.model.Skill;
@@ -26,8 +26,6 @@ import com.eliottdup.gettalents.ui.profile.consult.other.UserProfileActivity;
 import com.eliottdup.gettalents.utils.DistanceUtils;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
 import com.eliottdup.gettalents.viewmodel.HomeViewModel;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -38,15 +36,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeFragment extends Fragment implements CategoryAdapter.ICategorySelect {
-
-    private TextInputLayout keyWordsLayout;
-    private TextInputEditText keyWordsView;
+    private EditText keyWordsView;
 
     private RecyclerView categoryRecyclerView ;
     private RecyclerView homeUserRecyclerView ;
@@ -89,7 +80,6 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         // link the layouts with the fragment
-        keyWordsLayout = root.findViewById(R.id.inputLayout_key_words);
         keyWordsView = root.findViewById(R.id.editText_key_words);
         categoryRecyclerView = root.findViewById(R.id.recyclerView_category);
         homeUserRecyclerView = root.findViewById(R.id.recyclerView_homeUser);
@@ -137,7 +127,7 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private void configureCategoryRecyclerView() {
         // init the adapter with the categories list
         categories = new ArrayList<>();
-        categoryAdapter = new CategoryAdapter(getContext(), categories, Glide.with(this), this);
+        categoryAdapter = new CategoryAdapter(getContext(), categories, this);
 
         // configure the recycler view with the adapter
         categoryRecyclerView.setAdapter(categoryAdapter);
@@ -148,7 +138,7 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private void configureHomeUserRecyclerView() {
         // init the adapter with the categories list
         users = new ArrayList<>();
-        homeUserAdapter = new HomeUserAdapter(getContext(), users, Glide.with(this), this.loggedUser);
+        homeUserAdapter = new HomeUserAdapter(getContext(), users, this.loggedUser);
 
         // configure the recycler view with the adapter
         homeUserRecyclerView.setAdapter(homeUserAdapter);
