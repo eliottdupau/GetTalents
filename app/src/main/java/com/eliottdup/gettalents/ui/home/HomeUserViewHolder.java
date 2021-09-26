@@ -17,6 +17,7 @@ import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.Category;
 import com.eliottdup.gettalents.model.Skill;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.utils.DistanceUtils;
 import com.eliottdup.gettalents.viewmodel.HomeViewModel;
 
 import java.text.DecimalFormat;
@@ -39,22 +40,6 @@ public class HomeUserViewHolder extends RecyclerView.ViewHolder {
         homeUserProfilePictureView = itemView.findViewById(R.id.icon_profilePicture);
     }
 
-    public double calculateDistance(double lat1, double lat2, double lng1, double lng2) {
-        if ((lat1 == lat2) && (lng1 == lng2)) {
-            return 0;
-        }
-        else {
-            double theta = lng1 - lng2;
-            double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
-            dist = Math.acos(dist);
-            dist = Math.toDegrees(dist);
-            dist = dist * 60 * 1.1515;
-            // convert to kms
-            dist = dist * 1.609344;
-            return (dist);
-        }
-    }
-
     public void bind(User user, RequestManager glide) {
         homeUserNameView.setText(user.getPseudo());
         List<Address> addresses = user.getAddresses();
@@ -64,7 +49,7 @@ public class HomeUserViewHolder extends RecyclerView.ViewHolder {
         double lngUser1 = 1.66667;
         double latUser2 = Double.valueOf(firstAddress.getLat());
         double lngUser2 = Double.valueOf(firstAddress.getLng());
-        double distance = calculateDistance(latUser1, latUser2, lngUser1, lngUser2);
+        double distance = DistanceUtils.calculateDistance(latUser1, latUser2, lngUser1, lngUser2);
         String cityDisplay = "";
         if (distance >= 10) {
             DecimalFormat df = new DecimalFormat("###");

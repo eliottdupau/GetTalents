@@ -41,6 +41,7 @@
             android:maxLines="2"
             android:textColor="@color/colorPrimary"
             android:textSize="16dp"
+            android:textStyle="bold"
             android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/iconView_category"

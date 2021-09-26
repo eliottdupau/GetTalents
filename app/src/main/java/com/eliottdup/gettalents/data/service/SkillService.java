@@ -1,4 +1,4 @@
-package com.eliottdup.gettalents.data;
+package com.eliottdup.gettalents.data.service;
 
 import com.eliottdup.gettalents.model.Skill;
 

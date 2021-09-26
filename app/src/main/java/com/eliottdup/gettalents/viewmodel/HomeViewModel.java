@@ -5,16 +5,14 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.eliottdup.gettalents.data.CategoryRepository;
-import com.eliottdup.gettalents.data.SkillRepository;
-import com.eliottdup.gettalents.data.UserRepository;
+import com.eliottdup.gettalents.data.repository.CategoryRepository;
+import com.eliottdup.gettalents.data.repository.SkillRepository;
+import com.eliottdup.gettalents.data.repository.UserRepository;
 import com.eliottdup.gettalents.model.Category;
 import com.eliottdup.gettalents.model.Skill;
 import com.eliottdup.gettalents.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.NonNull;
@@ -53,10 +51,8 @@ public class HomeViewModel extends AndroidViewModel {
         return this.user;
     }
 
-    public void getUserById(String id) { this.user = userRepository.getUserById(id); }
-
     public void getUsers() {
-        this.users = userRepository.getUsers();
+        this.users = userRepository.getAllUsers();
     }
 
     public void getUsersByCategoryId(String id) {
@@ -67,28 +63,7 @@ public class HomeViewModel extends AndroidViewModel {
         this.users = userRepository.getUsersBySkillId(id);
     }
 
-//    public void getUsersByCategoryAndSkillId(String categoryId, String skillId) {
-//        MutableLiveData<List<User>> usersByCategory = userRepository.getUsersByCategoryId(categoryId);
-//        MutableLiveData<List<User>> usersBySkill = userRepository.getUsersBySkillId(skillId);
-//        List<User> tempList = new ArrayList<>();
-//        for (User userBySkill : usersBySkill.getValue()) {
-//            if(usersByCategory.getValue().contains(userBySkill)) {
-//                tempList.add(userBySkill);
-//            }
-//        }
-//        this.users.setValue(tempList);
-//    }
-
     // categories
-
-    public void setCategory(Category category) { this.category.setValue(category); } // inutilisé
-
-    public LiveData<Category> getCategory() {
-        if(this.category == null) this.category = new MutableLiveData<>();
-        return this.category;
-    } // inutilisé
-
-    public void getCategporyById(String id) { this.category = categoryRepository.getCategoryById(id); } // inutilisé
 
     public void getCategories() {
         this.categories = categoryRepository.getCategories();
