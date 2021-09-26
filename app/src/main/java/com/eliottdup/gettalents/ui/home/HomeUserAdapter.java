@@ -19,12 +19,14 @@ import java.util.List;
  */
 public class HomeUserAdapter extends RecyclerView.Adapter<HomeUserViewHolder> {
 
+    private Context context;
     private List<User> users;
     private RequestManager glide;
     private User loggedUser;
 
-    public HomeUserAdapter(List<User> users, RequestManager glide, User loggedUser) {
+    public HomeUserAdapter(Context context, List<User> users, RequestManager glide, User loggedUser) {
         // the data are from the fragment
+        this.context = context;
         this.users = users;
         this.glide = glide;
         this.loggedUser = loggedUser;
@@ -44,7 +46,7 @@ public class HomeUserAdapter extends RecyclerView.Adapter<HomeUserViewHolder> {
     // bind to the view holder
     @Override
     public void onBindViewHolder(@NonNull HomeUserViewHolder holder, int position) {
-        holder.bind(this.users.get(position), this.glide);
+        holder.bind(context, this.users.get(position), this.glide);
         // pass the logged user data to the view holder
         holder.setLoggedUser(this.loggedUser);
     }

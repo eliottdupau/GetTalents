@@ -137,7 +137,7 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private void configureCategoryRecyclerView() {
         // init the adapter with the categories list
         categories = new ArrayList<>();
-        categoryAdapter = new CategoryAdapter(categories, Glide.with(this), this);
+        categoryAdapter = new CategoryAdapter(getContext(), categories, Glide.with(this), this);
 
         // configure the recycler view with the adapter
         categoryRecyclerView.setAdapter(categoryAdapter);
@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment implements CategoryAdapter.ICategoryS
     private void configureHomeUserRecyclerView() {
         // init the adapter with the categories list
         users = new ArrayList<>();
-        homeUserAdapter = new HomeUserAdapter(users, Glide.with(this), this.loggedUser);
+        homeUserAdapter = new HomeUserAdapter(getContext(), users, Glide.with(this), this.loggedUser);
 
         // configure the recycler view with the adapter
         homeUserRecyclerView.setAdapter(homeUserAdapter);

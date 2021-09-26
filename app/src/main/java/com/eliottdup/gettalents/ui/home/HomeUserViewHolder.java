@@ -1,5 +1,6 @@
 package com.eliottdup.gettalents.ui.home;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.data.helper.FirebaseStorageHelper;
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.Category;
 import com.eliottdup.gettalents.model.Skill;
@@ -51,10 +53,13 @@ public class HomeUserViewHolder extends RecyclerView.ViewHolder {
     }
 
     // bind the user data with each part of the layout
-    public void bind(User user, RequestManager glide) {
+    public void bind(Context context, User user, RequestManager glide) {
 
         // user image
-        glide.load(user.getProfilePicture().getPath()).placeholder(R.drawable.ic_baseline_avatar_placeholder_24).centerCrop().into(homeUserProfilePictureView);
+        FirebaseStorageHelper.downloadProfilePicture(
+                context,
+                homeUserProfilePictureView,
+                user.getProfilePicture().getPath());
 
         // user name
         homeUserNameView.setText(user.getPseudo());
