@@ -5,8 +5,6 @@ import android.os.Bundle;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.authentication.AuthenticationActivity;
-import com.eliottdup.gettalents.ui.map.MapFragment;
-import com.eliottdup.gettalents.ui.search.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -14,7 +12,6 @@ import com.google.firebase.auth.FirebaseUser;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {

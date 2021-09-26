@@ -27,6 +27,7 @@ import com.eliottdup.gettalents.model.Picture;
 import com.eliottdup.gettalents.ui.profile.edit.PictureDialogFragment;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
+import com.eliottdup.gettalents.utils.KeyUtils;
 import com.eliottdup.gettalents.viewmodel.ReviewViewModel;
 import com.eliottdup.gettalents.viewmodel.PictureViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -41,25 +42,23 @@ import java.util.Calendar;
 import java.util.List;
 
 public class ReviewFragment extends Fragment {
-    public static final String KEY_USER_ID = "userId";
-
     private MaterialToolbar toolbar;
     private RatingBar ratingBar;
     private TextInputLayout titleLayout, commentLayout;
     private TextInputEditText titleView, commentView;
-    private MaterialCardView mediaButton;
-    private RecyclerView recyclerView;
+    //private MaterialCardView mediaButton;
+    //private RecyclerView recyclerView;
 
     private ReviewViewModel reviewViewModel;
-    private PictureViewModel pictureViewModel;
+    //private PictureViewModel pictureViewModel;
 
     private FragmentManager fragmentManager;
 
     private Review review;
     private int recipientId;
 
-    private MediaAdapter adapter;
-    private List<Picture> pictureList;
+    /*private MediaAdapter adapter;
+    private List<Picture> pictureList;*/
 
     public ReviewFragment() {}
 
@@ -67,7 +66,7 @@ public class ReviewFragment extends Fragment {
         ReviewFragment reviewFragment = new ReviewFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable(KEY_USER_ID, recipientId);
+        args.putSerializable(KeyUtils.KEY_USER_ID, recipientId);
         reviewFragment.setArguments(args);
 
         return reviewFragment;
@@ -89,8 +88,8 @@ public class ReviewFragment extends Fragment {
         commentLayout = root.findViewById(R.id.inputLayout_comment);
         titleView = root.findViewById(R.id.editText_title);
         commentView = root.findViewById(R.id.editText_comment);
-        mediaButton = root.findViewById(R.id.container_addMedia);
-        recyclerView = root.findViewById(R.id.recyclerView);
+        //mediaButton = root.findViewById(R.id.container_addMedia);
+        //recyclerView = root.findViewById(R.id.recyclerView);
 
         return root;
     }
@@ -100,20 +99,20 @@ public class ReviewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null) {
-            recipientId = getArguments().getInt(KEY_USER_ID);
+            recipientId = getArguments().getInt(KeyUtils.KEY_USER_ID);
         }
 
         reviewViewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
-        pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
+        //pictureViewModel = new ViewModelProvider(requireActivity()).get(PictureViewModel.class);
 
         fragmentManager = getParentFragmentManager();
 
         initReview();
         getUser();
-        managePicture();
+        //managePicture();
 
         configureToolbar();
-        configureRecyclerView();
+        //configureRecyclerView();
         setupView();
     }
 
@@ -129,14 +128,14 @@ public class ReviewFragment extends Fragment {
         }
     }
 
-    private void managePicture() {
+    /*private void managePicture() {
         pictureViewModel.getPicture().observe(getViewLifecycleOwner(), photo -> {
             if (photo.getPath() != null) {
                 pictureList.add(photo);
                 adapter.updateMedia(pictureList);
             }
         });
-    }
+    }*/
 
     private void configureToolbar() {
         toolbar.setTitle(getString(R.string.title_evaluation));
@@ -156,7 +155,7 @@ public class ReviewFragment extends Fragment {
         });
     }
 
-    private void configureRecyclerView() {
+    /*private void configureRecyclerView() {
         pictureList = new ArrayList<>();
         adapter = new MediaAdapter(pictureList, Glide.with(this));
         recyclerView.setAdapter(adapter);
@@ -174,7 +173,7 @@ public class ReviewFragment extends Fragment {
                     .setNegativeButton(getString(R.string.label_cancel), (dialogInterface, i) -> { })
                     .show();
         });
-    }
+    }*/
 
     private void setupView() {
         ratingBar.setOnRatingBarChangeListener((ratingBar, rating, b) -> review.setNote((int) rating));
@@ -216,37 +215,34 @@ public class ReviewFragment extends Fragment {
             public void afterTextChanged(Editable editable) {}
         });
 
-        mediaButton.setOnClickListener(view -> {
+        /*mediaButton.setOnClickListener(view -> {
             PictureDialogFragment pictureDialogFragment = PictureDialogFragment.newInstance();
             pictureDialogFragment.show(fragmentManager, "photoFragment");
-        });
+        });*/
     }
 
     private boolean isEmptyOrOversize(String input) {
         return input.isEmpty() || input.length() > 200;
     }
 
-    // Todo() : Upload la/les photo sur le serveur de stockage des photos
     private void showValidationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder.setTitle(getString(R.string.title_evaluation))
                 .setMessage(getString(R.string.disclaimer_leave_appreciation))
-                .setPositiveButton(getString(R.string.label_yes), (dialogInterface, i) -> createReview())
+                .setPositiveButton(getString(R.string.label_yes), (dialogInterface, i) -> uploadReview())
                 .setNegativeButton(getString(R.string.label_cancel), (dialogInterface, i) -> {})
                 .show();
     }
 
-    private void createReview() {
-        review.setPictureList(pictureList);
+    private void uploadReview() {
+        //review.setPictureList(pictureList);
+        review.setPictureList(new ArrayList<>());
 
         String currentDate = DateUtils.formatDateToString(Calendar.getInstance().getTime());
         review.setCreatedAt(currentDate);
         review.setUpdatedAt(currentDate);
 
-        reviewViewModel.createReview(review).observe(getViewLifecycleOwner(), review -> {
-            // Todo () : Do something when call fail and when call succeed
-            requireActivity().onBackPressed();
-        });
+        reviewViewModel.createReview(review).observe(getViewLifecycleOwner(), review -> requireActivity().onBackPressed());
     }
 }

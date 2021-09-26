@@ -33,29 +33,13 @@ public class User implements Serializable {
     @Expose
     private String registrationDate;
 
-    @SerializedName("status")
-    @Expose
-    private String status;
-
     @SerializedName("email")
     @Expose
     private String email;
 
-    @SerializedName("phone")
-    @Expose
-    private int phone;
-
-    @SerializedName("presentation")
-    @Expose
-    private String presentation;
-
     @SerializedName("birthday")
     @Expose
     private String birthday;
-
-    @SerializedName("role")
-    @Expose
-    private String role;
 
     @SerializedName("profilePicture")
     @Expose

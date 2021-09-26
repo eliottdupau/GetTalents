@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.data.helper.FirebaseStorageHelper;
 import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.chat.ChatActivity;
@@ -90,11 +91,10 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void updateUI(User user) {
-        Glide.with(this)
-                .load(user.getProfilePicture().getPath())
-                .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
-                .centerCrop()
-                .into(profilePicture);
+        FirebaseStorageHelper.downloadProfilePicture(
+                getContext(),
+                profilePicture,
+                user.getProfilePicture().getPath());
 
         pseudoView.setText(user.getPseudo());
 

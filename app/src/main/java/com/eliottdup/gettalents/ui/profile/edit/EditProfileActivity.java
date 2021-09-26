@@ -67,7 +67,7 @@ public class EditProfileActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.label_save_changes))
                 .setPositiveButton(R.string.label_ok, (dialogInterface, i) -> {
-                    uploadPicture("images/profile/" + user.getFirebaseUid());
+                    uploadPicture("images/profile/" + user.getFirebaseUid() + ".png");
                     finish();
                 })
                 .setNegativeButton(R.string.label_cancel, (dialogInterface, i) -> { })
@@ -82,7 +82,7 @@ public class EditProfileActivity extends AppCompatActivity {
         UploadTask uploadTask = pictureRef.putFile(file);
 
         uploadTask.addOnSuccessListener(taskSnapshot -> {
-            user.getProfilePicture().setPath("images/profile/" + user.getFirebaseUid());
+            user.getProfilePicture().setPath("images/profile/" + user.getFirebaseUid() + ".png");
             viewModel.updateUser(user.getFirebaseUid(), user);
         }).addOnFailureListener(e -> Log.e("Profilepicture", e.getMessage()));
     }
