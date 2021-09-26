@@ -27,6 +27,7 @@ import com.eliottdup.gettalents.model.Picture;
 import com.eliottdup.gettalents.ui.profile.edit.PictureDialogFragment;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
+import com.eliottdup.gettalents.utils.KeyUtils;
 import com.eliottdup.gettalents.viewmodel.ReviewViewModel;
 import com.eliottdup.gettalents.viewmodel.PictureViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -41,8 +42,6 @@ import java.util.Calendar;
 import java.util.List;
 
 public class ReviewFragment extends Fragment {
-    public static final String KEY_USER_ID = "userId";
-
     private MaterialToolbar toolbar;
     private RatingBar ratingBar;
     private TextInputLayout titleLayout, commentLayout;
@@ -67,7 +66,7 @@ public class ReviewFragment extends Fragment {
         ReviewFragment reviewFragment = new ReviewFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable(KEY_USER_ID, recipientId);
+        args.putSerializable(KeyUtils.KEY_USER_ID, recipientId);
         reviewFragment.setArguments(args);
 
         return reviewFragment;
@@ -100,7 +99,7 @@ public class ReviewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null) {
-            recipientId = getArguments().getInt(KEY_USER_ID);
+            recipientId = getArguments().getInt(KeyUtils.KEY_USER_ID);
         }
 
         reviewViewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
@@ -226,7 +225,6 @@ public class ReviewFragment extends Fragment {
         return input.isEmpty() || input.length() > 200;
     }
 
-    // Todo() : Upload la/les photo sur le serveur de stockage des photos
     private void showValidationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -244,9 +242,6 @@ public class ReviewFragment extends Fragment {
         review.setCreatedAt(currentDate);
         review.setUpdatedAt(currentDate);
 
-        reviewViewModel.createReview(review).observe(getViewLifecycleOwner(), review -> {
-            // Todo () : Do something when call fail and when call succeed
-            requireActivity().onBackPressed();
-        });
+        reviewViewModel.createReview(review).observe(getViewLifecycleOwner(), review -> requireActivity().onBackPressed());
     }
 }
