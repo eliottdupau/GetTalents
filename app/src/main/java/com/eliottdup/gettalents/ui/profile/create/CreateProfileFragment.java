@@ -1,4 +1,4 @@
-package com.eliottdup.gettalents.ui.profile.edit;
+package com.eliottdup.gettalents.ui.profile.create;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.User;
+import com.eliottdup.gettalents.ui.profile.edit.BirthdayDialogFragment;
+import com.eliottdup.gettalents.ui.profile.edit.PictureDialogFragment;
+import com.eliottdup.gettalents.ui.profile.edit.PseudoDialogFragment;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
 import com.eliottdup.gettalents.viewmodel.PictureViewModel;
@@ -60,10 +62,9 @@ public class CreateProfileFragment extends Fragment {
         validateButton = root.findViewById(R.id.btnValidate);
         skipButton = root.findViewById(R.id.btnSkip);
         profilePictureCard = root.findViewById(R.id.container_profilePicture);
+        profilePicture = root.findViewById(R.id.icon_profilePicture);
         pseudoCard = root.findViewById(R.id.container_pseudo);
         birthdayCard = root.findViewById(R.id.container_birthday);
-        profilePictureCard = root.findViewById(R.id.container_profilePicture);
-        profilePicture = root.findViewById(R.id.icon_profilePicture);
         pseudoView = root.findViewById(R.id.textView_pseudo);
         birthdayView = root.findViewById(R.id.textView_birthday);
 
@@ -137,15 +138,17 @@ public class CreateProfileFragment extends Fragment {
     }
 
     private void updateUI(User user) {
-        if (user.getProfilePicture() != null) {
-            Glide.with(this)
-                    .load(user.getProfilePicture().getPath())
-                    .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
-                    .centerCrop()
-                    .into(profilePicture);
-        }
+        if (user != null) {
+            if (user.getProfilePicture() != null) {
+                Glide.with(this)
+                        .load(user.getProfilePicture().getPath())
+                        .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
+                        .centerCrop()
+                        .into(profilePicture);
+            }
 
-        if (user.getPseudo() != null) pseudoView.setText(user.getPseudo());
-        if (user.getBirthday() != null) birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
+            if (user.getPseudo() != null) pseudoView.setText(user.getPseudo());
+            if (user.getBirthday() != null) birthdayView.setText(DateUtils.formatDate(user.getBirthday()));
+        }
     }
 }

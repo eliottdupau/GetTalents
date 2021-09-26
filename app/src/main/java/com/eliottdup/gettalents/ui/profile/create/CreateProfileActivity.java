@@ -6,21 +6,23 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.MainActivity;
-import com.eliottdup.gettalents.ui.profile.edit.CreateProfileFragment;
-import com.eliottdup.gettalents.ui.skills.CreateSkillsFragment;
 import com.eliottdup.gettalents.utils.KeyUtils;
 import com.eliottdup.gettalents.viewmodel.EditProfileViewModel;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 
 public class CreateProfileActivity extends AppCompatActivity implements CreateProfileFragment.OnButtonClickedListener{
-    private FragmentManager fragmentManager;
     private CreateProfileFragment createProfileFragment;
-    private CreateSkillsFragment createSkillsFragment;
 
     private EditProfileViewModel viewModel;
 
@@ -35,7 +37,7 @@ public class CreateProfileActivity extends AppCompatActivity implements CreatePr
 
         viewModel = new ViewModelProvider(this).get(EditProfileViewModel.class);
 
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (createProfileFragment == null) createProfileFragment = CreateProfileFragment.newInstance();
 
@@ -46,17 +48,24 @@ public class CreateProfileActivity extends AppCompatActivity implements CreatePr
         viewModel.setUser(user);
     }
 
-    private void createUserInDB(User user) {
-        viewModel.createUserInDB(user).observe(this, userInDB -> goToSkillFragment());
+    private void uploadPicture(String ref) {
+        StorageReference rootRef = FirebaseStorage.getInstance().getReference();
+        StorageReference pictureRef = rootRef.child(ref);
+
+        Uri file = Uri.fromFile(new File(user.getProfilePicture().getPath()));
+        UploadTask uploadTask = pictureRef.putFile(file);
+
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            user.getProfilePicture().setPath("images/profile/" + user.getFirebaseUid());
+            createUserInDB(user);
+        }).addOnFailureListener(e -> Log.e("Profilepicture", e.getMessage()));
     }
 
-    private void goToSkillFragment() {
-        if (createSkillsFragment == null) createSkillsFragment = CreateSkillsFragment.newInstance();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.mainContainer, createSkillsFragment)
-                .addToBackStack(null)
-                .commit();
+    private void createUserInDB(User user) {
+        viewModel.createUserInDB(user).observe(this, userInDB -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void goToMainActivity() {
@@ -74,7 +83,8 @@ public class CreateProfileActivity extends AppCompatActivity implements CreatePr
 
     @Override
     public void onSkillButtonClicked(User user) {
-        createUserInDB(user);
+        this.user = user;
+        uploadPicture("images/profile/" + user.getFirebaseUid());
     }
 
     @Override

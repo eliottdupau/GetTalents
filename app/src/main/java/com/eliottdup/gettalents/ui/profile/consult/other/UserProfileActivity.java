@@ -8,14 +8,13 @@ import android.os.Bundle;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.review.ReviewListFragment;
+import com.eliottdup.gettalents.utils.KeyUtils;
 import com.eliottdup.gettalents.viewmodel.UserProfileViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class UserProfileActivity extends AppCompatActivity {
-    public static final String KEY_USER_ID = "userId";
-
     private MaterialToolbar toolbar;
 
     private UserProfileViewModel viewModel;
@@ -23,7 +22,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private UserProfileFragment userProfileFragment;
     private ReviewListFragment reviewListFragment;
 
-    private int userId;
+    //private int userId;
+    private String userFirebaseUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.topAppBar);
 
-        userId = getIntent().getIntExtra(KEY_USER_ID, 0);
+        //userId = getIntent().getIntExtra(KeyUtils.KEY_USER_ID, 0);
+        userFirebaseUid = getIntent().getStringExtra(KeyUtils.KEY_FIREBASE_UID);
 
         viewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
 
@@ -42,7 +43,7 @@ public class UserProfileActivity extends AppCompatActivity {
         getData();
 
         if (userProfileFragment == null) userProfileFragment = UserProfileFragment.newInstance();
-        if (reviewListFragment == null) reviewListFragment = ReviewListFragment.newInstance();
+        if (reviewListFragment == null) reviewListFragment = ReviewListFragment.newInstance(userFirebaseUid);
 
         fragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, userProfileFragment)
@@ -55,10 +56,13 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void getData() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        /*FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            viewModel.getUserById(user.getUid());
+            viewModel.getUserById();
             viewModel.user.observe(this, u -> toolbar.setTitle(u.getPseudo()));
-        }
+        }*/
+
+        viewModel.getUserById(userFirebaseUid);
+        viewModel.user.observe(this, u -> toolbar.setTitle(u.getPseudo()));
     }
 }

@@ -1,11 +1,12 @@
 package com.eliottdup.gettalents.adapter.profile;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.address.AddressesFragment;
 import com.eliottdup.gettalents.ui.review.ReviewListFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-// Todo() : Corriger le bug où les différents fragment sont vides quand on va dans le fragment editprofile et qu'on revient ici
 public class MyProfilePagerAdapter extends FragmentStatePagerAdapter {
     private final Context context;
     private final boolean isEditable;
@@ -30,10 +30,9 @@ public class MyProfilePagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                Log.d("ViewPager", "Review : " + position);
-                return ReviewListFragment.newInstance();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                return ReviewListFragment.newInstance(user.getUid());
             case 1:
-                Log.d("ViewPager", "Address : " + position);
                 return AddressesFragment.newInstance(isEditable);
             default:
                 return null;

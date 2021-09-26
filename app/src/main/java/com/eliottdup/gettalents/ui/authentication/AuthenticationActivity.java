@@ -11,6 +11,8 @@ import android.widget.Button;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.ui.MainActivity;
+import com.eliottdup.gettalents.ui.profile.create.CreateProfileActivity;
+import com.eliottdup.gettalents.ui.profile.create.CreateProfileFragment;
 
 public class AuthenticationActivity extends AppCompatActivity implements SignUpFragment.OnButtonClickedListener, SignInFragment.OnButtonClickedListener, ForgetPasswordFragment.OnButtonClickedListener {
 
@@ -29,7 +31,6 @@ public class AuthenticationActivity extends AppCompatActivity implements SignUpF
         fragmentManager.beginTransaction()
                 .replace(R.id.mainContainer, authenticationFragment)
                 .commit();
-
     }
 
     @Override

@@ -84,8 +84,6 @@ public class UserRepository {
     public MutableLiveData<User> createUser(User user) {
         MutableLiveData<User> userInDB = new MutableLiveData<>();
 
-        initUser(user);
-
         UserService userService = RetrofitInstance.getInstance().create(UserService.class);
         Call<Void> call = userService.createUser(user);
         call.enqueue(new Callback<Void>() {
@@ -105,13 +103,6 @@ public class UserRepository {
         });
 
         return userInDB;
-    }
-
-    // Todo() : To delete
-    private void initUser(User user) {
-        Picture picture = new Picture();
-        picture.setPath("http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcTL7mM-4xIusFwBanyvvG9gbE1TbjWqPB82cLpQgzlJpzVv8ommngwZtCHmYANJ");
-        user.setProfilePicture(picture);
     }
 
     public MutableLiveData<User> getUserById(String id) {

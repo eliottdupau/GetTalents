@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.eliottdup.gettalents.R;
 import com.eliottdup.gettalents.adapter.address.AddressAdapter;
@@ -34,6 +35,7 @@ public class AddressesFragment extends Fragment {
     public static final String KEY_IS_EDITABLE = "isEditable";
 
     private RecyclerView recyclerView;
+    private TextView noAddressView;
 
     private AddressViewModel viewModel;
     private FragmentManager fragmentManager;
@@ -67,6 +69,7 @@ public class AddressesFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_addresses, container, false);
 
         recyclerView = root.findViewById(R.id.recyclerView);
+        noAddressView = root.findViewById(R.id.textView_noAddress);
 
         return root;
     }
@@ -144,8 +147,17 @@ public class AddressesFragment extends Fragment {
     private void getUserAddresses(User user) {
         viewModel.getAllAddressesForUser(user.getId());
         viewModel.getAddressList().observe(getViewLifecycleOwner(), addresses -> {
-            addressList = addresses;
-            adapter.updateData(addressList);
+            isAddressListEmpty(addresses.size() == 0);
+
+            if (addresses.size() > 0) {
+                addressList = addresses;
+                adapter.updateData(addressList);
+            }
         });
+    }
+
+    private void isAddressListEmpty(boolean isEmpty) {
+        noAddressView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
     }
 }

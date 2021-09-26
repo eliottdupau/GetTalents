@@ -15,6 +15,7 @@ import com.eliottdup.gettalents.ui.picture.PictureActivity;
 import com.eliottdup.gettalents.ui.profile.consult.other.UserProfileActivity;
 import com.eliottdup.gettalents.utils.DateUtils;
 import com.eliottdup.gettalents.utils.ItemClickSupport;
+import com.eliottdup.gettalents.utils.KeyUtils;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
         userContainer.setOnClickListener(view -> {
             Intent intent = new Intent(context, UserProfileActivity.class);
-            intent.putExtra(UserProfileActivity.KEY_USER_ID, review.getSender().getId());
+            intent.putExtra(KeyUtils.KEY_FIREBASE_UID, review.getSender().getFirebaseUid());
             context.startActivity(intent);
         });
 

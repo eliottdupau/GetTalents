@@ -119,11 +119,6 @@ public class EditProfileFragment extends Fragment {
                 getContext(),
                 profilePicture,
                 user.getProfilePicture().getPath());
-        /*Glide.with(this)
-                .load(user.getProfilePicture().getPath())
-                .placeholder(R.drawable.ic_baseline_avatar_placeholder_24)
-                .centerCrop()
-                .into(profilePicture);*/
 
         pseudoView.setText(user.getPseudo());
         mailView.setText(user.getEmail());

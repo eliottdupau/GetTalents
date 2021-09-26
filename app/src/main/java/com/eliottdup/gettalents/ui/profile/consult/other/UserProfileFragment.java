@@ -20,15 +20,14 @@ import com.eliottdup.gettalents.model.Address;
 import com.eliottdup.gettalents.model.User;
 import com.eliottdup.gettalents.ui.chat.ChatActivity;
 import com.eliottdup.gettalents.ui.review.ReviewActivity;
+import com.eliottdup.gettalents.utils.KeyUtils;
 import com.eliottdup.gettalents.viewmodel.UserProfileViewModel;
 import com.google.android.material.card.MaterialCardView;
 
 public class UserProfileFragment extends Fragment {
-    public static final String KEY_USER_ID = "userId";
-
-    private ImageView profilePicture, favoriteIcon;
+    private ImageView profilePicture;
     private TextView pseudoView, addressView;
-    private MaterialCardView evaluateButton, chatButton, favoriteButton;
+    private MaterialCardView evaluateButton, chatButton;
 
     private UserProfileViewModel viewModel;
 
@@ -55,8 +54,6 @@ public class UserProfileFragment extends Fragment {
         addressView = root.findViewById(R.id.textView_address);
         evaluateButton = root.findViewById(R.id.container_evaluation);
         chatButton = root.findViewById(R.id.container_chat);
-        favoriteButton = root.findViewById(R.id.container_favorite);
-        favoriteIcon = root.findViewById(R.id.icon_favorite);
 
         return root;
     }
@@ -75,19 +72,13 @@ public class UserProfileFragment extends Fragment {
     private void setupView() {
         evaluateButton.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), ReviewActivity.class);
-            intent.putExtra(KEY_USER_ID, user.getId());
+            intent.putExtra(KeyUtils.KEY_USER_ID, user.getId());
             startActivity(intent);
         });
 
         chatButton.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), ChatActivity.class);
             startActivity(intent);
-        });
-
-        favoriteButton.setOnClickListener(view -> {
-            /*manageRelation(user.isInFavorite(user.getId()));
-
-            updateFavoriteView(user.isInFavorite(user.getId()));*/
         });
     }
 
@@ -109,18 +100,5 @@ public class UserProfileFragment extends Fragment {
 
         Address mainAddress = user.getAddresses().get(0);
         addressView.setText(String.format("%s, %s", mainAddress.getCity(), mainAddress.getCountry()));
-
-        //updateFavoriteView(user.isInFavorite(user.getId()));
     }
-
-    /* void manageRelation(boolean isInFavorite) {
-        if (isInFavorite) user.getRelationList().remove(user);
-        else user.getRelationList().add(user);
-    }
-
-    private void updateFavoriteView(boolean isInFavorite) {
-        Glide.with(this)
-                .load(isInFavorite ? R.drawable.ic_baseline_filled_like_24 : R.drawable.ic_baseline_like_24)
-                .into(favoriteIcon);
-    }*/
 }
