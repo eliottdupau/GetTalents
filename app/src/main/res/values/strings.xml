@@ -80,7 +80,6 @@
     <string name="disclaimer_delete_data">Are you sure to delete this ? Cause it can\'t be undo</string>
     <string name="disclaimer_location_permission_denied">This feature is disable while location permission is not accepted</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="email">exemple@exemple.fr</string>
     <string name="content_description_email">Email</string>
     <string name="password">Password</string>
@@ -88,7 +87,6 @@
     <string name="confirm_password">Confirm password</string>
     <string name="content_description_confirm_password">Confirm password</string>
     <string name="help_email">Enter the email address associated with your account</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="validate">Validate</string>
     <string name="btn_skip">Skip</string>
