@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
 import com.eliottdup.gettalents.R;
+import com.eliottdup.gettalents.model.Conversation;
 
 public class ChatActivity extends AppCompatActivity {
 

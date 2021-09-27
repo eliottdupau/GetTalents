@@ -11,5 +11,5 @@ import retrofit2.http.Path;
 public interface ConversationService {
 
     @GET("/conversations/GetConversationByUserId/{userId}")
-    Call<List<Conversation>> GetConversationByUserId(@Path("id") int id);
+    Call<List<Conversation>> GetConversationByUserId(@Path("userId") int userId);
 }

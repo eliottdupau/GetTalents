@@ -17,16 +17,17 @@ import retrofit2.Response;
 
 public class ConversationRepository {
 
-    public MutableLiveData<List<Conversation>> GetConversationByUserId(int id){
+    public MutableLiveData<List<Conversation>> GetConversationByUserId(int userid){
         MutableLiveData<List<Conversation>> conversationsMutableLiveData = new MutableLiveData<>();
 
         ConversationService conversationService = RetrofitInstance.getInstance().create(ConversationService.class);
-        Call<List<Conversation>> call = conversationService.GetConversationByUserId(id) ;
+        Call<List<Conversation>> call = conversationService.GetConversationByUserId(userid) ;
         call.enqueue(new Callback<List<Conversation>>() {
             @Override
             public void onResponse(@NonNull Call<List<Conversation>> call, @NonNull Response<List<Conversation>> response) {
                 Log.d("HTTP 200", "Get Conversation By user id -> success");
                 conversationsMutableLiveData.setValue(response.body());
+                Log.d("RepoConversation", "" + conversationsMutableLiveData.getValue().size());
             }
 
             @Override

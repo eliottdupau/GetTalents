@@ -15,19 +15,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Conversation implements Serializable {
+public class UserForConversation implements Serializable {
 
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("users")
+
+    @SerializedName("firebaseUid")
     @Expose
-    private List<UserForConversation> users = null;
-    @SerializedName("dateLastMessage")
+    private String firebaseUid;
+
+    @SerializedName("pseudo")
     @Expose
-    private String dateLastMessage;
-    @SerializedName("lastContent")
-    @Expose
-    private String lastContent;
+    private String pseudo;
 
 }
