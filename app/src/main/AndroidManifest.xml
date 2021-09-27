@@ -24,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/GetTalents">
         <activity
+            android:name=".ui.chat.MessageActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.profile.create.CreateProfileActivity"
             android:exported="true" />
         <!--
