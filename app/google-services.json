@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "409347769149",
+    "project_id": "gettalents",
+    "storage_bucket": "gettalents.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409347769149:android:182dc54ad17076c6303b54",
+        "android_client_info": {
+          "package_name": "com.eliottdup.gettalents"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409347769149-dtr0diuvgj718lacv38pi8r0k5tnqhak.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eliottdup.gettalents",
+            "certificate_hash": "04504febc9797ab0b5777ef1f979f2939dc783a7"
+          }
+        },
+        {
+          "client_id": "409347769149-747qlvk5a70hlnoss2pvpl1fcjqlnjen.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCTplyRTWHqIGtI8BDTocXO1OAXnJKmSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409347769149-747qlvk5a70hlnoss2pvpl1fcjqlnjen.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

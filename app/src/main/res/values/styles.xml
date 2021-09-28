@@ -9,4 +9,61 @@
         <item name="android:textColor">@color/colorText</item>
     </style>
 
+    <!-- Menu Item -->
+
+    <style name="GetTalents.MenuItem" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="cardElevation">8dp</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">false</item>
+    </style>
+
+    <style name="GetTalents.MenuItem.Title" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- Profile Widgets -->
+
+    <style name="GetTalents.Profile.PictureContainer" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">160dp</item>
+        <item name="cardCornerRadius">80dp</item>
+    </style>
+
+    <style name="GetTalents.Profile.Title" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="GetTalents.Profile.SubTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">19sp</item>
+    </style>
+
+    <style name="GetTalents.Profile.TextContent" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:alpha">0.75</item>
+    </style>
+
+    <!-- Card View Shape Appearance -->
+
+    <style name="ShapeAppearanceOverlay.MaterialCardView.LeftTopCornerStraight" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">12dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomRight">12dp</item>
+        <item name="cornerSizeBottomLeft">12dp</item>
+    </style>
+
+    <style name="Widget.GetTalents.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="Widget.GetTalents.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+
 </resources>
